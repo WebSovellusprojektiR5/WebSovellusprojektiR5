@@ -1,0 +1,18 @@
+{
+    "data":[
+        {
+            "id": 0,
+            "visible": true,
+            "name" : "Pirkon piirakka",
+            "image" : "Stars/5.png",
+            "description" : "Makoisia piirakoita"
+        },
+        {
+            "id": 1,
+            "visible": true,
+            "name" : "Paavon patonki",
+            "image" : "Stars/4.png",
+            "description" : "Pitkää, pätkää"
+        }
+    ]
+}

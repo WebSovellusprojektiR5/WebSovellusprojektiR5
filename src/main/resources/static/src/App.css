@@ -1,0 +1,21 @@
+.pageContainer {
+  margin-left: 90px;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 500px);
+}
+
+.pageItem {
+  width: 400px;
+  height: 500px;
+  margin: 20px;
+  padding: 30px; 
+}
+
+img {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
