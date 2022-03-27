@@ -37,6 +37,15 @@ public class UserService {
     }
 
     @PostConstruct
+    public String addCustomer(User customer){
+        if(userRepository.findByUsername(customer.getUsername()) != null){
+            return "Käyttäjänimi on jo olemassa.";
+        }
+        userRepository.save(customer);
+        return "Uusi asiakas luotu";
+    }
+
+    @PostConstruct
     public User login(String username, String password){
         User user = userRepository.checkCredentials(username, password);
         if(user == null){
