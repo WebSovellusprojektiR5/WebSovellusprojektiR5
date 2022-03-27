@@ -1,6 +1,7 @@
-package com.websovellusprojektiR5.R5_RestAPI;
+package com.websovellusprojektiR5.R5_RestAPI.RESTController;
 
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Restaurant;
+import com.websovellusprojektiR5.R5_RestAPI.Services.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

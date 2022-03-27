@@ -1,4 +1,4 @@
-package com.websovellusprojektiR5.R5_RestAPI;
+package com.websovellusprojektiR5.R5_RestAPI.Services;
 
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.RestaurantRepository;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Restaurant;
