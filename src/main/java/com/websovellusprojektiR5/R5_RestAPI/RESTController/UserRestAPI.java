@@ -17,7 +17,7 @@ public class UserRestAPI {
     public List<User> getusers() {
         return userService.getUsers();
     }
-    
+
     @GetMapping("/users/{userId}")
     public User getUser(@PathVariable Long userID){
         return userService.getUserByID(userID);

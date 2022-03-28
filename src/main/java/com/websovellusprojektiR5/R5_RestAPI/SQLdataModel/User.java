@@ -37,9 +37,8 @@ public class User {
     @Column(name="idpersonrole")
     private long idrole;
 
-    public User(Long id, String firstname, String lastname, String address1, String address2, String city, String phone,
+    public User(String firstname, String lastname, String address1, String address2, String city, String phone,
                 String username, String password, long idrole){
-        this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.address1 = address1;

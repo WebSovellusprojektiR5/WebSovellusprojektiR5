@@ -40,9 +40,6 @@ public class UserService {
 
     public User login(String username, String password){
         User user = userRepo.checkCredentials(username, password);
-        if(user == null){
-            return null;
-        }
-        return userRepo.getById(user.getId());
+        return user;
     }
 }
