@@ -22,7 +22,7 @@ public class Restaurant {
     private String picture_url;
 
     @Column(name="price_level")
-    private String price_level;
+    private Integer price_level;
 
     @Column(name="address1")
     private String address1;
@@ -37,13 +37,12 @@ public class Restaurant {
     private String phone;
 
     @Column(name="owner_idperson")
-    private String idperson;
+    private Long idperson;
 
     @Column(name="idrestauranttype")
-    private String idrestauranttype;
+    private Long idrestauranttype;
 
-    public Restaurant(Long idrestaurant, String name, String description, String thumbnail_url, String picture_url, String price_level, String address1, String address2, String city, String phone, String idperson, String idrestauranttype) {
-        this.idrestaurant = idrestaurant;
+    public Restaurant(String name, String description, String thumbnail_url, String picture_url, Integer price_level, String address1, String address2, String city, String phone, Long idperson, Long idrestauranttype) {
         this.name = name;
         this.description = description;
         this.thumbnail_url = thumbnail_url;
@@ -58,6 +57,10 @@ public class Restaurant {
     }
 
     public Restaurant() {
+    }
+
+    public void setIdrestaurant(Long idrestaurant) {
+        this.idrestaurant = idrestaurant;
     }
 
     public Long getIdrestaurant() {
@@ -80,7 +83,7 @@ public class Restaurant {
         return picture_url;
     }
 
-    public String getPrice_level() {
+    public Integer getPrice_level() {
         return price_level;
     }
 
@@ -100,11 +103,11 @@ public class Restaurant {
         return phone;
     }
 
-    public String getIdperson() {
+    public Long getIdperson() {
         return idperson;
     }
 
-    public String getIdrestauranttype() {
+    public Long getIdrestauranttype() {
         return idrestauranttype;
     }
 
@@ -124,7 +127,7 @@ public class Restaurant {
         this.picture_url = picture_url;
     }
 
-    public void setPrice_level(String price_level) {
+    public void setPrice_level(Integer price_level) {
         this.price_level = price_level;
     }
 
@@ -144,11 +147,11 @@ public class Restaurant {
         this.phone = phone;
     }
 
-    public void setIdperson(String idperson) {
+    public void setIdperson(Long idperson) {
         this.idperson = idperson;
     }
 
-    public void setIdrestauranttype(String idrestauranttype) {
+    public void setIdrestauranttype(Long idrestauranttype) {
         this.idrestauranttype = idrestauranttype;
     }
 }

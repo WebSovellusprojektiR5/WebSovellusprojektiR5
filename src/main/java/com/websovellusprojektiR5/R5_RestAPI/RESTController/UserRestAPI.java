@@ -3,25 +3,14 @@ package com.websovellusprojektiR5.R5_RestAPI.RESTController;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.User;
 import com.websovellusprojektiR5.R5_RestAPI.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserRestAPI {
     @Autowired
     UserService userService;
-
-    @CrossOrigin
-    @GetMapping("/users")
-    public List<User> getusers() {
-        return userService.getUsers();
-    }
-
-    @GetMapping("/users/{userId}")
-    public User getUser(@PathVariable Long userID){
-        return userService.getUserByID(userID);
-    }
 
     @PostMapping(path = "/addowner", consumes = {"application/json"})
     public String addOwner(@RequestBody User newOwner){

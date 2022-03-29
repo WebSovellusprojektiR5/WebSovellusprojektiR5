@@ -39,7 +39,6 @@ public class UserService {
     }
 
     public User login(String username, String password){
-        User user = userRepo.checkCredentials(username, password);
-        return user;
+        return userRepo.checkCredentials(username, password);
     }
 }
