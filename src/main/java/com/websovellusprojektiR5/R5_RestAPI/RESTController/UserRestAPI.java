@@ -52,7 +52,7 @@ public class UserRestAPI {
         return new ResponseEntity<>(Map.of("token", token), HttpStatus.OK);
     }
 
-    //Modaa tätä tarpeisiin sopivaksi
+    //Modaa tarpeisiin sopivaksi
     @GetMapping(path = "/private")
     public ResponseEntity<User> getPrivate(@RequestHeader("Authorization") String bearer){
         User u = securityService.validateBearerToken(bearer);
