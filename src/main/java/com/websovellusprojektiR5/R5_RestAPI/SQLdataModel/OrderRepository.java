@@ -10,4 +10,7 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "SELECT * FROM orders WHERE idrestaurant = ?1 ORDER BY idorder DESC", nativeQuery = true)
     List<Order> findByRestaurant(Long idrestaurant);
+
+    @Query(value = "SELECT * FROM orders WHERE idperson = ?1 ORDER BY idorder DESC", nativeQuery = true)
+    List<Order> findByCustomer(Long idperson);
 }

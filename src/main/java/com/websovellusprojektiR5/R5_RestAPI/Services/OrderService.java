@@ -19,4 +19,8 @@ public class OrderService {
     public List<Order> getOrdersByRestaurant(Long restaurantID){
         return orderRepo.findByRestaurant(restaurantID);
     }
+
+    public List<Order> getOrdersByCustomer(Long customerID){
+        return orderRepo.findByRestaurant(customerID);
+    }
 }

@@ -36,7 +36,7 @@ class R5RestApiApplicationTests {
 				"username4",
 				"password",
 				0);
-		String respond = userService.addRestaurantOwner(user);
+		String respond = userService.addUser(user);
 		List<User> users = userService.getUsers();
 	}
 

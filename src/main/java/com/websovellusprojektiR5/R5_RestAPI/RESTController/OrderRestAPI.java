@@ -3,9 +3,7 @@ package com.websovellusprojektiR5.R5_RestAPI.RESTController;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Order;
 import com.websovellusprojektiR5.R5_RestAPI.Services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,8 +12,15 @@ public class OrderRestAPI {
     @Autowired
     OrderService orderService;
 
-    @PostMapping("/ordersbyrestaurant")
+    @CrossOrigin
+    @GetMapping("/ordersbyrestaurant")
     public List<Order> getordersbyrestaurant(@RequestParam Long restaurantID){
         return orderService.getOrdersByRestaurant(restaurantID);
+    }
+
+    @CrossOrigin
+    @GetMapping("/ordersbyuser")
+    public List<Order> getordersbycustomer(@RequestParam Long customerID){
+        return orderService.getOrdersByCustomer(customerID);
     }
 }
