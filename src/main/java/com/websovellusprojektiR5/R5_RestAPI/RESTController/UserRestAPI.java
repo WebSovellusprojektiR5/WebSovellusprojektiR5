@@ -17,14 +17,9 @@ public class UserRestAPI {
     @Autowired
     SecurityService securityService;
 
-    @PostMapping(path = "/addowner", consumes = {"application/json"})
-    public String addOwner(@RequestBody User newOwner){
-        return userService.addRestaurantOwner(newOwner);
-    }
-
-    @PostMapping(path = "/adduser", consumes = {"application/json"})
-    public String addCustomer(@RequestBody User newCustomer) {
-        return userService.addCustomer(newCustomer);
+    @PostMapping(path = "/users", consumes = {"application/json"})
+    public String addUser(@RequestBody User newUser){
+        return userService.addUser(newUser);
     }
 
     //@PostMapping(path = "/login")

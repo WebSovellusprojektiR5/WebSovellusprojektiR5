@@ -23,6 +23,10 @@ class R5RestApiApplicationTests {
 	@Test
 	void contextLoads() {
 
+	}
+
+	@Test
+	void addOwner(){
 		user = new User("Testi",
 				"Käyttäjä",
 				"joojoo",
@@ -31,14 +35,20 @@ class R5RestApiApplicationTests {
 				"555666",
 				"username4",
 				"password",
-				1);
-		String respond = userService.addRestaurantOwner(user);
-
+				0);
+		String respond = userService.addUser(user);
 		List<User> users = userService.getUsers();
+	}
 
+	@Test
+	void login(){
 		User testUser = userService.login("username2", "testi");
 		testUser = userService.login("username2", "password");
+	}
 
+	@Test
+	void addRestaurant(){
+		user = userService.login("username2", "password");
 		restaurant = new Restaurant("testirafla",
 				"kaikkea kivaa",
 				"aaa",
@@ -48,11 +58,10 @@ class R5RestApiApplicationTests {
 				"",
 				"Oulu",
 				"792384987",
-				testUser.getId(),
+				user.getId(),
 				1L);
 
-		respond = restaurantService.addRestaurant(restaurant);
+		String respond = restaurantService.addRestaurant(restaurant);
 		List<Restaurant> restaurants = restaurantService.getRestaurants();
-
 	}
 }

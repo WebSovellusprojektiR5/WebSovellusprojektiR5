@@ -27,22 +27,13 @@ public class UserService {
     }
     public User getUserByName(String userName) { return userRepo.findByUsername(userName); }
 
-    public String addRestaurantOwner(User owner){
-        if(userRepo.findByUsername(owner.getUsername()) != null){
+    public String addUser(User user){
+        if(userRepo.findByUsername(user.getUsername()) != null){
             return "Käyttäjänimi on jo olemassa.";
         }
-        owner.setPassword(pwdEncoder.encode(owner.getPassword()));
-        userRepo.save(owner);
-        return "Uusi omistaja luotu";
-    }
-
-    public String addCustomer(User customer){
-        if(userRepo.findByUsername(customer.getUsername()) != null){
-            return "Käyttäjänimi on jo olemassa.";
-        }
-        customer.setPassword(pwdEncoder.encode(customer.getPassword()));
-        userRepo.save(customer);
-        return "Uusi asiakas luotu";
+        user.setPassword(pwdEncoder.encode(user.getPassword()));
+        userRepo.save(user);
+        return "Uusi käyttäjä luotu";
     }
 
     public User login(String username, String password){

@@ -19,7 +19,7 @@ public class RestaurantRestAPI {
         return restaurantService.getRestaurants();
     }
 
-    @PostMapping(path = "/addrestaurant", consumes = {"application/json"})
+    @PostMapping(path = "/restaurants", consumes = {"application/json"})
     public String addRestaurant(@RequestBody Restaurant restaurant){
         return restaurantService.addRestaurant(restaurant);
     }
