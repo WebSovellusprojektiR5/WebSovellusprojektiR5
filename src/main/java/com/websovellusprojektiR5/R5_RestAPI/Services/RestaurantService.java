@@ -1,11 +1,14 @@
 package com.websovellusprojektiR5.R5_RestAPI.Services;
 
+import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.OpeningHours;
+import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.OpeningHoursRepository;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Restaurant;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.sql.Time;
 import java.util.List;
 
 @Service
@@ -13,6 +16,9 @@ public class RestaurantService {
 
     @Autowired
     RestaurantRepository restaurantRepo;
+
+    @Autowired
+    OpeningHoursRepository openRepo;
 
     @PostConstruct
     public List<Restaurant> getRestaurants(){
@@ -22,5 +28,27 @@ public class RestaurantService {
     public String addRestaurant(Restaurant restaurant){
         restaurantRepo.save(restaurant);
         return "Uusi ravintola luotu";
+    }
+
+    public String editRestaurantHours(Long restaurantID, String weekday, int opening_hour, int opening_minute,
+                                      int closing_hour, int closing_minutes){
+        Time opening = new Time((opening_hour - 2) * 3600000 + opening_minute * 60000);
+        Time closing = new Time((closing_hour - 2) * 3600000 + closing_minutes * 60000);
+        OpeningHours hours = openRepo.getRestaurantOpeningHoursByDay(restaurantID, weekday);
+        if(hours == null) {
+            hours = new OpeningHours(weekday, opening, closing, restaurantID);
+            openRepo.save(hours);
+            return weekday + " aukioloajat lisätty";
+        }
+        else{
+            openRepo.deleteById(hours.getId());
+            hours = new OpeningHours(weekday, opening, closing, restaurantID);
+            openRepo.save(hours);
+            return weekday + " aukioloajat päivitetty";
+        }
+    }
+
+    public List<OpeningHours> openingHours(Long restaurantID){
+        return openRepo.getRestaurantOpeningHours(restaurantID);
     }
 }
