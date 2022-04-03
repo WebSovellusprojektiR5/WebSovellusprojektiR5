@@ -19,6 +19,7 @@ public class RestaurantRestAPI {
         return restaurantService.getRestaurants();
     }
 
+    @CrossOrigin
     @PostMapping(path = "/restaurants", consumes = {"application/json"})
     public String addRestaurant(@RequestBody Restaurant restaurant){
         return restaurantService.addRestaurant(restaurant);
