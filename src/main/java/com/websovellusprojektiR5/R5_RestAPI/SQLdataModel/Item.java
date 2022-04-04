@@ -7,7 +7,7 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "iditem", nullable = false)
-    private Long iditem;
+    private Long id;
 
     @Column(name="name")
     private String name;
@@ -39,8 +39,8 @@ public class Item {
     public Item() {
     }
 
-    public Long getIditem() {
-        return iditem;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

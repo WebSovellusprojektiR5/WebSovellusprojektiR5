@@ -1,9 +1,6 @@
 package com.websovellusprojektiR5.R5_RestAPI.Services;
 
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.OpeningHours;
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.OpeningHoursRepository;
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Restaurant;
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.RestaurantRepository;
+import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +13,17 @@ public class RestaurantService {
 
     @Autowired
     RestaurantRepository restaurantRepo;
-
+    @Autowired
+    RestaurantTypeRepository restaurantTypeRepo;
     @Autowired
     OpeningHoursRepository openRepo;
 
     @PostConstruct
     public List<Restaurant> getRestaurants(){
         return restaurantRepo.findAll();
+    }
+    public List<RestaurantType> getRestaurantTypes(){
+        return restaurantTypeRepo.findAll();
     }
 
     public String addRestaurant(Restaurant restaurant){

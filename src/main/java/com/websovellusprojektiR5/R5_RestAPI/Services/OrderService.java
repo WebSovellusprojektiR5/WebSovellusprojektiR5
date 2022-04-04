@@ -1,9 +1,6 @@
 package com.websovellusprojektiR5.R5_RestAPI.Services;
 
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Order;
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.OrderItemsRepository;
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.OrderRepository;
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.UserRepository;
+import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

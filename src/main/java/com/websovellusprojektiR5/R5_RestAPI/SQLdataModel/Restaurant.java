@@ -7,7 +7,8 @@ import javax.persistence.*;
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idrestaurant;
+    @Column(name="idrestaurant")
+    private Long id;
 
     @Column(name="name")
     private String name;
@@ -59,12 +60,8 @@ public class Restaurant {
     public Restaurant() {
     }
 
-    public void setIdrestaurant(Long idrestaurant) {
-        this.idrestaurant = idrestaurant;
-    }
-
-    public Long getIdrestaurant() {
-        return idrestaurant;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

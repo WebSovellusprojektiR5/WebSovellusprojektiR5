@@ -1,7 +1,6 @@
 package com.websovellusprojektiR5.R5_RestAPI.Services;
 
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.User;
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.UserRepository;
+import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.*;
 import com.websovellusprojektiR5.R5_RestAPI.Security.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,13 +12,17 @@ import java.util.List;
 public class UserService {
     @Autowired
     UserRepository userRepo;
-
+    @Autowired
+    UserRoleRepository userRoleRepo;
     @Autowired
     PasswordEncoder pwdEncoder;
 
     @PostConstruct
     public List<User> getUsers(){
         return userRepo.findAll();
+    }
+    public List<UserRole> getUserRoles(){
+        return userRoleRepo.findAll();
     }
 
     public User getUserByID(long userID){
