@@ -27,6 +27,11 @@ public class ItemRestAPI {
     @GetMapping("/categories")
     public List<ItemCategory> getitemcategories() {return itemService.getItemCategories(); }
 
+    @GetMapping("/categoriesbyrestaurant")
+    public List<ItemCategory> getitemcategoriesbyrestaurantid(@RequestParam Long restaurantID) {
+        return itemService.getItemCategoriesByRestaurantID(restaurantID);
+    }
+
     @GetMapping("/itemsbyrestaurant")
     public List<Item> getitemsbyrestaurantid(@RequestParam Long restaurantID) {
         return itemService.getItemsByRestaurantID(restaurantID);

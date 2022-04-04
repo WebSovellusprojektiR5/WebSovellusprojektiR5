@@ -33,7 +33,7 @@ public class ItemService {
         //Collect itemcategory list from categoryids
         List<ItemCategory> cats = new ArrayList<>();
         for(Long i : catids)
-            cats.add((ItemCategory) itemCategoryRepo.findByID(i));
+            cats.add(itemCategoryRepo.findByID(i));
         return  cats;
     }
 
@@ -59,7 +59,7 @@ public class ItemService {
         }
         if(restaurantRepo.findById(item.getIdrestaurant()).orElse(null) == null)
             return "Ravintolaa ei ole olemassa";
-        if(itemCategoryRepo.findByID(item.getIditemCategory()).size() == 0)
+        if(itemCategoryRepo.findByID(item.getIditemCategory()) == null)
             return "Kategoriaa ei ole olemassa!";
 
         itemRepo.save(item);
