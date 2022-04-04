@@ -1,5 +1,7 @@
 package com.websovellusprojektiR5.R5_RestAPI.SQLdataModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -31,6 +33,7 @@ public class User {
     @Column(name="username")
     private String username;
 
+    @JsonIgnore
     @Column(name="pword")
     private String password;
 

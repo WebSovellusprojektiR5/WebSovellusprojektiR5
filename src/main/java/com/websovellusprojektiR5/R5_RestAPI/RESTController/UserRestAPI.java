@@ -1,6 +1,7 @@
 package com.websovellusprojektiR5.R5_RestAPI.RESTController;
 
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.User;
+import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.UserRole;
 import com.websovellusprojektiR5.R5_RestAPI.Security.SecurityService;
 import com.websovellusprojektiR5.R5_RestAPI.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -16,6 +18,11 @@ public class UserRestAPI {
     UserService userService;
     @Autowired
     SecurityService securityService;
+
+    @GetMapping(path = "/users")
+    public List<User> getusers() {return userService.getUsers(); }
+    @GetMapping(path = "/userroles")
+    public List<UserRole> getuserroles() {return userService.getUserRoles(); }
 
     @PostMapping(path = "/users", consumes = {"application/json"})
     public String addUser(@RequestBody User newUser){
