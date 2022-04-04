@@ -30,10 +30,7 @@ public class RestaurantService {
         return "Uusi ravintola luotu";
     }
 
-    public String editRestaurantHours(Long restaurantID, String weekday, int opening_hour, int opening_minute,
-                                      int closing_hour, int closing_minutes){
-        Time opening = new Time((opening_hour - 2) * 3600000 + opening_minute * 60000);
-        Time closing = new Time((closing_hour - 2) * 3600000 + closing_minutes * 60000);
+    public String editRestaurantHours(Long restaurantID, String weekday, Time opening, Time closing){
         OpeningHours hours = openRepo.getRestaurantOpeningHoursByDay(restaurantID, weekday);
         if(hours == null) {
             hours = new OpeningHours(weekday, opening, closing, restaurantID);
