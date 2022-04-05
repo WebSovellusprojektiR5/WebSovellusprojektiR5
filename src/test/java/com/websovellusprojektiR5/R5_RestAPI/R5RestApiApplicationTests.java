@@ -67,8 +67,8 @@ class R5RestApiApplicationTests {
 		List<Restaurant> restaurants = restaurantService.getRestaurants();
 	}
 
-	/*@Test
+	@Test
 	void restaurantOpeningHours(Long restaurantID){
 		List<OpeningHours> openingHours = restaurantService.openingHours(restaurantID);
-	}*/
+	}
 }
