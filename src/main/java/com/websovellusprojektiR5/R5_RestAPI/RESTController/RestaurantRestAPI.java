@@ -27,20 +27,20 @@ public class RestaurantRestAPI {
         return restaurantService.getRestaurantTypes();
     }
 
-    @GetMapping
+    /*@GetMapping
     public List<OpeningHours> gethours(@RequestParam Long restaurantID){
         return restaurantService.openingHours(restaurantID);
-    }
+    }*/
 
     @PostMapping(path = "/restaurants", consumes = {"application/json"})
     public String addRestaurant(@RequestBody Restaurant restaurant){
         return restaurantService.addRestaurant(restaurant);
     }
 
-    @PostMapping(path = "/hours", consumes = "application/json")
+    /*@PostMapping(path = "/hours", consumes = "application/json")
     public String sethours(@RequestBody OpeningHours openingHours){
         return restaurantService.editRestaurantHours(openingHours.getIdrestaurant(), openingHours.getWeekday(),
                 openingHours.getOpening(), openingHours.getClosing());
-    }
+    }*/
 
 }

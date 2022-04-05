@@ -31,6 +31,7 @@ public class RestaurantService {
         return "Uusi ravintola luotu";
     }
 
+    /*
     public String editRestaurantHours(Long restaurantID, String weekday, Time opening, Time closing){
         OpeningHours hours = openRepo.getRestaurantOpeningHoursByDay(restaurantID, weekday);
         if(hours == null) {
@@ -48,5 +49,5 @@ public class RestaurantService {
 
     public List<OpeningHours> openingHours(Long restaurantID){
         return openRepo.getRestaurantOpeningHours(restaurantID);
-    }
+    }*/
 }
