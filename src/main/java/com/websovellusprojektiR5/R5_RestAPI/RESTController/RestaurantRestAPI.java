@@ -27,7 +27,7 @@ public class RestaurantRestAPI {
         return restaurantService.getRestaurantTypes();
     }
 
-    @GetMapping
+    @GetMapping("/hours")
     public List<OpeningHours> gethours(@RequestParam Long restaurantID){
         return restaurantService.openingHours(restaurantID);
     }
@@ -42,5 +42,4 @@ public class RestaurantRestAPI {
         return restaurantService.editRestaurantHours(openingHours.getIdrestaurant(), openingHours.getWeekday(),
                 openingHours.getOpening(), openingHours.getClosing());
     }
-
 }
