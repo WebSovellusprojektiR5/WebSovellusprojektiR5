@@ -3,6 +3,7 @@ package com.websovellusprojektiR5.R5_RestAPI.Services;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class ItemService {
     ItemCategoryRepository itemCategoryRepo;
     @Autowired
     RestaurantRepository restaurantRepo;
+    @Autowired
+    ImageService imageService;
 
     @PostConstruct
     public List<Item> getItems(){
@@ -64,5 +67,23 @@ public class ItemService {
 
         itemRepo.save(item);
         return "";
+    }
+
+    public String editItemImage(Long id, MultipartFile mpf) {
+        if (itemRepo.findById(id).orElse(null) == null) return "Item ei löydy!";
+        String imageURL = imageService.UploadImage(mpf);
+        if (imageURL == "") return "Kuvan lataaminen pilveen epäonnistui!";
+        if (itemRepo.updateItemImage(id, imageURL) > 0)
+            return "Kuva lisätty OK! URL: " + imageURL;
+        else return "Kuvan lisääminen kantaan epäonnistui!";
+    }
+
+    public String editItemCategoryImage(Long id, MultipartFile mpf) {
+        if (itemCategoryRepo.findById(id).orElse(null) == null) return "Item kategoriaa ei löydy!";
+        String imageURL = imageService.UploadImage(mpf);
+        if (imageURL == "") return "Kuvan lataaminen pilveen epäonnistui!";
+        if (itemCategoryRepo.updateItemCategoryImage(id, imageURL) > 0)
+            return "Kuva lisätty OK! URL: " + imageURL;
+        else return "Kuvan lisääminen kantaan epäonnistui!";
     }
 }
