@@ -1,6 +1,23 @@
 import React from 'react'
+import {useState} from 'react';
 
-export default function Navbar() {
+export default function Navbar(props) {
+
+    const VIEWS = {
+        RESTAURANTS : "restaurants",
+        ITEMS : "items",
+        SIGNIN : "signin",
+        SIGNUP : "signup",
+        ORDERHISTORY : "orderhistory"
+    }
+
+    //State Hooks
+    const[searchValue, setSearchValue] = useState("");
+
+    const handleSearchKeyDown = (event) => {
+        if (event.key === 'Enter') props.onSearchClicked(searchValue);
+    }
+
     return (
     <div className="container">
        <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -12,13 +29,13 @@ export default function Navbar() {
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
   <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-          <a class="nav-link" href="#">Home</a>
+          <a class="nav-link" href="#" onClick={() => props.onNavBtnClicked(VIEWS.RESTAURANTS)}>Home</a>
       </li>
       <li class="nav-item">
-          <a class="nav-link" href="#">Sign Up</a>
+          <a class="nav-link" href="#" onClick={() => props.onNavBtnClicked(VIEWS.SIGNUP)}>Sign Up</a>
       </li>
       <li class="nav-item">
-          <a class="nav-link" href="#">Sign In</a>
+          <a class="nav-link" href="#" onClick={() => props.onNavBtnClicked(VIEWS.SIGNIN)}>Sign In</a>
       </li>
       <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -37,10 +54,10 @@ export default function Navbar() {
           <a class="nav-link" href="#">Shopping Cart</a>
       </li>
   </ul>
-      <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"></input>
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+      <div class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value ={searchValue} onChange={(event) => setSearchValue(event.target.value)} onKeyDown={handleSearchKeyDown}></input>
+          <button class="btn btn-outline-success my-2 my-sm-0" onClick={() => props.onSearchClicked(searchValue)}>Search</button>
+      </div>
   </div>
 </nav>
     </div>
