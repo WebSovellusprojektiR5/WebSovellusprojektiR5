@@ -2,7 +2,7 @@ import './App.css';
 import RestaurantsView from './components/RestaurantsView';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
-
+import Navbar from './components/Navbar';
 
 function App() {
 
@@ -17,10 +17,13 @@ function App() {
   }, []);
 
   return (
-    <div className="pageContainer">
-    {
-        restaurants.map(i => <RestaurantsView item={i} />)
-    }
+    <div>
+    <Navbar/>
+        <div className="pageContainer">
+        {
+            restaurants.map(i => <RestaurantsView item={i} />)
+        }
+        </div>
     </div>
   );
 }
