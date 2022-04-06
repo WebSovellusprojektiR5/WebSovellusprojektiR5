@@ -24,3 +24,14 @@ img {
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+.containerTwo{
+  align-items: center;
+  width: 800px;
+  margin: auto;
+  margin-top: 20px;
+  padding: 30px; 
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 0 15px 5px rgba(68, 0, 255, 0.05);
+  border-radius: 5px;
+}

@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function SignIn(props) {
     return (
-        <div class="container">
+        <div class="containerTwo">
         <form>
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">Username</label>

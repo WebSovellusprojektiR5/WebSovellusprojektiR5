@@ -1,6 +1,31 @@
 import React from 'react'
 
+<<<<<<< Updated upstream
 export default function Navbar() {
+=======
+export default function Navbar(props) {
+
+        //VIEWS constant (ENUM)
+    const VIEWS = {
+        RESTAURANTS : "restaurants",
+        ITEMS : "items",
+        SIGNIN : "signin",
+        SIGNUP : "signup",
+        ORDERHISTORY : "orderhistory",
+        NEWMENUITEM : "newmenuitem",
+        DELETEACCOUNT : "deleteaccount"
+    }
+
+    //State Hooks
+    const[searchValue, setSearchValue] = useState("");
+
+    //Search key clicked
+    const onSearchKeyDown = (event) => {
+        if (event.key === 'Enter') props.onSearchBtnClicked(searchValue);
+    }
+
+    //Return NavBar
+>>>>>>> Stashed changes
     return (
     <div className="container">
        <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -23,17 +48,22 @@ export default function Navbar() {
            <a class="dropdown-item" href="#">Order history</a>
            <a class="dropdown-item" href="#">Personal info</a>
            <a class="dropdown-item" href="#">Restaurant Info</a>
-           <a class="dropdown-item" href="#">Create Menu Item</a>
+           <a class="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWMENUITEM)}>Create Menu Item</a>
            <div class="dropdown-divider"></div>
-           <a class="dropdown-item" href="#">Delete account</a>
+           <a class="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.DELETEACCOUNT)}>Delete account</a>
           </div>
       </li>
       
   </ul>
   
       <div class="form-inline my-2 my-lg-0 mr-auto">
+<<<<<<< Updated upstream
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"></input>
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+=======
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value ={searchValue} onChange={(event) => setSearchValue(event.target.value)} onKeyDown={onSearchKeyDown}></input>
+          <button class="btn btn-outline-primary my-2 my-sm-0" onClick={() => props.onSearchBtnClicked(searchValue)}>Search</button>
+>>>>>>> Stashed changes
       </div>
       <ul class="navbar-nav">
         <li class="nav-item">
