@@ -54,4 +54,6 @@ public class ItemRestAPI {
         if (status == "") return new ResponseEntity<> (HttpStatus.OK);
         else return new ResponseEntity<>(Map.of("message", status), HttpStatus.NOT_ACCEPTABLE);
     }
+
+    //Kuvan lisääminen vielä puuttuu.. pitäisikö sisällyttää addItem ja addItemCatagoryyn?
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Time;
 import java.util.List;
@@ -41,5 +42,10 @@ public class RestaurantRestAPI {
     public String sethours(@RequestBody OpeningHours openingHours){
         return restaurantService.editRestaurantHours(openingHours.getIdrestaurant(), openingHours.getWeekday(),
                 openingHours.getOpening(), openingHours.getClosing());
+    }
+
+    @PutMapping(path = "/restaurantimage")
+    public String editRestaurantimage(@RequestParam Long restaurantID, @RequestParam("file")MultipartFile mpf){
+        return restaurantService.editRestaurantImage(restaurantID, mpf);
     }
 }
