@@ -31,11 +31,10 @@ function App() {
   })
 
 
-  //First: Get restaurants
+  //on first run: Get restaurants
   useEffect(() => {
     axios.get('https://webfoodr5.herokuapp.com/restaurants')
     .then(response => {
-      //console.log(response.data);
       setRestaurants(response.data);
       setfilteredRestaurants(response.data);
     })
@@ -47,7 +46,7 @@ function App() {
   }
 
   //NavBar Navigation button clicked
-  const NavBtnClicked = (view) => {
+  const NavItemClicked = (view) => {
     let newStateVars=[stateVars];
     newStateVars.viewState = view;
     setStateVars(newStateVars);
@@ -56,7 +55,7 @@ function App() {
   //Return Single-Page application
   return (
     <div>
-      <Navbar onNavBtnClicked={NavBtnClicked} onSearchClicked={DoSearch}/>
+      <Navbar onNavItemClicked={NavItemClicked} onSearchBtnClicked={DoSearch}/>
       { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn/> : <></> }
       { stateVars.viewState === VIEWS.SIGNUP ? <SignUp/> : <></> }
