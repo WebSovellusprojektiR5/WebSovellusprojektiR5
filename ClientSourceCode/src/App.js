@@ -6,6 +6,8 @@ import Navbar from './components/Navbar';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Categories from './components/Categories';
+import NewMenuItem from './components/NewMenuItem';
+import DeleteAccount from './components/DeleteAccount';
 
 function App() {
 
@@ -18,7 +20,9 @@ function App() {
     ITEMS : "items",
     SIGNIN : "signin",
     SIGNUP : "signup",
-    ORDERHISTORY : "orderhistory"
+    ORDERHISTORY : "orderhistory",
+    NEWMENUITEM : "newmenuitem",
+    DELETEACCOUNT : "deleteaccount"
   }
 
   //Application state variables
@@ -57,6 +61,8 @@ function App() {
     <div>
       <Navbar onNavItemClicked={NavItemClicked} onSearchBtnClicked={DoSearch}/>
       { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories/> : <></> }
+      { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
+      { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn/> : <></> }
       { stateVars.viewState === VIEWS.SIGNUP ? <SignUp/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?

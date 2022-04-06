@@ -9,7 +9,9 @@ export default function Navbar(props) {
         ITEMS : "items",
         SIGNIN : "signin",
         SIGNUP : "signup",
-        ORDERHISTORY : "orderhistory"
+        ORDERHISTORY : "orderhistory",
+        NEWMENUITEM : "newmenuitem",
+        DELETEACCOUNT : "deleteaccount"
     }
 
     //State Hooks
@@ -42,9 +44,9 @@ export default function Navbar(props) {
            <a class="dropdown-item" href="#">Order history</a>
            <a class="dropdown-item" href="#">Personal info</a>
            <a class="dropdown-item" href="#">Restaurant Info</a>
-           <a class="dropdown-item" href="#">Create Menu Item</a>
+           <a class="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWMENUITEM)}>Create Menu Item</a>
            <div class="dropdown-divider"></div>
-           <a class="dropdown-item" href="#">Delete account</a>
+           <a class="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.DELETEACCOUNT)}>Delete account</a>
           </div>
       </li>
       
