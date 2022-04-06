@@ -15,7 +15,10 @@ export default function Navbar() {
           <a class="nav-link" href="#">Home</a>
       </li>
       <li class="nav-item">
-          <a class="nav-link" href="#">Categories</a>
+          <a class="nav-link" href="#">Sign Up</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="#">Sign In</a>
       </li>
       <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -24,6 +27,8 @@ export default function Navbar() {
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
            <a class="dropdown-item" href="#">Order history</a>
            <a class="dropdown-item" href="#">Personal info</a>
+           <a class="dropdown-item" href="#">Restaurant Info</a>
+           <a class="dropdown-item" href="#">Create Menu Item</a>
            <div class="dropdown-divider"></div>
            <a class="dropdown-item" href="#">Delete account</a>
           </div>
