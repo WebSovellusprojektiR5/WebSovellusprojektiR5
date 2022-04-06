@@ -14,12 +14,7 @@ export default function Navbar() {
       <li class="nav-item active">
           <a class="nav-link" href="#">Home</a>
       </li>
-      <li class="nav-item">
-          <a class="nav-link" href="#">Sign Up</a>
-      </li>
-      <li class="nav-item">
-          <a class="nav-link" href="#">Sign In</a>
-      </li>
+      
       <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Profile
@@ -33,14 +28,24 @@ export default function Navbar() {
            <a class="dropdown-item" href="#">Delete account</a>
           </div>
       </li>
-      <li class="nav-item">
-          <a class="nav-link" href="#">Shopping Cart</a>
-      </li>
+      
   </ul>
-      <form class="form-inline my-2 my-lg-0">
+  
+      <div class="form-inline my-2 my-lg-0 mr-auto">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"></input>
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+      </div>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Shopping Cart</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Sign Up</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="#">Sign In</a>
+      </li>
+    </ul>
   </div>
 </nav>
     </div>

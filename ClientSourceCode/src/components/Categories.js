@@ -3,13 +3,35 @@ import React from 'react'
 export default function SignIn(props) {
     return (
         <div class="container">
-            <div class="d-flex flex-row bd-highlight mb-3">
-            <div class="p-2 bd-highlight">Fine Dining</div>
-            <div class="p-2 bd-highlight">Fast Food</div>
-            <div class="p-2 bd-highlight">Fast Casual</div>
-            <div class="p-2 bd-highlight">Buffet</div>
-            <div class="p-2 bd-highlight">Casual Dining</div>
-            </div>
-        </div>
+        <ul class="nav justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Buffet</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Fast Food</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Fast Casual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Casual Dining</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Fine Dining</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">€</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">€€</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">€€€</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">€€€€</a>
+                </li>
+        </ul>
+     </div>
   )
 }
