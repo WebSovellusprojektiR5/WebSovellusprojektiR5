@@ -34,12 +34,6 @@ export default function Navbar(props) {
       <li class="nav-item active">
           <a class="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.RESTAURANTS)}>Home</a>
       </li>
-      <li class="nav-item">
-          <a class="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.SIGNUP)}>Sign Up</a>
-      </li>
-      <li class="nav-item">
-          <a class="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.SIGNIN)}>Sign In</a>
-      </li>
       <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Profile
@@ -53,14 +47,23 @@ export default function Navbar(props) {
            <a class="dropdown-item" href="#">Delete account</a>
           </div>
       </li>
-      <li class="nav-item">
-          <a class="nav-link" href="#">Shopping Cart</a>
-      </li>
+      
   </ul>
-      <div class="form-inline my-2 my-lg-0">
+      <div class="form-inline my-2 my-lg-0 mr-auto">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value ={searchValue} onChange={(event) => setSearchValue(event.target.value)} onKeyDown={onSearchKeyDown}></input>
           <button class="btn btn-outline-success my-2 my-sm-0" onClick={() => props.onSearchBtnClicked(searchValue)}>Search</button>
       </div>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Shopping Cart</a>
+        </li>
+      <li class="nav-item">
+          <a class="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.SIGNUP)}>Sign Up</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.SIGNIN)}>Sign In</a>
+      </li>
+    </ul>
   </div>
 </nav>
     </div>
