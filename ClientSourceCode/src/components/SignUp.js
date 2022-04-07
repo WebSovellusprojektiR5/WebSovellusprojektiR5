@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function SignUp(props) {
     return (
-    <div class="container">
+    <div class="containerTwo">
         <form class="row g-3">
             <div class="col-md-6">
                 <label for="inputEmail4" class="form-label">First Name</label>
