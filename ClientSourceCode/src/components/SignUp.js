@@ -1,9 +1,15 @@
 import React from 'react'
 
 export default function SignUp(props) {
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        props.onSubmitBtnClicked(e.target);
+    }
+
     return (
     <div class="containerTwo">
-        <form class="row g-3">
+        <form class="row g-3" onSubmit = {handleSubmit}>
             <div class="col-md-6">
                 <label for="inputEmail4" class="form-label">First Name</label>
                 <input type="email" class="form-control" id="inputFirstName"/>

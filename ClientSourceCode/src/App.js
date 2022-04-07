@@ -56,6 +56,12 @@ function App() {
     setStateVars(newStateVars);
   }
 
+  //Signup Submit button clicked
+  const SignupBtnClicked = (formdata) => {
+    //test
+    console.log(formdata["inputFirstName"].value);
+  }
+
   //Return Single-Page application
   return (
     <div>
@@ -64,7 +70,7 @@ function App() {
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn/> : <></> }
-      { stateVars.viewState === VIEWS.SIGNUP ? <SignUp/> : <></> }
+      { stateVars.viewState === VIEWS.SIGNUP ? <SignUp onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?
         <div className="pageContainer">
         {
