@@ -12,7 +12,10 @@ import DeleteAccount from './components/DeleteAccount';
 function App() {
 
   const [restaurants, setRestaurants] = useState([]);
-  const [filteredrestaurants, setfilteredRestaurants] = useState([]);
+  const [filteredRestaurants, setfilteredRestaurants] = useState([]);
+  const [restaurantTypes, setRestaurantTypes] = useState([]);
+  const [userRoles, setUserRoles] = useState([]);
+  const [APIresponse, setAPIresponse] = useState("");
   
   //VIEWS constant (ENUM)
   const VIEWS = {
@@ -35,40 +38,70 @@ function App() {
   })
 
 
-  //on first run: Get restaurants
+  //on first run: GET restaurants, restauranttypes and userroles
   useEffect(() => {
     axios.get('https://webfoodr5.herokuapp.com/restaurants')
     .then(response => {
       setRestaurants(response.data);
       setfilteredRestaurants(response.data);
-    })
+    });
+    axios.get('https://webfoodr5.herokuapp.com/restauranttypes')
+    .then(response => {
+      setRestaurantTypes(response.data);
+    });
+    axios.get('https://webfoodr5.herokuapp.com/userroles')
+    .then(response => {
+      setUserRoles(response.data);
+    });
   }, []);
 
-  //NavBar Search Button Clicked
+  //NavBar Search Button Clicked: Update filteredRestaurants object
   const DoSearch = (text) => {
     setfilteredRestaurants(restaurants.filter(n => n.name.toLowerCase().includes(text.toLowerCase())));
   }
 
-  //NavBar Navigation button clicked
+  //NavBar Navigation button clicked : Update stateVars.viewState
   const NavItemClicked = (view) => {
     let newStateVars=[stateVars];
     newStateVars.viewState = view;
-    setStateVars(newStateVars);
+    setStateVars(newStateVars); 
+  }
+
+  //Signup Submit button clicked : POST new user
+  const SignupBtnClicked = (formdata) => {
+    let city = formdata["inputZip"].value == "" ? formdata["inputCity"].value : formdata["inputZip"].value + ' ' + formdata["inputCity"].value;
+    let jsonBody = {
+      "firstname" : formdata["inputFirstName"].value,
+      "lastname" : formdata["inputLastName"].value,
+      "address1" : formdata["inputAddress1"].value,
+      "address2" : formdata["inputAddress2"].value,
+      "city" : city,
+      "phone" : formdata["inputPhone"].value,
+      "username" : formdata["inputUserName"].value,
+      "password" : formdata["inputPassword1"].value,
+      "idrole" : formdata["selectRole"].value
+    };
+
+    axios.post('https://webfoodr5.herokuapp.com/users', jsonBody)
+    .then(response => {setAPIresponse(response.data.message)})
+    .catch(error => {setAPIresponse(error.response.data.message)});
+    //Wait 7 seconds and change VIEW back to restaurants 
+    setTimeout(() => NavItemClicked(VIEWS.RESTAURANTS), 7000);
   }
 
   //Return Single-Page application
   return (
     <div>
       <Navbar onNavItemClicked={NavItemClicked} onSearchBtnClicked={DoSearch}/>
-      { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories/> : <></> }
+      { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes}/> : <></> }
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn/> : <></> }
-      { stateVars.viewState === VIEWS.SIGNUP ? <SignUp/> : <></> }
+      { stateVars.viewState === VIEWS.SIGNUP ? <SignUp messaging={APIresponse} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?
         <div className="pageContainer">
         {
-            filteredrestaurants.map(i => <RestaurantsView item={i} />)
+            filteredRestaurants.map(i => <RestaurantsView key={i.id} item={i} />)
         }
         </div> : <></> 
       }

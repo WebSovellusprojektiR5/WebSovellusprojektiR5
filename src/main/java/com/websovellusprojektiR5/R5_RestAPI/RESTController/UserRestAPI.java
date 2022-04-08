@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+@CrossOrigin
 @RestController
 public class UserRestAPI {
     @Autowired
@@ -25,8 +27,10 @@ public class UserRestAPI {
     public List<UserRole> getuserroles() {return userService.getUserRoles(); }
 
     @PostMapping(path = "/users", consumes = {"application/json"})
-    public String addUser(@RequestBody User newUser){
-        return userService.addUser(newUser);
+    public ResponseEntity<Map<String, String>> addUser(@RequestBody User newUser){
+        String ret = userService.addUser(newUser);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
     }
 
     //@PostMapping(path = "/login")
