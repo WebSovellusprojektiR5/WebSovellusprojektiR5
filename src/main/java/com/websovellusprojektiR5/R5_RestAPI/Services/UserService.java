@@ -32,11 +32,11 @@ public class UserService {
 
     public String addUser(User user){
         if(userRepo.findByUsername(user.getUsername()) != null){
-            return "Käyttäjänimi on jo olemassa.";
+            return "Error: User already exists!";
         }
         user.setPassword(pwdEncoder.encode(user.getPassword()));
         userRepo.save(user);
-        return "Uusi käyttäjä luotu";
+        return "New user created OK";
     }
 
     public User login(String username, String password){
