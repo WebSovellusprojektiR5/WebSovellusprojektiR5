@@ -8,6 +8,9 @@ import SignUp from './components/SignUp';
 import Categories from './components/Categories';
 import NewMenuItem from './components/NewMenuItem';
 import DeleteAccount from './components/DeleteAccount';
+import PersonalInfo from './components/PersonalInfo';
+import RestaurantInfo from './components/RestaurantInfo';
+import NewRestaurant from './components/NewRestaurant';
 
 function App() {
 
@@ -25,7 +28,10 @@ function App() {
     SIGNUP : "signup",
     ORDERHISTORY : "orderhistory",
     NEWMENUITEM : "newmenuitem",
-    DELETEACCOUNT : "deleteaccount"
+    DELETEACCOUNT : "deleteaccount",
+    PERSONALINFO : "personalinfo",
+    RESTAURANTINFO : "restaurantinfo",
+    NEWRESTAURANT : "newrestaurant"
   }
 
   //Application state variables
@@ -96,6 +102,9 @@ function App() {
       { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes}/> : <></> }
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
+      { stateVars.viewState === VIEWS.PERSONALINFO? <PersonalInfo/> : <></> }
+      { stateVars.viewState === VIEWS.RESTAURANTINFO? <RestaurantInfo/> : <></> }
+      { stateVars.viewState === VIEWS.NEWRESTAURANT? <NewRestaurant/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn/> : <></> }
       { stateVars.viewState === VIEWS.SIGNUP ? <SignUp messaging={APIresponse} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?
