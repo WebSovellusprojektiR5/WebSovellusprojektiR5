@@ -16,13 +16,10 @@ export default function NewMenuItem(props) {
                 <label for="inputPassword4" class="form-label">Price</label>
                 <input type="password" class="form-control" id="inputPrice"/>
             </div>
+           
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Categories</label>
                 <input type="password" class="form-control" id="inputCategories"/>
-            </div>
-            <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Price Range</label>
-                <input type="password" class="form-control" id="inputPriceRange"/>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Add</button>

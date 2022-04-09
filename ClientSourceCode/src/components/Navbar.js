@@ -11,7 +11,10 @@ export default function Navbar(props) {
         SIGNUP : "signup",
         ORDERHISTORY : "orderhistory",
         NEWMENUITEM : "newmenuitem",
-        DELETEACCOUNT : "deleteaccount"
+        DELETEACCOUNT : "deleteaccount",
+        PERSONALINFO : "personalinfo",
+        RESTAURANTINFO : "restaurantinfo",
+        NEWRESTAURANT : "newrestaurant"
     }
 
     //State Hooks
@@ -41,10 +44,10 @@ export default function Navbar(props) {
           Profile
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-           <a class="dropdown-item" href="#">Order history</a>
-           <a class="dropdown-item" href="#">Personal info</a>
-           <a class="dropdown-item" href="#">Restaurant Info</a>
+           <a class="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.PERSONALINFO)}>Personal info</a>
+           <a class="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.RESTAURANTINFO)}>Restaurant Info</a>
            <a class="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWMENUITEM)}>Create Menu Item</a>
+           <a class="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWRESTAURANT)}>Create Restaurant</a>
            <div class="dropdown-divider"></div>
            <a class="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.DELETEACCOUNT)}>Delete account</a>
           </div>
@@ -53,7 +56,7 @@ export default function Navbar(props) {
   </ul>
       <div class="form-inline my-2 my-lg-0 mr-auto">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value ={searchValue} onChange={(event) => setSearchValue(event.target.value)} onKeyDown={onSearchKeyDown}></input>
-          <button class="btn btn-outline-success my-2 my-sm-0" onClick={() => props.onSearchBtnClicked(searchValue)}>Search</button>
+          <button class="btn btn-outline-primary my-2 my-sm-0" onClick={() => props.onSearchBtnClicked(searchValue)}>Search</button>
       </div>
       <ul class="navbar-nav">
         <li class="nav-item">
