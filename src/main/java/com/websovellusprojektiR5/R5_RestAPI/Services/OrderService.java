@@ -12,6 +12,12 @@ public class OrderService {
     OrderRepository orderRepo;
     @Autowired
     OrderItemsRepository orderItemsRepo;
+    @Autowired
+    ItemRepository itemRepo;
+    @Autowired
+    RestaurantRepository restaurantRepo;
+    @Autowired
+    UserRepository userRepo;
 
     public List<Order> getOrdersByRestaurant(Long restaurantID){
         return orderRepo.findByRestaurant(restaurantID);
@@ -19,5 +25,25 @@ public class OrderService {
 
     public List<Order> getOrdersByCustomer(Long customerID){
         return orderRepo.findByRestaurant(customerID);
+    }
+
+    public String addItemToOrder(OrderItems orderItem){
+        if(orderRepo.findById(orderItem.getIdorder()).orElse(null) == null)
+            return "Tilausta ei ole olemassa";
+        if(itemRepo.findById(orderItem.getIditem()) == null)
+            return "Annosta ei ole olemassa";
+
+        orderItemsRepo.save(orderItem);
+        return "";
+    }
+
+    public String addOrder(Order order){
+        if(restaurantRepo.findById(order.getIdrestaurant()).orElse(null) == null)
+            return "Ravintolaa ei ole olemassa";
+        if(userRepo.findById(order.getIdperson()) == null)
+            return "Käyttäjää ei ole olemassa";
+
+        orderRepo.save(order);
+        return "";
     }
 }
