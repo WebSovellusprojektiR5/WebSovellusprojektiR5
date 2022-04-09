@@ -18,7 +18,15 @@ function App() {
   const [filteredRestaurants, setfilteredRestaurants] = useState([]);
   const [restaurantTypes, setRestaurantTypes] = useState([]);
   const [userRoles, setUserRoles] = useState([]);
-  const [APIresponse, setAPIresponse] = useState("");
+  const [message, setMessage] = useState("");
+  const [msgClass, setMsgClass] = useState("alert alert-primary");
+
+  //Set top bar message text (not visible if empty or restaurant view active) and Bootstrap style
+  //Example BootStrap styles: alert alert-primary, alert alert-danger, alert alert-success
+  const showMessageBar = (msg, msgclass = "alert alert-primary") => {    
+      setMsgClass(msgclass);  
+      setMessage(msg);
+  }
   
   //VIEWS constant (ENUM)
   const VIEWS = {
@@ -75,7 +83,7 @@ function App() {
 
   //Signup Submit button clicked : POST new user
   const SignupBtnClicked = (formdata) => {
-    let city = formdata["inputZip"].value == "" ? formdata["inputCity"].value : formdata["inputZip"].value + ' ' + formdata["inputCity"].value;
+    let city = formdata["inputZip"].value === "" ? formdata["inputCity"].value : formdata["inputZip"].value + ' ' + formdata["inputCity"].value;
     let jsonBody = {
       "firstname" : formdata["inputFirstName"].value,
       "lastname" : formdata["inputLastName"].value,
@@ -89,24 +97,28 @@ function App() {
     };
 
     axios.post('https://webfoodr5.herokuapp.com/users', jsonBody)
-    .then(response => {setAPIresponse(response.data.message)})
-    .catch(error => {setAPIresponse(error.response.data.message)});
-    //Wait 7 seconds and change VIEW back to restaurants 
-    setTimeout(() => NavItemClicked(VIEWS.RESTAURANTS), 7000);
+    .then(response => {
+      showMessageBar(response.data.message, "alert alert-success")
+      setTimeout(() => { showMessageBar(""); NavItemClicked(VIEWS.SIGNIN); }, 5000);
+    }).catch(error => {
+      showMessageBar(error.response.data.message, "alert alert-danger")
+      setTimeout(() => showMessageBar("Enter valid data to each field"), 7000);
+    });
   }
 
   //Return Single-Page application
   return (
     <div>
       <Navbar onNavItemClicked={NavItemClicked} onSearchBtnClicked={DoSearch}/>
-      { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes}/> : <></> }
+      { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes}/> : 
+        message !== "" ? <div class="messageArea"><div class={msgClass} role="alert">{message}</div></div> : <div class="messageArea"/>}
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
       { stateVars.viewState === VIEWS.PERSONALINFO? <PersonalInfo/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO? <RestaurantInfo/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT? <NewRestaurant/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn/> : <></> }
-      { stateVars.viewState === VIEWS.SIGNUP ? <SignUp messaging={APIresponse} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
+      { stateVars.viewState === VIEWS.SIGNUP ? <SignUp showMessage={showMessageBar} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?
         <div className="pageContainer">
         {

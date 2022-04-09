@@ -1,34 +1,26 @@
 import React from 'react'
-import {useState} from 'react';
+import {useEffect} from 'react';
 
 export default function SignUp(props) {
-
-    const [message, setMessage] = useState("");
-    const [msgClass, setMsgClass] = useState("alert alert-danger");
-
-    //Set message text for 5 seconds and clear it
-    const showMessage = (msg) => {   
-        msg.toString().toLowerCase().includes("error") ? setMsgClass("alert alert-danger") : setMsgClass("alert alert-success");     
-        setMessage(msg);
-        setTimeout(() => setMessage(""), 5000);
-    }
 
     //Form submit button pressed : Validate password and fire app.js onSubmitBtnClicked
     const handleSubmit = (e) => {
         e.preventDefault();
         //Verify password
-        if(e.target["inputPassword1"].value == e.target["inputPassword2"].value && e.target["inputPassword1"].value.length > 8) {
+        if(e.target["inputPassword1"].value === e.target["inputPassword2"].value && e.target["inputPassword1"].value.length > 8) {
             props.onSubmitBtnClicked(e.target);
-            showMessage(props.messaging);
         }   
         else {
             e.target["inputPassword1"].value = "";
             e.target["inputPassword2"].value = "";
-            showMessage("Error: Password must be at least 9 characters length and match with the confirm password!");
+            props.showMessage("Passwords do not match or password doesn't fill the minimum requirement (9 chars length)", "alert alert-danger");
+            setTimeout(() => props.showMessage("Enter valid data to each field"), 7000);
         }
     }
 
     //Return Signup page
+    useEffect(() => { props.showMessage("Enter valid data to each field")}, []);
+
     return (
     <div class="containerTwo">
         <form class="row g-3" onSubmit = {handleSubmit}>
@@ -85,8 +77,6 @@ export default function SignUp(props) {
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </div>
         </form>
-        <br/>
-        {message != "" ? <div class={msgClass} role="alert">{message}</div> : <></>}
       </div>
   )
 }
