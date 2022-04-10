@@ -42,7 +42,7 @@ public class SecurityService {
 
     public String createToken (User u) {
         Algorithm alg = Algorithm.HMAC256(jwtSecret);
-        return JWT.create().withSubject(u.getUsername()).withClaim("role", u.getIdrole()).sign(alg);
+        return JWT.create().withSubject(u.getUsername()).withClaim("roleid", u.getIdrole()).withClaim("userid", u.getId()).sign(alg);
     }
 
     public User validateBearerToken(String bearerHeader){

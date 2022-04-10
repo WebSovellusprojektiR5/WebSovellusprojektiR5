@@ -2,27 +2,27 @@ import React from 'react'
 
 export default function NewMenuItem(props) {
     return (
-    <div class="containerTwo">
-        <form class="row g-3">
-            <div class="col-md-6">
-                <label for="inputEmail4" class="form-label">Name</label>
-                <input type="email" class="form-control" id="inputItemName"/>
+    <div className="containerTwo">
+        <form className="row g-3">
+            <div className="col-md-6">
+                <label htmlFor="inputEmail4" className="form-label">Name</label>
+                <input type="email" className="form-control" id="inputItemName"/>
             </div>
-            <div class="form-group">
-                <label for="exampleFormControlFile1">Import Image</label>
-                <input type="file" class="form-control-file" id="ItemImage"/>
+            <div className="form-group">
+                <label htmlFor="exampleFormControlFile1">Import Image</label>
+                <input type="file" className="form-control-file" id="ItemImage"/>
             </div>
-            <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Price</label>
-                <input type="password" class="form-control" id="inputPrice"/>
+            <div className="col-md-6">
+                <label htmlFor="inputPassword4" className="form-label">Price</label>
+                <input type="password" className="form-control" id="inputPrice"/>
             </div>
            
-            <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Categories</label>
-                <input type="password" class="form-control" id="inputCategories"/>
+            <div className="col-md-6">
+                <label htmlFor="inputPassword4" className="form-label">Categories</label>
+                <input type="password" className="form-control" id="inputCategories"/>
             </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">Add</button>
+            <div className="col-12">
+                <button type="submit" className="btn btn-primary">Add</button>
             </div>
         </form>
       </div>

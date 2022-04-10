@@ -42,10 +42,8 @@ public class UserRestAPI {
     public ResponseEntity<Map<String, String>> loginBasic(@RequestHeader("Authorization") String basicAuthHeader){
 
         String token = securityService.checkBasicAuthentication(basicAuthHeader);
-        if(token == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity<>(Map.of("token", token), HttpStatus.OK);
+        if(token == null) return new ResponseEntity<>(Map.of("message", "Unauthorized"), HttpStatus.UNAUTHORIZED);
+        else return new ResponseEntity<>(Map.of("token", token), HttpStatus.OK);
     }
 
     @PostMapping(path = "/login")
