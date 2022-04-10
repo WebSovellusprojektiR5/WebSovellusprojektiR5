@@ -25,8 +25,8 @@ public class UserService {
         return userRoleRepo.findAll();
     }
 
-    public User getUserByID(long userID){
-        return userRepo.getById(userID);
+    public User getUserByID(Long userID){
+        return userRepo.findByID(userID);
     }
     public User getUserByName(String userName) { return userRepo.findByUsername(userName); }
 

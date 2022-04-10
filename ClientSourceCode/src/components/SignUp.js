@@ -65,7 +65,7 @@ export default function SignUp(props) {
             </div>
             <div className="col-md-2">
                 <label htmlFor="inputZip" className="form-label">Zip</label>
-                <input type="text" className="form-control" id="inputZip"/>
+                <input type="text" className="form-control" id="inputZip" required/>
             </div>
             <div className="col-12">
                 <label htmlFor="RoleSelect" className="form-label">Choose Role</label>

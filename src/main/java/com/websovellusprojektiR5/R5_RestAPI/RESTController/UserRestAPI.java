@@ -1,5 +1,6 @@
 package com.websovellusprojektiR5.R5_RestAPI.RESTController;
 
+import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.ItemCategory;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.User;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.UserRole;
 import com.websovellusprojektiR5.R5_RestAPI.Security.SecurityService;
@@ -23,6 +24,8 @@ public class UserRestAPI {
 
     @GetMapping(path = "/users")
     public List<User> getusers() {return userService.getUsers(); }
+    @GetMapping(path = "/user")
+    public User getuser(@RequestParam Long userID) {return userService.getUserByID(userID); }
     @GetMapping(path = "/userroles")
     public List<UserRole> getuserroles() {return userService.getUserRoles(); }
 

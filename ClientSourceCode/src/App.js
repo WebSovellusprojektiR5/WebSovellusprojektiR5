@@ -20,12 +20,15 @@ function App() {
   const [filteredRestaurants, setfilteredRestaurants] = useState([]);
   const [restaurantTypes, setRestaurantTypes] = useState([]);
   const [userRoles, setUserRoles] = useState([]);
+  const [personInfo, setPersonInfo] = useState("");
+  const [filterText, setFilterText] = useState("");
+  const [filterCatID, setFilterCatID] = useState(-1);
   const [message, setMessage] = useState("");
   const [msgClass, setMsgClass] = useState("alert alert-primary");
 
   //* Set top bar message text (not visible if empty or restaurant view active) and Bootstrap style *
   //Example BootStrap styles: alert alert-primary, alert alert-danger, alert alert-success
-  const showMessageBar = (msg, msgclass = "alert alert-primary") => {    
+  const ShowMessageBar = (msg, msgclass = "alert alert-primary") => {    
       setMsgClass(msgclass);  
       setMessage(msg);
   }
@@ -80,6 +83,7 @@ function App() {
       newStateVars.lastViewState = newStateVars.viewState;
       newStateVars.viewState = view;
       setStateVars(newStateVars); 
+      ShowMessageBar("");
     } 
   }
 
@@ -93,14 +97,25 @@ function App() {
   }
 
   //* Update filteredRestaurants object *
-  const FilterRestaurants = (text) => {
-    setfilteredRestaurants(restaurants.filter(n => n.name.toLowerCase().includes(text.toLowerCase())));
+  const FilterRestaurantsBySearchText = (text) => {
+    setFilterText(text);
+    let newrestaurants = restaurants.filter(n => n.name.toLowerCase().includes(text.toLowerCase()) || n.description.toLowerCase().includes(text.toLowerCase()));
+    if(filterCatID >= 0 && filterCatID < 1000) newrestaurants = newrestaurants.filter(f => f.idrestauranttype === filterCatID);
+    if(filterCatID >= 1000) newrestaurants = newrestaurants.filter(f => f.price_level === filterCatID - 1000);
+    setfilteredRestaurants(newrestaurants);
+  }
+  const FilterRestaurantsByCatID = (id) => {
+    setFilterCatID(id);
+    let newrestaurants = restaurants.filter(n => n.name.toLowerCase().includes(filterText.toLowerCase()) || n.description.toLowerCase().includes(filterText.toLowerCase()));
+    if(id >= 0 && id < 1000) newrestaurants = newrestaurants.filter(f => f.idrestauranttype === id);
+    if(id >= 1000) newrestaurants = newrestaurants.filter(f => f.price_level === id - 1000);
+    setfilteredRestaurants(newrestaurants);
   }
 
   //* Signup Submit button clicked : POST new user *
   const SignupBtnClicked = (formdata) => {
     //Generate JSON body
-    let city = formdata["inputZip"].value === "" ? formdata["inputCity"].value : formdata["inputZip"].value + ' ' + formdata["inputCity"].value;
+    let city = formdata["inputZip"].value + ' ' + formdata["inputCity"].value;
     let jsonBody = {
       "firstname" : formdata["inputFirstName"].value,
       "lastname" : formdata["inputLastName"].value,
@@ -116,12 +131,12 @@ function App() {
     axios.post('https://webfoodr5.herokuapp.com/users', jsonBody)
     .then(response => {
       //ok : Set messagebar text, wait and change view
-      showMessageBar(response.data.message, "alert alert-success");
-      setTimeout(() => { showMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+      ShowMessageBar(response.data.message, "alert alert-success");
+      setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
     }).catch(error => {
       //nok : Set messagebar errormessage, wait and set info message
-      showMessageBar(error.response.data.message, "alert alert-danger");
-      setTimeout(() => showMessageBar("SIGN UP - Enter valid data to each field"), 5000);
+      ShowMessageBar(error.response.data.message, "alert alert-danger");
+      setTimeout(() => ShowMessageBar("SIGN UP - Enter valid data to each field"), 5000);
     });
   }
 
@@ -134,7 +149,7 @@ function App() {
       }
     }).then(response => {
       //ok : Set messagebar text, set states, wait and change view
-      showMessageBar("Logged in", "alert alert-success");
+      ShowMessageBar("Logged in", "alert alert-success");
       let decoded = jwt_decode(response.data.token);
       let newStateVars={...stateVars};
       newStateVars.loggedinToken = response.data.token;
@@ -142,10 +157,10 @@ function App() {
       newStateVars.loggedinUserRoleID = decoded.roleid;
       setStateVars(newStateVars); 
       ChangeView(stateVars.lastViewState, newStateVars);  //Statehook slow updating workaround
+      GetPersonInfo(decoded.userid);
       setTimeout(() => { 
-        showMessageBar("");               
+        ShowMessageBar("");               
       }, 3000);
-      
     }).catch(error => {
       //nok : Set messagebar errormessage, set states, wait and set info message
       let newStateVars={...stateVars};
@@ -153,24 +168,31 @@ function App() {
       newStateVars.loggedinUserID = -1;
       newStateVars.loggedinUserRoleID = -1;
       setStateVars(newStateVars); 
-      showMessageBar(error.response.data.message, "alert alert-danger");
-      setTimeout(() => showMessageBar("SIGN IN - Enter username and password"), 5000);
+      ShowMessageBar(error.response.data.message, "alert alert-danger");
+      setTimeout(() => ShowMessageBar("SIGN IN - Enter username and password"), 5000);
     });  
+  }
+
+  //* Get person info *
+  const GetPersonInfo = (UID) => {
+    axios.get('https://webfoodr5.herokuapp.com/user', { params: {userID: UID} })
+    .then(response => { setPersonInfo(response.data); 
+    });
   }
 
   //Return Single-Page application
   return (
     <div>
-      <Navbar onNavItemClicked={ChangeView} onSearchBtnClicked={FilterRestaurants} onSignoutClicked={SignOut} statevars={stateVars}/>
-      { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes}/> : 
+      <Navbar onNavItemClicked={ChangeView} onSearchBtnClicked={FilterRestaurantsBySearchText} onSignoutClicked={SignOut} statevars={stateVars}/>
+      { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes} onItemClicked={FilterRestaurantsByCatID}/> : 
         message !== "" ? <div className="messageArea"><div className={msgClass} role="alert">{message}</div></div> : <div className="messageArea"/>}
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
-      { stateVars.viewState === VIEWS.PERSONALINFO? <PersonalInfo/> : <></> }
+      { stateVars.viewState === VIEWS.PERSONALINFO? <PersonalInfo data={personInfo}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO? <RestaurantInfo/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT? <NewRestaurant/> : <></> }
-      { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={showMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
-      { stateVars.viewState === VIEWS.SIGNUP ? <SignUp showMessage={showMessageBar} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
+      { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
+      { stateVars.viewState === VIEWS.SIGNUP ? <SignUp showMessage={ShowMessageBar} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?
         <div className="pageContainer">
         {
