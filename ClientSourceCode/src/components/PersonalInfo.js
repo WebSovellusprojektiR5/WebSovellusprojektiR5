@@ -51,7 +51,11 @@ export default function PersonalInfo(props) {
                             <div className="col-md-3">
                                 <label htmlFor="inputZip" className="form-label">Zip</label>
                                 <input type="text" className="form-control" id="inputZip" defaultValue={props.data.city.split(' ')[0]}/>
-                            </div>                            
+                            </div>    
+                            <div className="col-12">
+                                <br/>
+                            <label className="form-label">Role: {props.roles.find(r => r.id === props.data.idrole).role}</label>
+                            </div>                        
                             <div className="col-12">
                                 <br/>
                                 <button type="submit" className="btn btn-primary">Edit</button>

@@ -53,35 +53,28 @@ function App() {
     "lastViewState" : VIEWS.RESTAURANTS,
     "loggedinToken" : "",
     "loggedinUserRoleID" : -1,
+    "loggedinUserRole" : "",
     "loggedinUserID" : -1,
     "selectedRestaurantID" : -1
   })
 
 
-  //* First run: GET restaurants, restauranttypes and userroles *
-  useEffect(() => {
-    axios.get('https://webfoodr5.herokuapp.com/restaurants')
-    .then(response => {
-      setRestaurants(response.data);
-      setfilteredRestaurants(response.data);
-    });
-    axios.get('https://webfoodr5.herokuapp.com/restauranttypes')
-    .then(response => {
-      setRestaurantTypes(response.data);
-    });
-    axios.get('https://webfoodr5.herokuapp.com/userroles')
-    .then(response => {
-      setUserRoles(response.data);
-    });
-  }, []);
+
 
   //* NavBar Navigation button clicked : Update stateVars.viewState *
-  const ChangeView = (view, nStateVars = "") => {
-    if(view != stateVars.viewState) {
-      let newStateVars = nStateVars;
-      if(newStateVars == "") newStateVars = {...stateVars};
+  const ChangeView = (view, newStateVars = "", forceUpdate = false) => {
+    if(view != stateVars.viewState || forceUpdate) {
+      if(newStateVars === "") newStateVars = {...stateVars};
       newStateVars.lastViewState = newStateVars.viewState;
+      //Only owner can select some VIEWS. Otherwise set restaurants view
+      if (newStateVars.loggedinUserRole !== "" && newStateVars.loggedinUserRole !== "owner" && 
+       (view === VIEWS.NEWMENUITEM || view === VIEWS.NEWRESTAURANT || view === VIEWS.RESTAURANTINFO))
+       view = VIEWS.RESTAURANTS;
       newStateVars.viewState = view;
+      if(newStateVars.loggedinUserRoleID >= 0 ) {
+        newStateVars.loggedinUserRole = userRoles.find(r => r.id === newStateVars.loggedinUserRoleID).role;  
+        window.sessionStorage.setItem("sessionUserRole", newStateVars.loggedinUserRole); 
+      }
       setStateVars(newStateVars); 
       ShowMessageBar("");
     } 
@@ -94,6 +87,9 @@ function App() {
     newStateVars.loggedinUserID = -1;
     newStateVars.loggedinUserRoleID = -1;
     setStateVars(newStateVars); 
+    window.sessionStorage.setItem("sessionToken", null);
+    window.sessionStorage.setItem("sessionUserRole", null);
+    ChangeView(VIEWS.RESTAURANTS);
   }
 
   //* Update filteredRestaurants object *
@@ -154,8 +150,9 @@ function App() {
       let newStateVars={...stateVars};
       newStateVars.loggedinToken = response.data.token;
       newStateVars.loggedinUserID = decoded.userid;
-      newStateVars.loggedinUserRoleID = decoded.roleid;
+      newStateVars.loggedinUserRoleID = decoded.roleid; 
       setStateVars(newStateVars); 
+      window.sessionStorage.setItem("sessionToken", response.data.token);
       ChangeView(stateVars.lastViewState, newStateVars);  //Statehook slow updating workaround
       GetPersonInfo(decoded.userid);
       setTimeout(() => { 
@@ -180,17 +177,46 @@ function App() {
     });
   }
 
+  //* First run: GET restaurants, restauranttypes and userroles. Sign in if token is stored *
+  useEffect(() => {;
+    axios.get('https://webfoodr5.herokuapp.com/restaurants')
+    .then(response => {
+      setRestaurants(response.data);
+      setfilteredRestaurants(response.data);
+    });
+    axios.get('https://webfoodr5.herokuapp.com/restauranttypes')
+    .then(response => {
+      setRestaurantTypes(response.data);
+    });
+    axios.get('https://webfoodr5.herokuapp.com/userroles')
+    .then(response => {
+      setUserRoles(response.data);
+    });
+    var token = window.sessionStorage.getItem("sessionToken");
+    var urole = window.sessionStorage.getItem("sessionUserRole");
+    if (token != null && token != "null") {
+      let decoded = jwt_decode(token);
+      let newStateVars={...stateVars};
+      newStateVars.loggedinToken = token;
+      newStateVars.loggedinUserID = decoded.userid;
+      newStateVars.loggedinUserRoleID = decoded.roleid;
+      if (urole != null && urole != "null") newStateVars.loggedinUserRole = urole;
+      setStateVars(newStateVars);
+      GetPersonInfo(decoded.userid);
+    }
+  }, []);
+
   //Return Single-Page application
   return (
     <div>
-      <Navbar onNavItemClicked={ChangeView} onSearchBtnClicked={FilterRestaurantsBySearchText} onSignoutClicked={SignOut} statevars={stateVars}/>
+      <Navbar onNavItemClicked={ChangeView} onSearchBtnClicked={FilterRestaurantsBySearchText} onSignoutClicked={SignOut} statevars={stateVars} />
       { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes} onItemClicked={FilterRestaurantsByCatID}/> : 
         message !== "" ? <div className="messageArea"><div className={msgClass} role="alert">{message}</div></div> : <div className="messageArea"/>}
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
-      { stateVars.viewState === VIEWS.PERSONALINFO? <PersonalInfo data={personInfo}/> : <></> }
-      { stateVars.viewState === VIEWS.RESTAURANTINFO? <RestaurantInfo/> : <></> }
-      { stateVars.viewState === VIEWS.NEWRESTAURANT? <NewRestaurant/> : <></> }
+      { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} /> : <></> }
+      { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo/> : <></> }
+      { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.SIGNUP ? <SignUp showMessage={ShowMessageBar} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?
