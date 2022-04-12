@@ -19,14 +19,16 @@ public class OrderRestAPI {
 
     @CrossOrigin
     @GetMapping("/ordersbyrestaurant")
-    public List<Order> getordersbyrestaurant(@RequestParam Long restaurantID){
-        return orderService.getOrdersByRestaurant(restaurantID);
+    public List<Order> getordersbyrestaurant(@RequestParam Long restaurantID, @RequestParam int first_order,
+                                             @RequestParam int limit){
+        return orderService.getOrdersByRestaurantLimit(restaurantID, first_order, limit);
     }
 
     @CrossOrigin
     @GetMapping("/ordersbyuser")
-    public List<Order> getordersbycustomer(@RequestParam Long customerID){
-        return orderService.getOrdersByCustomer(customerID);
+    public List<Order> getordersbycustomer(@RequestParam Long customerID, @RequestParam int first_order,
+                                           @RequestParam int limit){
+        return orderService.getOrdersByCustomerLimit(customerID, first_order, limit);
     }
 
     @PostMapping(value = "/ordersbyuser", consumes = {"application/json"})
@@ -41,5 +43,11 @@ public class OrderRestAPI {
         String status = orderService.addItemToOrder(item);
         if (status == "") return new ResponseEntity<> (HttpStatus.OK);
         else return new ResponseEntity<>(Map.of("message", status), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "/orderitem")
+    public List<OrderItems> getItemsInOrder(@RequestParam Long orderID){
+        return  orderService.getItemsInOrder(orderID);
     }
 }
