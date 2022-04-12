@@ -23,8 +23,18 @@ public class OrderService {
         return orderRepo.findByRestaurant(restaurantID);
     }
 
+    //Get <limit> orders by <restaurantID> starting from <first_order>
+    public List<Order> getOrdersByRestaurantLimit(Long restaurantID, int first_order, int limit){
+        return orderRepo.findByRestaurantLimit(restaurantID, first_order, limit);
+    }
+
     public List<Order> getOrdersByCustomer(Long customerID){
-        return orderRepo.findByRestaurant(customerID);
+        return orderRepo.findByCustomer(customerID);
+    }
+
+    //Get <limit> orders by <customerID> starting from <first_order>
+    public List<Order> getOrdersByCustomerLimit(Long customerID, int first_order, int limit){
+        return orderRepo.findByCustomerLimit(customerID, first_order, limit);
     }
 
     public String addItemToOrder(OrderItems orderItem){
@@ -45,5 +55,9 @@ public class OrderService {
 
         orderRepo.save(order);
         return "";
+    }
+
+    public List<OrderItems> getItemsInOrder(Long orderID){
+        return orderItemsRepo.findItemsInOrder(orderID);
     }
 }
