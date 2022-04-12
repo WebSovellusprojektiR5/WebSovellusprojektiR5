@@ -14,7 +14,8 @@ export default function Navbar(props) {
         DELETEACCOUNT : "deleteaccount",
         PERSONALINFO : "personalinfo",
         RESTAURANTINFO : "restaurantinfo",
-        NEWRESTAURANT : "newrestaurant"
+        NEWRESTAURANT : "newrestaurant",
+        SHOPPINGCART : "shoppingcart"
     }
 
     //State Hooks
@@ -61,7 +62,7 @@ export default function Navbar(props) {
                     <ul className="navbar-nav">
                         { props.statevars.loggedinToken !== "" && props.statevars.loggedinUserRoleID > 0 ?
                         <li className="nav-item">
-                            <a className="nav-link" href="#">Shopping Cart</a>
+                            <a className="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.SHOPPINGCART)}>Shopping Cart</a>
                         </li> : <></> }
                         <li className="nav-item">
                             <a className="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.SIGNUP)}>Sign Up</a>
