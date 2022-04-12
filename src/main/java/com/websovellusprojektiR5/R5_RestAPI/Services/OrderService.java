@@ -40,7 +40,7 @@ public class OrderService {
     public String addItemToOrder(OrderItems orderItem){
         if(orderRepo.findById(orderItem.getIdorder()).orElse(null) == null)
             return "Tilausta ei ole olemassa";
-        if(itemRepo.findById(orderItem.getIditem()) == null)
+        if(itemRepo.findById(orderItem.getIditem()).orElse(null) == null)
             return "Annosta ei ole olemassa";
 
         orderItemsRepo.save(orderItem);
@@ -50,7 +50,7 @@ public class OrderService {
     public String addOrder(Order order){
         if(restaurantRepo.findById(order.getIdrestaurant()).orElse(null) == null)
             return "Ravintolaa ei ole olemassa";
-        if(userRepo.findById(order.getIdperson()) == null)
+        if(userRepo.findById(order.getIdperson()).orElse(null) == null)
             return "Käyttäjää ei ole olemassa";
 
         orderRepo.save(order);
