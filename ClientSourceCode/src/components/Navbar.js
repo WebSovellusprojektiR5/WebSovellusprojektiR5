@@ -62,7 +62,7 @@ export default function Navbar(props) {
                         <button className="btn btn-outline-primary my-2 my-sm-0" onClick={() => props.onSearchBtnClicked(searchValue)}>Search</button>
                     </div>
                     <ul className="navbar-nav">
-                        { props.statevars.loggedinToken !== "" && props.statevars.loggedinUserRoleID > 0 ?
+                        { props.statevars.loggedinToken !== "" && props.statevars.loggedinUserRole !== "owner" ?
                         <li className="nav-item">
                             <a className="nav-link" href="#">Shopping Cart</a>
                         </li> : <></> }

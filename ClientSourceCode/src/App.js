@@ -56,10 +56,42 @@ function App() {
     "loggedinUserRole" : "",
     "loggedinUserID" : -1,
     "selectedRestaurantID" : -1
-  })
+  });
 
+  //* First entry or page refresh: GET restaurants, restauranttypes and userroles. Sign in if token is stored *
+  useEffect(() => {
+    var token = window.sessionStorage.getItem("sessionToken");
+    var urole = "";
+    var uid = -1;
+    if (token != null && token != "null") {
+      let decoded = jwt_decode(token);
+      let newStateVars={...stateVars};
+      newStateVars.loggedinToken = token;
+      uid = decoded.userid;
+      newStateVars.loggedinUserID = uid;
+      newStateVars.loggedinUserRoleID = decoded.roleid;
+      urole = decoded.userrole;
+      newStateVars.loggedinUserRole = urole; 
+      setStateVars(newStateVars);
+      GetPersonInfo(decoded.userid);
+    };
+    axios.get('https://webfoodr5.herokuapp.com/restaurants')
+    .then(response => {
+      setRestaurants(response.data);
+      var rants = response.data;
+      if(urole === "owner" && uid >= 0) rants = rants.filter(n => n.idperson === uid);
+      setfilteredRestaurants(rants);
+    });
+    axios.get('https://webfoodr5.herokuapp.com/restauranttypes')
+    .then(response => {
+      setRestaurantTypes(response.data);
+    });
+    axios.get('https://webfoodr5.herokuapp.com/userroles')
+    .then(response => {
+      setUserRoles(response.data);
+    });
 
-
+  }, []);
 
   //* NavBar Navigation button clicked : Update stateVars.viewState *
   const ChangeView = (view, newStateVars = "", forceUpdate = false) => {
@@ -68,13 +100,8 @@ function App() {
       newStateVars.lastViewState = newStateVars.viewState;
       //Only owner can select some VIEWS. Otherwise set restaurants view
       if (newStateVars.loggedinUserRole !== "" && newStateVars.loggedinUserRole !== "owner" && 
-       (view === VIEWS.NEWMENUITEM || view === VIEWS.NEWRESTAURANT || view === VIEWS.RESTAURANTINFO))
-       view = VIEWS.RESTAURANTS;
+       (view === VIEWS.NEWMENUITEM || view === VIEWS.NEWRESTAURANT || view === VIEWS.RESTAURANTINFO)) view = VIEWS.RESTAURANTS;  
       newStateVars.viewState = view;
-      if(newStateVars.loggedinUserRoleID >= 0 ) {
-        newStateVars.loggedinUserRole = userRoles.find(r => r.id === newStateVars.loggedinUserRoleID).role;  
-        window.sessionStorage.setItem("sessionUserRole", newStateVars.loggedinUserRole); 
-      }
       setStateVars(newStateVars); 
       ShowMessageBar("");
     } 
@@ -86,23 +113,26 @@ function App() {
     newStateVars.loggedinToken = "";
     newStateVars.loggedinUserID = -1;
     newStateVars.loggedinUserRoleID = -1;
+    newStateVars.loggedinUserRole = "";
     setStateVars(newStateVars); 
     window.sessionStorage.setItem("sessionToken", null);
-    window.sessionStorage.setItem("sessionUserRole", null);
-    ChangeView(VIEWS.RESTAURANTS);
+    setfilteredRestaurants(restaurants);
+    ChangeView(VIEWS.RESTAURANTS);   
   }
 
   //* Update filteredRestaurants object *
   const FilterRestaurantsBySearchText = (text) => {
     setFilterText(text);
     let newrestaurants = restaurants.filter(n => n.name.toLowerCase().includes(text.toLowerCase()) || n.description.toLowerCase().includes(text.toLowerCase()));
+    if(stateVars.loggedinUserRole === "owner") newrestaurants = restaurants.filter(n => n.idperson === stateVars.loggedinUserID);
     if(filterCatID >= 0 && filterCatID < 1000) newrestaurants = newrestaurants.filter(f => f.idrestauranttype === filterCatID);
-    if(filterCatID >= 1000) newrestaurants = newrestaurants.filter(f => f.price_level === filterCatID - 1000);
+    if(filterCatID >= 1000) newrestaurants = newrestaurants.filter(f => f.price_level === filterCatID - 1000);  
     setfilteredRestaurants(newrestaurants);
   }
   const FilterRestaurantsByCatID = (id) => {
     setFilterCatID(id);
     let newrestaurants = restaurants.filter(n => n.name.toLowerCase().includes(filterText.toLowerCase()) || n.description.toLowerCase().includes(filterText.toLowerCase()));
+    if(stateVars.loggedinUserRole === "owner") newrestaurants = restaurants.filter(n => n.idperson === stateVars.loggedinUserID);
     if(id >= 0 && id < 1000) newrestaurants = newrestaurants.filter(f => f.idrestauranttype === id);
     if(id >= 1000) newrestaurants = newrestaurants.filter(f => f.price_level === id - 1000);
     setfilteredRestaurants(newrestaurants);
@@ -136,9 +166,14 @@ function App() {
     });
   }
 
+  const EditBtnClicked = (formdata) => {
+    console.log(formdata);
+  }
+
   //* Signin Submit button clicked POST login data and get token *
   const SigninBtnClicked = (formdata) => {
-      axios.post('https://webfoodr5.herokuapp.com/loginbasic', {}, {
+      //axios.post('https://webfoodr5.herokuapp.com/loginbasic', {}, {
+      axios.post('http://localhost:8080/loginbasic', {}, {
       auth: {
         username: formdata["inputUserName"].value,
         password: formdata["inputPassword"].value
@@ -151,8 +186,14 @@ function App() {
       newStateVars.loggedinToken = response.data.token;
       newStateVars.loggedinUserID = decoded.userid;
       newStateVars.loggedinUserRoleID = decoded.roleid; 
+      newStateVars.loggedinUserRole = decoded.userrole;   
       setStateVars(newStateVars); 
       window.sessionStorage.setItem("sessionToken", response.data.token);
+      //owner can see only his/her own restaurants
+      if(decoded.userrole === "owner") {
+        let newrestaurants = restaurants.filter(n => n.idperson === decoded.userid);
+        setfilteredRestaurants(newrestaurants);
+      }
       ChangeView(stateVars.lastViewState, newStateVars);  //Statehook slow updating workaround
       GetPersonInfo(decoded.userid);
       setTimeout(() => { 
@@ -164,6 +205,7 @@ function App() {
       newStateVars.loggedinToken = "";
       newStateVars.loggedinUserID = -1;
       newStateVars.loggedinUserRoleID = -1;
+      newStateVars.loggedinUserRole = "";
       setStateVars(newStateVars); 
       ShowMessageBar(error.response.data.message, "alert alert-danger");
       setTimeout(() => ShowMessageBar("SIGN IN - Enter username and password"), 5000);
@@ -177,34 +219,7 @@ function App() {
     });
   }
 
-  //* First run: GET restaurants, restauranttypes and userroles. Sign in if token is stored *
-  useEffect(() => {;
-    axios.get('https://webfoodr5.herokuapp.com/restaurants')
-    .then(response => {
-      setRestaurants(response.data);
-      setfilteredRestaurants(response.data);
-    });
-    axios.get('https://webfoodr5.herokuapp.com/restauranttypes')
-    .then(response => {
-      setRestaurantTypes(response.data);
-    });
-    axios.get('https://webfoodr5.herokuapp.com/userroles')
-    .then(response => {
-      setUserRoles(response.data);
-    });
-    var token = window.sessionStorage.getItem("sessionToken");
-    var urole = window.sessionStorage.getItem("sessionUserRole");
-    if (token != null && token != "null") {
-      let decoded = jwt_decode(token);
-      let newStateVars={...stateVars};
-      newStateVars.loggedinToken = token;
-      newStateVars.loggedinUserID = decoded.userid;
-      newStateVars.loggedinUserRoleID = decoded.roleid;
-      if (urole != null && urole != "null") newStateVars.loggedinUserRole = urole;
-      setStateVars(newStateVars);
-      GetPersonInfo(decoded.userid);
-    }
-  }, []);
+
 
   //Return Single-Page application
   return (
@@ -214,7 +229,7 @@ function App() {
         message !== "" ? <div className="messageArea"><div className={msgClass} role="alert">{message}</div></div> : <div className="messageArea"/>}
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
-      { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} /> : <></> }
+      { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
