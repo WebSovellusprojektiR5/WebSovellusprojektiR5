@@ -71,4 +71,19 @@ class R5RestApiApplicationTests {
 	void restaurantOpeningHours(Long restaurantID){
 		List<OpeningHours> openingHours = restaurantService.openingHours(restaurantID);
 	}
+
+	@Test
+	void updateUser(){
+		User user = userService.getUserByID(7L);
+		user.setCity("Tampere");
+		user.setUsername("joopajoo7");
+		String respond = userService.editUser(user);
+		List<User> users = userService.getUsers();
+	}
+
+	@Test
+	void deleteUser(){
+		String respond = userService.deleteUser(4L);
+		List<User> users = userService.getUsers();
+	}
 }
