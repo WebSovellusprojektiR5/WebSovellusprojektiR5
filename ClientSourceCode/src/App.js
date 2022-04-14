@@ -75,13 +75,7 @@ function App() {
       setStateVars(newStateVars);
       GetPersonInfo(decoded.userid);
     };
-    axios.get('https://webfoodr5.herokuapp.com/restaurants')
-    .then(response => {
-      setRestaurants(response.data);
-      var rants = response.data;
-      if(urole === "owner" && uid >= 0) rants = rants.filter(n => n.idperson === uid);
-      setfilteredRestaurants(rants);
-    });
+    GetRestaurants(urole, uid);
     axios.get('https://webfoodr5.herokuapp.com/restauranttypes')
     .then(response => {
       setRestaurantTypes(response.data);
@@ -92,6 +86,8 @@ function App() {
     });
 
   }, []);
+
+
 
   //* NavBar Navigation button clicked : Update stateVars.viewState *
   const ChangeView = (view, newStateVars = "", forceUpdate = false) => {
@@ -151,51 +147,42 @@ function App() {
       "phone" : formdata["inputPhone"].value,
       "idrestauranttype" : formdata["selectCategory"].value,
       "idperson" : stateVars.loggedinUserID,
-      //"file" : formdata["itemImage"].files[0]
     }
-    var bodyFormData = new FormData();
-    bodyFormData.append('', jsonBody);
-    bodyFormData.append('file', formdata["itemImage"].files[0]);
-
-    console.log(bodyFormData);
     //POST query
-    //axios.post('https://webfoodr5.herokuapp.com/restaurants', jsonBody, {
-    axios.post('http://localhost:8080/restaurants', bodyFormData)
+    axios.post('https://webfoodr5.herokuapp.com/restaurants', jsonBody)
     .then(response => {
-      //ok : Set messagebar text, wait and change view
-      ShowMessageBar(response.data.message, "alert alert-success");
-      setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+      //ok : Try to add image
+      const res = PutFile('https://webfoodr5.herokuapp.com/restaurantimage', response.data, formdata["itemImage"].files[0]);
+      let msg = "Restaurant added successfully";
+      if (res.toLowerCase().includes("error")) msg += ". Got " + res;
+      //ok : Get restaurants, set messagebar text, wait and change view
+      GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
+      ShowMessageBar(msg, "alert alert-success");
+      setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
     }).catch(error => {
       //nok : Set messagebar errormessage, wait and set info message
       if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
       else ShowMessageBar(error.response.data.message, "alert alert-danger");
       setTimeout(() => ShowMessageBar("Create Restaurant - Enter valid data to each field"), 6000);
-    });   
+    }); 
   }
 
-  //PAKKO LÄHETTÄÄ ERIKSEEN DATA POST ja KUVA PUT
-  const test = (formdata) => {
-    let jsonBody = {
-      "name" : formdata["inputRestaurantName"].value,
-      "description" : formdata["inputSlogan"].value,
-      "thumbnail_url" : "",
-      "picture_url" : "",
-      "price_level" : parseInt(formdata["selectPriceRange"].value),
-      "address1" : formdata["inputAddress1"].value,
-      "address2" : formdata["inputAddress2"].value,
-      "city" : formdata["inputCity"].value,
-      "phone" : formdata["inputPhone"].value,
-      "idrestauranttype" : formdata["selectCategory"].value,
-      "idperson" : stateVars.loggedinUserID,
-      //"file" : formdata["itemImage"].files[0]
-    }
-    var bodyFormData = new FormData();
-    bodyFormData.append('file', formdata["itemImage"].files[0]);
+  //* Generic PUT file call *
+  const PutFile = async (path, id, image) => {
+    let fdata = new FormData();
+    fdata.append('ID', id);
+    fdata.append('file', image);
+    return await axios.put(path, fdata);
+  }
 
-    axios.put('http://localhost:8080/restaurantimage2', {jsonBody, bodyFormData})
+  const GetRestaurants = (urole, uid) => {
+    axios.get('https://webfoodr5.herokuapp.com/restaurants')
     .then(response => {
-      console.log(response.data);
-    })
+      setRestaurants(response.data);
+      var rants = response.data;
+      if(urole === "owner" && uid >= 0) rants = rants.filter(n => n.idperson === uid);
+      setfilteredRestaurants(rants);
+    });
   }
 
   //* Signup Submit button clicked : POST new user *
@@ -234,8 +221,7 @@ function App() {
 
   //* Signin Submit button clicked POST login data and get token *
   const SigninBtnClicked = (formdata) => {
-      //axios.post('https://webfoodr5.herokuapp.com/loginbasic', {}, {
-      axios.post('http://localhost:8080/loginbasic', {}, {
+      axios.post('https://webfoodr5.herokuapp.com/loginbasic', {}, {
       auth: {
         username: formdata["inputUserName"].value,
         password: formdata["inputPassword"].value
@@ -293,7 +279,7 @@ function App() {
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
       { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo/> : <></> }
-      { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={test} types={restaurantTypes} /> : <></> }
+      { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={CreateRestaurantBtnClicked} types={restaurantTypes} /> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.SIGNUP ? <SignUp showMessage={ShowMessageBar} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?

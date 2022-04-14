@@ -29,12 +29,8 @@ public class RestaurantService {
         return restaurantTypeRepo.findAll();
     }
 
-    public String addRestaurant(Restaurant restaurant){
-        //String imageURL = imageService.UploadImage(mpf);
-        //if (imageURL == "") return "Error: Uploading picture to Cloudinary failed! You can add picture for your restaurant later!";
-        //else restaurant.setThumbnail_url(imageURL);
-        restaurantRepo.save(restaurant);
-        return "New restaurant added succesfully!";
+    public Restaurant addRestaurant(Restaurant restaurant){
+        return restaurantRepo.save(restaurant);
     }
 
     public String updateRestaurantImage(Long restaurantID, MultipartFile mpf) {

@@ -34,8 +34,11 @@ public class RestaurantRestAPI {
     }
 
     @PostMapping(path = "/restaurants", consumes = {"application/json"})
-    public String addRestaurant(@RequestBody Restaurant restaurant){
-        return restaurantService.addRestaurant(restaurant);
+    public ResponseEntity<Long> addRestaurant2(@RequestBody Restaurant restaurant){
+        Restaurant res = restaurantService.addRestaurant(restaurant);
+        Long ret = -1l;
+        if (res != null) ret = res.getId();
+        return new ResponseEntity<Long> (ret, HttpStatus.OK);
     }
 
     @PostMapping(path = "/hours", consumes = "application/json")
@@ -45,13 +48,7 @@ public class RestaurantRestAPI {
     }
 
     @PutMapping(path = "/restaurantimage")
-    public String editRestaurantimage(@RequestParam Long restaurantID, @RequestParam("file")MultipartFile mpf){
-        return restaurantService.updateRestaurantImage(restaurantID, mpf);
-    }
-
-    @PutMapping(path = "/restaurantimage2")
-    public String editRestaurantimage2(@RequestBody Restaurant restaurant, @RequestParam("file")MultipartFile mpf){
-        return "";
-        //return restaurantService.updateRestaurantImage(restaurant.getId(), mpf);
+    public String editRestaurantimage(@RequestParam Long ID, @RequestParam("file")MultipartFile mpf){
+        return restaurantService.updateRestaurantImage(ID, mpf);
     }
 }
