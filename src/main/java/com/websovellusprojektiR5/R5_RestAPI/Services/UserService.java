@@ -39,6 +39,23 @@ public class UserService {
         return "New user created OK";
     }
 
+    public String editUser(User user){
+        if(userRepo.findById(user.getId()).orElse(null) == null)
+            return "Error: User doesn't exist!";
+
+        user.setPassword(pwdEncoder.encode(user.getPassword()));
+        userRepo.save(user);
+        return "User updated OK";
+    }
+
+    public String deleteUser(Long userID){
+        if(userRepo.findById(userID).orElse(null) == null)
+            return "Error: User doesn't exist!";
+
+        userRepo.deleteById(userID);
+        return "User deleted OK";
+    }
+
     public User login(String username, String password){
         return userRepo.checkCredentials(username, password);
     }
