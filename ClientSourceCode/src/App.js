@@ -138,6 +138,66 @@ function App() {
     setfilteredRestaurants(newrestaurants);
   }
 
+  //* Create restaurant button clicked : POST new restaurant *
+  const CreateRestaurantBtnClicked = (formdata) => {
+    //Generate JSON body
+    let jsonBody = {
+      "name" : formdata["inputRestaurantName"].value,
+      "description" : formdata["inputSlogan"].value,
+      "price_level" : parseInt(formdata["selectPriceRange"].value),
+      "address1" : formdata["inputAddress1"].value,
+      "address2" : formdata["inputAddress2"].value,
+      "city" : formdata["inputCity"].value,
+      "phone" : formdata["inputPhone"].value,
+      "idrestauranttype" : formdata["selectCategory"].value,
+      "idperson" : stateVars.loggedinUserID,
+      //"file" : formdata["itemImage"].files[0]
+    }
+    var bodyFormData = new FormData();
+    bodyFormData.append('', jsonBody);
+    bodyFormData.append('file', formdata["itemImage"].files[0]);
+
+    console.log(bodyFormData);
+    //POST query
+    //axios.post('https://webfoodr5.herokuapp.com/restaurants', jsonBody, {
+    axios.post('http://localhost:8080/restaurants', bodyFormData)
+    .then(response => {
+      //ok : Set messagebar text, wait and change view
+      ShowMessageBar(response.data.message, "alert alert-success");
+      setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+    }).catch(error => {
+      //nok : Set messagebar errormessage, wait and set info message
+      if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
+      else ShowMessageBar(error.response.data.message, "alert alert-danger");
+      setTimeout(() => ShowMessageBar("Create Restaurant - Enter valid data to each field"), 6000);
+    });   
+  }
+
+  //PAKKO LÄHETTÄÄ ERIKSEEN DATA POST ja KUVA PUT
+  const test = (formdata) => {
+    let jsonBody = {
+      "name" : formdata["inputRestaurantName"].value,
+      "description" : formdata["inputSlogan"].value,
+      "thumbnail_url" : "",
+      "picture_url" : "",
+      "price_level" : parseInt(formdata["selectPriceRange"].value),
+      "address1" : formdata["inputAddress1"].value,
+      "address2" : formdata["inputAddress2"].value,
+      "city" : formdata["inputCity"].value,
+      "phone" : formdata["inputPhone"].value,
+      "idrestauranttype" : formdata["selectCategory"].value,
+      "idperson" : stateVars.loggedinUserID,
+      //"file" : formdata["itemImage"].files[0]
+    }
+    var bodyFormData = new FormData();
+    bodyFormData.append('file', formdata["itemImage"].files[0]);
+
+    axios.put('http://localhost:8080/restaurantimage2', {jsonBody, bodyFormData})
+    .then(response => {
+      console.log(response.data);
+    })
+  }
+
   //* Signup Submit button clicked : POST new user *
   const SignupBtnClicked = (formdata) => {
     //Generate JSON body
@@ -161,12 +221,14 @@ function App() {
       setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
     }).catch(error => {
       //nok : Set messagebar errormessage, wait and set info message
-      ShowMessageBar(error.response.data.message, "alert alert-danger");
-      setTimeout(() => ShowMessageBar("SIGN UP - Enter valid data to each field"), 5000);
+      if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
+      else ShowMessageBar(error.response.data.message, "alert alert-danger");
+      setTimeout(() => ShowMessageBar("SIGN UP - Enter valid data to each field"), 6000);
     });
   }
 
-  const EditBtnClicked = (formdata) => {
+  const EditUserBtnClicked = (formdata) => {
+    //KESKEN! KUTSU PUT user kun REST on koodattu (mahd. käyttää ylläolevaa?)
     console.log(formdata);
   }
 
@@ -207,8 +269,9 @@ function App() {
       newStateVars.loggedinUserRoleID = -1;
       newStateVars.loggedinUserRole = "";
       setStateVars(newStateVars); 
-      ShowMessageBar(error.response.data.message, "alert alert-danger");
-      setTimeout(() => ShowMessageBar("SIGN IN - Enter username and password"), 5000);
+      if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
+      else ShowMessageBar(error.response.data.message, "alert alert-danger");
+      setTimeout(() => ShowMessageBar("SIGN IN - Enter username and password"), 6000);
     });  
   }
 
@@ -220,7 +283,6 @@ function App() {
   }
 
 
-
   //Return Single-Page application
   return (
     <div>
@@ -229,9 +291,9 @@ function App() {
         message !== "" ? <div className="messageArea"><div className={msgClass} role="alert">{message}</div></div> : <div className="messageArea"/>}
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
-      { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditBtnClicked}/> : <></> }
+      { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo/> : <></> }
-      { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant/> : <></> }
+      { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={test} types={restaurantTypes} /> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.SIGNUP ? <SignUp showMessage={ShowMessageBar} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?

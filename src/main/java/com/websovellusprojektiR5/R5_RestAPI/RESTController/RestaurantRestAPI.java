@@ -46,6 +46,12 @@ public class RestaurantRestAPI {
 
     @PutMapping(path = "/restaurantimage")
     public String editRestaurantimage(@RequestParam Long restaurantID, @RequestParam("file")MultipartFile mpf){
-        return restaurantService.editRestaurantImage(restaurantID, mpf);
+        return restaurantService.updateRestaurantImage(restaurantID, mpf);
+    }
+
+    @PutMapping(path = "/restaurantimage2")
+    public String editRestaurantimage2(@RequestBody Restaurant restaurant, @RequestParam("file")MultipartFile mpf){
+        return "";
+        //return restaurantService.updateRestaurantImage(restaurant.getId(), mpf);
     }
 }

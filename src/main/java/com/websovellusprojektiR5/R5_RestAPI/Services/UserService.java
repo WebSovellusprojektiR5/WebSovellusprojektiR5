@@ -29,6 +29,9 @@ public class UserService {
         return userRepo.findByID(userID);
     }
     public User getUserByName(String userName) { return userRepo.findByUsername(userName); }
+    public UserRole getUserRoleByID(Long userRoleID){
+        return userRoleRepo.findByID(userRoleID);
+    }
 
     public String addUser(User user){
         if(userRepo.findByUsername(user.getUsername()) != null){
