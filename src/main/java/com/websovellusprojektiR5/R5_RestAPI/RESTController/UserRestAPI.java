@@ -1,6 +1,5 @@
 package com.websovellusprojektiR5.R5_RestAPI.RESTController;
 
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.ItemCategory;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.User;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.UserRole;
 import com.websovellusprojektiR5.R5_RestAPI.Security.SecurityService;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @CrossOrigin

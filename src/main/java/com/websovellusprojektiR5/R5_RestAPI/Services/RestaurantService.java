@@ -29,18 +29,17 @@ public class RestaurantService {
         return restaurantTypeRepo.findAll();
     }
 
-    public String addRestaurant(Restaurant restaurant){
-        restaurantRepo.save(restaurant);
-        return "Uusi ravintola luotu";
+    public Restaurant addRestaurant(Restaurant restaurant){
+        return restaurantRepo.save(restaurant);
     }
 
-    public String editRestaurantImage(Long restaurantID, MultipartFile mpf) {
+    public String updateRestaurantImage(Long restaurantID, MultipartFile mpf) {
         if (restaurantRepo.findById(restaurantID).orElse(null) == null) return "Ravintolaa ei löydy!";
         String imageURL = imageService.UploadImage(mpf);
-        if (imageURL == "") return "Kuvan lataaminen pilveen epäonnistui!";
+        if (imageURL == "") return "Error: Uploading picture to Cloudinary failed!";
         if (restaurantRepo.updateRestaurantImage(restaurantID, imageURL) > 0)
-            return "Kuva lisätty OK! URL: " + imageURL;
-        else return "Kuvan lisääminen kantaan epäonnistui!";
+            return "Picture updated OK! URL: " + imageURL;
+        else return "Error: Updating picture URL to database failed!";
     }
 
     public String editRestaurantHours(Long restaurantID, String weekday, Time opening, Time closing){

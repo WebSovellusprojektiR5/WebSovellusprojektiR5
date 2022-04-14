@@ -63,7 +63,7 @@ class R5RestApiApplicationTests {
 				user.getId(),
 				1L);
 
-		String respond = restaurantService.addRestaurant(restaurant);
+		Restaurant respond = restaurantService.addRestaurant(restaurant);
 		List<Restaurant> restaurants = restaurantService.getRestaurants();
 	}
 
