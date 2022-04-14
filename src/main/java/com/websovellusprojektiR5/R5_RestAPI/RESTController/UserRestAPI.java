@@ -66,4 +66,18 @@ public class UserRestAPI {
         }
         return new ResponseEntity<>(u, HttpStatus.OK);
     }
+
+    @PutMapping(path = "/users", consumes = {"application/json"})
+    public ResponseEntity<Map<String, String>> editUser(@RequestBody User user){
+        String ret = userService.editUser(user);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/users")
+    public ResponseEntity<Map<String, String>> deleteUser(@RequestParam Long userID){
+        String ret = userService.deleteUser(userID);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
+    }
 }

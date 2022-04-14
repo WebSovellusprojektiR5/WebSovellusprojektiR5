@@ -44,17 +44,12 @@ public class RestaurantService {
 
     public String editRestaurantHours(Long restaurantID, String weekday, Time opening, Time closing){
         OpeningHours hours = openRepo.getRestaurantOpeningHoursByDay(restaurantID, weekday);
-        if(hours == null) {
-            hours = new OpeningHours(weekday, opening, closing, restaurantID);
-            openRepo.save(hours);
-            return weekday + " aukioloajat lisätty";
-        }
-        else{
-            openRepo.deleteById(hours.getId());
-            hours = new OpeningHours(weekday, opening, closing, restaurantID);
-            openRepo.save(hours);
-            return weekday + " aukioloajat päivitetty";
-        }
+        hours.setIdrestaurant(restaurantID);
+        hours.setWeekday(weekday);
+        hours.setOpening(opening);
+        hours.setClosing(closing);
+        openRepo.save(hours);
+        return weekday + " aukioloajat päivitetty";
     }
 
     public List<OpeningHours> openingHours(Long restaurantID){

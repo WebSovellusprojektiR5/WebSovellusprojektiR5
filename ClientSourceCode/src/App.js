@@ -13,6 +13,8 @@ import PersonalInfo from './components/PersonalInfo';
 import RestaurantInfo from './components/RestaurantInfo';
 import NewRestaurant from './components/NewRestaurant';
 import RestaurantsView from './components/RestaurantsView';
+import Shoppingcart from './components/Shoppingcart';
+
 
 function App() {
 
@@ -44,7 +46,8 @@ function App() {
     DELETEACCOUNT : "deleteaccount",
     PERSONALINFO : "personalinfo",
     RESTAURANTINFO : "restaurantinfo",
-    NEWRESTAURANT : "newrestaurant"
+    NEWRESTAURANT : "newrestaurant",
+    SHOPPINGCART : "Shoppingcart"
   }
 
   //* Application state variables *
@@ -280,6 +283,7 @@ function App() {
       { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={CreateRestaurantBtnClicked} types={restaurantTypes} /> : <></> }
+      { stateVars.viewState === VIEWS.SHOPPINGCART? <Shoppingcart/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.SIGNUP ? <SignUp showMessage={ShowMessageBar} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?
