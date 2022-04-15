@@ -20,6 +20,8 @@ function App() {
 
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setfilteredRestaurants] = useState([]);
+  const [items, setItems] = useState([]);
+  const [filteredItems, setfilteredItems] = useState([]);
   const [restaurantTypes, setRestaurantTypes] = useState([]);
   const [userRoles, setUserRoles] = useState([]);
   const [personInfo, setPersonInfo] = useState("");
@@ -188,6 +190,8 @@ function App() {
     });
   }
 
+
+
   //* Signup Submit button clicked : POST new user *
   const SignupBtnClicked = (formdata) => {
     //Generate JSON body
@@ -271,11 +275,16 @@ function App() {
     });
   }
 
-  const GetRestaurantMenu = (UID) => {
-   // axios.get('https://webfoodr5.herokuapp.com/itemsbyrestaurant', { params: {userID: UID} })
-  //  .then(response => { itemsByRestaurant(response.data); 
-  //  });
- }
+  //* Get Restaurant menu items *
+  const GetRestaurantMenuItems = (RID) => {
+    axios.get('https://webfoodr5.herokuapp.com/itemsbyrestaurant', { params: {restaurandID: RID} })
+    .then(response => {
+      setItems(response.data);
+      setfilteredItems(response.data);
+      console.log(response.data);
+      //VAIHDA NÄKYMÄÄKIN!
+    });
+  }
 
   //Return Single-Page application
   return (
@@ -294,7 +303,14 @@ function App() {
       { stateVars.viewState === VIEWS.RESTAURANTS ?
         <div className="pageContainer">
         {
-            filteredRestaurants.map(i => <RestaurantsView key={i.id} item={i} onRestaurantClicked={GetRestaurantMenu} />)
+            filteredRestaurants.map(i => <RestaurantsView key={i.id} item={i} onRestaurantClicked={GetRestaurantMenuItems} />)
+        }
+        </div> : <></> 
+      }
+      { stateVars.viewState === VIEWS.MENUITEM ?
+        <div className="pageContainer">
+        {
+            filteredItems.map(i => <MenuItem key={i.id} item={i} />)
         }
         </div> : <></> 
       }

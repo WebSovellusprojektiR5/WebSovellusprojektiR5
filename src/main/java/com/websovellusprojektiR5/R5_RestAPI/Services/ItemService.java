@@ -68,7 +68,7 @@ public class ItemService {
             return "Ravintolaa ei ole olemassa";
         if(itemCategoryRepo.findByID(item.getIditemCategory()) == null)
             return "Kategoriaa ei ole olemassa!";
-        item.setValid(true);
+        item.setActive(true);
         itemRepo.save(item);
         return "";
     }
@@ -95,7 +95,7 @@ public class ItemService {
         if(itemRepo.findById(item.getId()).orElse(null) == null)
             return "Error: Item doesn't exist!";
 
-        item.setValid(true);
+        item.setActive(true);
         itemRepo.save(item);
         return "Item updated OK";
     }
@@ -105,7 +105,7 @@ public class ItemService {
             return "Error: Item doesn't exist!";
 
         Item item = itemRepo.getById(itemID);
-        item.setValid(false);
+        item.setActive(false);
         itemRepo.save(item);
         return "Item de-activated OK";
     }
