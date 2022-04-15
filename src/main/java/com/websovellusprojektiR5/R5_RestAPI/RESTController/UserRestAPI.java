@@ -74,7 +74,7 @@ public class UserRestAPI {
         else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/users")
+    @PutMapping(path = "/userdelete")
     public ResponseEntity<Map<String, String>> deleteUser(@RequestParam Long userID){
         String ret = userService.deleteUser(userID);
         if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);

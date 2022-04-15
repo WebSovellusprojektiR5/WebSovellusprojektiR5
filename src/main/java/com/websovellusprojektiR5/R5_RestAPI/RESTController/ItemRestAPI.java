@@ -34,7 +34,7 @@ public class ItemRestAPI {
 
     @GetMapping("/itemsbyrestaurant")
     public List<Item> getitemsbyrestaurantid(@RequestParam Long restaurantID) {
-        return itemService.getItemsByRestaurantID(restaurantID);
+        return itemService.getActiveItemsByRestaurantID(restaurantID);
     }
 
     @GetMapping("/itemsbyrestaurantcategory")
@@ -55,5 +55,18 @@ public class ItemRestAPI {
         else return new ResponseEntity<>(Map.of("message", status), HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @PutMapping(path = "/items", consumes = {"application/json"})
+    public ResponseEntity<Map<String, String>> editItem(@RequestBody Item item){
+        String ret = itemService.editItem(item);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/itemdelete")
+    public ResponseEntity<Map<String, String>> deleteItem(@RequestBody Long id){
+        String ret = itemService.deleteItem(id);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
+    }
     //Kuvan lisääminen vielä puuttuu.. pitäisikö sisällyttää addItem ja addItemCatagoryyn?
 }

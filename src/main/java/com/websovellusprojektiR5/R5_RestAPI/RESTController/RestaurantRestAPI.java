@@ -21,7 +21,7 @@ public class RestaurantRestAPI {
 
     @GetMapping("/restaurants")
     public List<Restaurant> getrestaurants() {
-        return restaurantService.getRestaurants();
+        return restaurantService.getActiveRestaurants();
     }
     @GetMapping("/restauranttypes")
     public List<RestaurantType> getrestauranttypes() {
@@ -50,5 +50,19 @@ public class RestaurantRestAPI {
     @PutMapping(path = "/restaurantimage")
     public String editRestaurantimage(@RequestParam Long ID, @RequestParam("file")MultipartFile mpf){
         return restaurantService.updateRestaurantImage(ID, mpf);
+    }
+
+    @PutMapping(path = "/restaurants", consumes = {"application/json"})
+    public ResponseEntity<Map<String, String>> editRestaurant(@RequestBody Restaurant restaurant){
+        String ret = restaurantService.editRestaurant(restaurant);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/restaurantdelete")
+    public ResponseEntity<Map<String, String>> deleteRestaurant(@RequestParam Long restaurantID){
+        String ret = restaurantService.deleteRestaurant(restaurantID);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
     }
 }

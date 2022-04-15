@@ -39,6 +39,9 @@ public class User {
     @Column(name="idpersonrole")
     private long idrole;
 
+    @Column(name = "active")
+    private boolean active;
+
     public User(String firstname, String lastname, String address1, String address2, String city, String phone,
                 String username, String password, long idrole){
         this.firstname = firstname;
@@ -133,5 +136,13 @@ public class User {
 
     public void setIdrole(long idrole) {
         this.idrole = idrole;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

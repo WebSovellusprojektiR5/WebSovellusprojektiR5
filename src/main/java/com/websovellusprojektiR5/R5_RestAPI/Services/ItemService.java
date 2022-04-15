@@ -44,6 +44,10 @@ public class ItemService {
         return itemRepo.findByRestaurantID(id);
     }
 
+    public List<Item> getActiveItemsByRestaurantID(Long id){
+        return itemRepo.findActiveByRestaurantID(id);
+    }
+
     public List<Item> getItemsByRestaurantIDcategoryID (Long rid, Long cid) {
         return itemRepo.findByRestaurantIDitemcategoryID(rid, cid);
     }
@@ -64,7 +68,7 @@ public class ItemService {
             return "Ravintolaa ei ole olemassa";
         if(itemCategoryRepo.findByID(item.getIditemCategory()) == null)
             return "Kategoriaa ei ole olemassa!";
-
+        item.setValid(true);
         itemRepo.save(item);
         return "";
     }
@@ -86,4 +90,24 @@ public class ItemService {
             return "Kuva lisätty OK! URL: " + imageURL;
         else return "Kuvan lisääminen kantaan epäonnistui!";
     }
+
+    public String editItem (Item item) {
+        if(itemRepo.findById(item.getId()).orElse(null) == null)
+            return "Error: Item doesn't exist!";
+
+        item.setValid(true);
+        itemRepo.save(item);
+        return "Item updated OK";
+    }
+
+    public String deleteItem (Long itemID) {
+        if(itemRepo.findById(itemID).orElse(null) == null)
+            return "Error: Item doesn't exist!";
+
+        Item item = itemRepo.getById(itemID);
+        item.setValid(false);
+        itemRepo.save(item);
+        return "Item de-activated OK";
+    }
+
 }

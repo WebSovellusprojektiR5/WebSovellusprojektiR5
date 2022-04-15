@@ -43,6 +43,9 @@ public class Restaurant {
     @Column(name="idrestauranttype")
     private Long idrestauranttype;
 
+    @Column(name="active")
+    private boolean active;
+
     public Restaurant(String name, String description, String thumbnail_url, String picture_url, Integer price_level, String address1, String address2, String city, String phone, Long idperson, Long idrestauranttype) {
         this.name = name;
         this.description = description;
@@ -150,5 +153,13 @@ public class Restaurant {
 
     public void setIdrestauranttype(Long idrestauranttype) {
         this.idrestauranttype = idrestauranttype;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

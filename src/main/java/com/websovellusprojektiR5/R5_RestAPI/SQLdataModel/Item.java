@@ -27,6 +27,9 @@ public class Item {
     @Column(name="iditemcategory")
     private Long iditemcategory;
 
+    @Column(name="valid")
+    private boolean valid;
+
     public Item(String name, String description, String thumbnail_url, Double price, Long idrestaurant, Long iditemcategory) {
         this.name = name;
         this.description = description;
@@ -88,4 +91,12 @@ public class Item {
     }
 
     public void setIditemcategory(Long iditemcategory) { this.iditemcategory = iditemcategory; }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
 }
