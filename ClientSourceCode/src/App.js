@@ -161,8 +161,7 @@ function App() {
       GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
       //Set messagebar text, wait and change view
       let msg = "Restaurant added successfully";
-      console.log(restResponse);
-      if (restResponse.toLowerCase().includes("error")) msg += ". Got " + restResponse;     
+      //if (restResponse.toLowerCase().includes("error")) msg += ". Got " + restResponse;     
       ShowMessageBar(msg, "alert alert-success");
       setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
     }).catch(error => {
