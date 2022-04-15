@@ -27,6 +27,7 @@ function App() {
   const [filterCatID, setFilterCatID] = useState(-1);
   const [message, setMessage] = useState("");
   const [msgClass, setMsgClass] = useState("alert alert-primary");
+  const [restResponse, setRestResponse] = useState("");
 
   //* Set top bar message text (not visible if empty or restaurant view active) and Bootstrap style *
   //Example BootStrap styles: alert alert-primary, alert alert-danger, alert alert-success
@@ -66,7 +67,7 @@ function App() {
     var token = window.sessionStorage.getItem("sessionToken");
     var urole = "";
     var uid = -1;
-    if (token != null && token != "null") {
+    if (token !== null && token !== "null") {
       let decoded = jwt_decode(token);
       let newStateVars={...stateVars};
       newStateVars.loggedinToken = token;
@@ -94,7 +95,7 @@ function App() {
 
   //* NavBar Navigation button clicked : Update stateVars.viewState *
   const ChangeView = (view, newStateVars = "", forceUpdate = false) => {
-    if(view != stateVars.viewState || forceUpdate) {
+    if(view !== stateVars.viewState || forceUpdate) {
       if(newStateVars === "") newStateVars = {...stateVars};
       newStateVars.lastViewState = newStateVars.viewState;
       //Only owner can select some VIEWS. Otherwise set restaurants view
@@ -155,11 +156,13 @@ function App() {
     axios.post('https://webfoodr5.herokuapp.com/restaurants', jsonBody)
     .then(response => {
       //ok : Try to add image
-      const res = PutFile('https://webfoodr5.herokuapp.com/restaurantimage', response.data, formdata["itemImage"].files[0]);
-      let msg = "Restaurant added successfully";
-      if (res.toLowerCase().includes("error")) msg += ". Got " + res;
-      //ok : Get restaurants, set messagebar text, wait and change view
+      PutFile('https://webfoodr5.herokuapp.com/restaurantimage', response.data, formdata["itemImage"].files[0]);
+      //Get restaurants
       GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
+      //Set messagebar text, wait and change view
+      let msg = "Restaurant added successfully";
+      console.log(restResponse);
+      if (restResponse.toLowerCase().includes("error")) msg += ". Got " + restResponse;     
       ShowMessageBar(msg, "alert alert-success");
       setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
     }).catch(error => {
@@ -175,7 +178,8 @@ function App() {
     let fdata = new FormData();
     fdata.append('ID', id);
     fdata.append('file', image);
-    return await axios.put(path, fdata);
+    const temp = await axios.put(path, fdata);
+    setRestResponse(temp.data);
   }
 
   const GetRestaurants = (urole, uid) => {
