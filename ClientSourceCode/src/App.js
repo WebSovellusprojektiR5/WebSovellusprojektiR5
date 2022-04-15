@@ -130,7 +130,7 @@ function App() {
   const FilterRestaurantsBySearchText = (text) => {
     setFilterText(text);   
     let newrestaurants = restaurants.filter(n => n.name.toLowerCase().includes(text.toLowerCase()) || n.description.toLowerCase().includes(text.toLowerCase()));
-    if(stateVars.loggedinUserRole === "owner") newrestaurants = restaurants.filter(n => n.idperson === stateVars.loggedinUserID);
+    if(stateVars.loggedinUserRole === "owner") newrestaurants = newrestaurants.filter(n => n.idperson === stateVars.loggedinUserID);
     if(filterCatID >= 0 && filterCatID < 1000) newrestaurants = newrestaurants.filter(f => f.idrestauranttype === filterCatID);
     if(filterCatID >= 1000) newrestaurants = newrestaurants.filter(f => f.price_level === filterCatID - 1000);  
     setfilteredRestaurants(newrestaurants);
@@ -138,7 +138,7 @@ function App() {
   const FilterRestaurantsByCatID = (id) => {
     setFilterCatID(id);
     let newrestaurants = restaurants.filter(n => n.name.toLowerCase().includes(filterText.toLowerCase()) || n.description.toLowerCase().includes(filterText.toLowerCase()));
-    if(stateVars.loggedinUserRole === "owner") newrestaurants = restaurants.filter(n => n.idperson === stateVars.loggedinUserID);
+    if(stateVars.loggedinUserRole === "owner") newrestaurants = newrestaurants.filter(n => n.idperson === stateVars.loggedinUserID);
     if(id >= 0 && id < 1000) newrestaurants = newrestaurants.filter(f => f.idrestauranttype === id);
     if(id >= 1000) newrestaurants = newrestaurants.filter(f => f.price_level === id - 1000);
     setfilteredRestaurants(newrestaurants);
