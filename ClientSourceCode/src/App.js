@@ -13,7 +13,8 @@ import PersonalInfo from './components/PersonalInfo';
 import RestaurantInfo from './components/RestaurantInfo';
 import NewRestaurant from './components/NewRestaurant';
 import RestaurantsView from './components/RestaurantsView';
-import Shoppingcart from './components/Shoppingcart';
+import ShoppingCart from './components/ShoppingCart';
+import MenuItem from './components/MenuItem';
 
 
 function App() {
@@ -47,7 +48,8 @@ function App() {
     PERSONALINFO : "personalinfo",
     RESTAURANTINFO : "restaurantinfo",
     NEWRESTAURANT : "newrestaurant",
-    SHOPPINGCART : "Shoppingcart"
+    SHOPPINGCART : "shoppingcart",
+    MENUITEM : "menuitem"
   }
 
   //* Application state variables *
@@ -183,6 +185,12 @@ function App() {
     });
   }
 
+  const GetRestaurantMenu = (UID) => {
+   // axios.get('https://webfoodr5.herokuapp.com/itemsbyrestaurant', { params: {userID: UID} })
+  //  .then(response => { itemsByRestaurant(response.data); 
+  //  });
+ }
+
   //Return Single-Page application
   return (
     <div>
@@ -194,13 +202,13 @@ function App() {
       { stateVars.viewState === VIEWS.PERSONALINFO? <PersonalInfo data={personInfo}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO? <RestaurantInfo/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT? <NewRestaurant/> : <></> }
-      { stateVars.viewState === VIEWS.SHOPPINGCART? <Shoppingcart/> : <></> }
+      { stateVars.viewState === VIEWS.SHOPPINGCART? <ShoppingCart/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.SIGNUP ? <SignUp showMessage={ShowMessageBar} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?
         <div className="pageContainer">
         {
-            filteredRestaurants.map(i => <RestaurantsView key={i.id} item={i} />)
+            filteredRestaurants.map(i => <RestaurantsView key={i.id} item={i} onRestaurantClicked={GetRestaurantMenu} />)
         }
         </div> : <></> 
       }
