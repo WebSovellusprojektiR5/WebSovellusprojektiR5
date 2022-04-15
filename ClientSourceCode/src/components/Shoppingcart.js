@@ -4,7 +4,7 @@ export default function Shoppingcart(props) {
     return (
 
 <div className="containerTwo">
-          <form onSubmit = {handleSubmit}>
+          <form>
             <div className="mb-3">
               <label htmlFor="inputUserName" className="form-label">Username</label>
               <input type="text" className="form-control" id="inputUserName" required/>
