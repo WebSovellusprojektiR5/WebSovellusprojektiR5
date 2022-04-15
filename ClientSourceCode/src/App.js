@@ -294,7 +294,7 @@ function App() {
 
   //* Get Restaurant menu items and categories*
   const GetRestaurantMenuItems = (RID) => {
-    axios.get(RESTURL + '/itemsbyrestaurant', { params: {restaurandID: RID} })
+    axios.get(RESTURL + '/itemsbyrestaurant', { params: {restaurantID: RID} })
     .then(response => {
       setItems(response.data);
       setfilteredItems(response.data);
