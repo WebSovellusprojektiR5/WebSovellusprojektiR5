@@ -3,7 +3,7 @@ import {useState} from 'react';
 
 export default function Navbar(props) {
 
-        //VIEWS constant (ENUM)
+    //VIEWS constant (ENUM)
     const VIEWS = {
         RESTAURANTS : "restaurants",
         ITEMS : "items",
@@ -18,7 +18,7 @@ export default function Navbar(props) {
         SHOPPINGCART : "shoppingcart"
     }
 
-    //State Hooks
+    //State Hook
     const[searchValue, setSearchValue] = useState("");
 
     //Search key clicked
@@ -47,9 +47,12 @@ export default function Navbar(props) {
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.PERSONALINFO)}>Personal info</a>
-                                <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.RESTAURANTINFO)}>Restaurant Info</a>
-                                <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWMENUITEM)}>Create Menu Item</a>
-                                <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWRESTAURANT)}>Create Restaurant</a>
+                                { props.statevars.loggedinUserRole === "owner" ?
+                                <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.RESTAURANTINFO)}>Restaurant Info</a> : <></> }
+                                { props.statevars.loggedinUserRole === "owner" ?
+                                <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWMENUITEM)}>Create Menu Item</a> : <></> }
+                                { props.statevars.loggedinUserRole === "owner" ?
+                                <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWRESTAURANT)}>Create Restaurant</a> : <></> }
                                 <div className="dropdown-divider"></div>
                                 <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.DELETEACCOUNT)}>Delete account</a>
                             </div>
@@ -60,7 +63,7 @@ export default function Navbar(props) {
                         <button className="btn btn-outline-primary my-2 my-sm-0" onClick={() => props.onSearchBtnClicked(searchValue)}>Search</button>
                     </div>
                     <ul className="navbar-nav">
-                        { props.statevars.loggedinToken !== "" && props.statevars.loggedinUserRoleID > 0 ?
+                        { props.statevars.loggedinToken !== "" && props.statevars.loggedinUserRole !== "owner" ?
                         <li className="nav-item">
                             <a className="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.SHOPPINGCART)}>Shopping Cart</a>
                         </li> : <></> }

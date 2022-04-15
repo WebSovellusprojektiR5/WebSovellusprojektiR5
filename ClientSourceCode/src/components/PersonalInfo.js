@@ -3,19 +3,34 @@ import {useEffect} from 'react';
 
 export default function PersonalInfo(props) {
 
+    //Form submit button pressed : Validate password and fire app.js onSubmitBtnClicked
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        //Verify password
+        if(e.target["inputPassword1"].value === e.target["inputPassword2"].value && e.target["inputPassword1"].value.length > 8) {
+            //ok : call app.js function
+            props.onSubmitBtnClicked(e.target);
+        }   
+        else {
+            //nok : clear passwords and show error on messagebar
+            e.target["inputPassword1"].value = "";
+            e.target["inputPassword2"].value = "";
+            props.showMessage("Passwords do not match or password doesn't fill the minimum requirement (9 chars length)", "alert alert-danger");
+            setTimeout(() => props.showMessage(""), 7000);
+        }
+    }
+
     return (
     <div className="containerTree">
         <p>
             <a className="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Personal Info</a>
             <button className="btn btn-primary" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Order History</button>
-            
         </p>
-
         <div className="row">
             <div className="col">
                 <div className="collapse multi-collapse" id="multiCollapseExample1">
                     <div className="card card-body">
-                    <form className="row g-3">
+                    <form className="row g-3" onSubmit = {handleSubmit}>
                             <div className="col-md-6">
                                 <label htmlFor="inputFirstName" className="form-label">First Name</label>
                                 <input type="name" className="form-control" id="inputFirstName" defaultValue={props.data.firstname}/>
@@ -25,24 +40,24 @@ export default function PersonalInfo(props) {
                                 <input type="lastName" className="form-control" id="inputLastName" defaultValue={props.data.lastname}/>
                             </div>
                             <div className="col-md-6">
-                                <label htmlFor="inputPassword" className="form-label">Password</label>
-                                <input type="password" className="form-control" id="inputPassword"/>
+                                <label htmlFor="inputPassword1" className="form-label">Password</label>
+                                <input type="password" className="form-control" id="inputPassword1"/>
                             </div>
                             <div className="col-md-6">
-                                <label htmlFor="inputPassword" className="form-label">Confirm Password</label>
-                                <input type="password" className="form-control" id="inputPassword"/>
+                                <label htmlFor="inputPassword2" className="form-label">Confirm Password</label>
+                                <input type="password" className="form-control" id="inputPassword2"/>
                             </div>
                             <div className="col-12">
                                 <label htmlFor="inputPhoneNumber" className="form-label">Phone Number</label>  
                                 <input type="phoneNumber" className="form-control" id="inpuPhoneNumber" defaultValue={props.data.phone}/>
                             </div>
                             <div className="col-12">
-                                <label htmlFor="inputAddress" className="form-label">Address 1</label>
-                                <input type="text" className="form-control" id="inputAddress" defaultValue={props.data.address1} placeholder="Streetname, Apartment, studio, or floor"/>
+                                <label htmlFor="inputAddress1" className="form-label">Address 1</label>
+                                <input type="text" className="form-control" id="inputAddress1" defaultValue={props.data.address1} placeholder="Streetname, Apartment, studio, or floor"/>
                             </div>
                             <div className="col-12">
-                                <label htmlFor="inputAddress" className="form-label">Address 2</label>
-                                <input type="text" className="form-control" id="inputAddress" defaultValue={props.data.address2} placeholder="Streetname, Apartment, studio, or floor"/>
+                                <label htmlFor="inputAddress2" className="form-label">Address 2</label>
+                                <input type="text" className="form-control" id="inputAddress2" defaultValue={props.data.address2} placeholder="Streetname, Apartment, studio, or floor"/>
                             </div>
                             <div className="col-md-6">
                                 <label htmlFor="inputCity" className="form-label">City</label>
@@ -51,7 +66,11 @@ export default function PersonalInfo(props) {
                             <div className="col-md-3">
                                 <label htmlFor="inputZip" className="form-label">Zip</label>
                                 <input type="text" className="form-control" id="inputZip" defaultValue={props.data.city.split(' ')[0]}/>
-                            </div>                            
+                            </div>    
+                            <div className="col-12">
+                                <br/>
+                            <label className="form-label">Role: {props.roles.find(r => r.id === props.data.idrole).role}</label>
+                            </div>                        
                             <div className="col-12">
                                 <br/>
                                 <button type="submit" className="btn btn-primary">Edit</button>

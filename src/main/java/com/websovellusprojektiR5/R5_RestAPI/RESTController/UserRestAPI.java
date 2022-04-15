@@ -1,6 +1,5 @@
 package com.websovellusprojektiR5.R5_RestAPI.RESTController;
 
-import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.ItemCategory;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.User;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.UserRole;
 import com.websovellusprojektiR5.R5_RestAPI.Security.SecurityService;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @CrossOrigin
@@ -67,5 +65,19 @@ public class UserRestAPI {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(u, HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/users", consumes = {"application/json"})
+    public ResponseEntity<Map<String, String>> editUser(@RequestBody User user){
+        String ret = userService.editUser(user);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/users")
+    public ResponseEntity<Map<String, String>> deleteUser(@RequestParam Long userID){
+        String ret = userService.deleteUser(userID);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
     }
 }
