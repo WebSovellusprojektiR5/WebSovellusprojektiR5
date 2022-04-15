@@ -86,4 +86,20 @@ class R5RestApiApplicationTests {
 		String respond = userService.deleteUser(4L);
 		List<User> users = userService.getUsers();
 	}
+
+	@Test
+	void updateRestaurant(){
+		restaurant = restaurantService.getRestaurantByID(3L);
+		restaurant.setCity("Tampere");
+		restaurant.setName("joopajoo7");
+		restaurant.setDescription("Burgereita ja sen semmoista");
+		String respond = restaurantService.editRestaurant(restaurant);
+		List<Restaurant> restaurants = restaurantService.getRestaurants();
+	}
+
+	@Test
+	void deleteRestaurant(){
+		String respond = restaurantService.deleteRestaurant(2L);
+		List<Restaurant> restaurants = restaurantService.getRestaurants();
+	}
 }

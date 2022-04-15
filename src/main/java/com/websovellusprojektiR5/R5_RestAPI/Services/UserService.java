@@ -37,6 +37,7 @@ public class UserService {
         if(userRepo.findByUsername(user.getUsername()) != null){
             return "Error: User already exists!";
         }
+        user.setActive(true);
         user.setPassword(pwdEncoder.encode(user.getPassword()));
         userRepo.save(user);
         return "New user created OK";
@@ -55,8 +56,16 @@ public class UserService {
         if(userRepo.findById(userID).orElse(null) == null)
             return "Error: User doesn't exist!";
 
-        userRepo.deleteById(userID);
-        return "User deleted OK";
+        User user = userRepo.getById(userID);
+        user.setFirstname("");
+        user.setLastname("");
+        user.setAddress1("");
+        user.setAddress2("");
+        user.setCity("");
+        user.setPhone("");
+        user.setActive(false);
+        userRepo.save(user);
+        return "User data deleted OK";
     }
 
     public User login(String username, String password){

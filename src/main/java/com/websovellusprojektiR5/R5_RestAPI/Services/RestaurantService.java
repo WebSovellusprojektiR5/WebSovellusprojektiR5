@@ -25,12 +25,38 @@ public class RestaurantService {
     public List<Restaurant> getRestaurants(){
         return restaurantRepo.findAll();
     }
+    public List<Restaurant> getActiveRestaurants(){
+        return restaurantRepo.getActive();
+    }
     public List<RestaurantType> getRestaurantTypes(){
         return restaurantTypeRepo.findAll();
     }
 
+    public Restaurant getRestaurantByID(Long restaurantID){
+        return restaurantRepo.findByID(restaurantID);
+    }
+
     public Restaurant addRestaurant(Restaurant restaurant){
+        restaurant.setActive(true);
         return restaurantRepo.save(restaurant);
+    }
+
+    public String editRestaurant(Restaurant restaurant){
+        if(restaurantRepo.findById(restaurant.getId()).orElse(null) == null)
+            return "Error: Restaurant doesn't exist!";
+
+        restaurantRepo.save(restaurant);
+        return "Restaurant updated OK";
+    }
+
+    public String deleteRestaurant(Long restaurantID){
+        if(restaurantRepo.findById(restaurantID).orElse(null) == null)
+            return "Error: Restaurant doesn't exist!";
+
+        Restaurant restaurant = restaurantRepo.getById(restaurantID);
+        restaurant.setActive(false);
+        restaurantRepo.save(restaurant);
+        return "Restaurant deactivated OK";
     }
 
     public String updateRestaurantImage(Long restaurantID, MultipartFile mpf) {

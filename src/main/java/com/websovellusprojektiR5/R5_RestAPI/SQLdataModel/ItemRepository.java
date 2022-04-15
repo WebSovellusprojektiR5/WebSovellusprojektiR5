@@ -22,6 +22,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query(value = "SELECT iditemcategory FROM item WHERE idrestaurant = ?1", nativeQuery = true)
     List<Long> findCategoriesByRestaurantID(Long idrestaurant);
 
+    @Query(value = "SELECT * FROM item WHERE idrestaurant = ?1 AND valid = true", nativeQuery = true)
+    List<Item> findActiveByRestaurantID(Long idrestaurant);
+
     @Modifying
     @Transactional
     @Query(value = "UPDATE item SET thumbnail_url=?2 WHERE iditem = ?1", nativeQuery = true)
