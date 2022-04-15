@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Categories from './components/Categories';
+import ItemTypes from './components/ItemTypes';
 import NewMenuItem from './components/NewMenuItem';
 import DeleteAccount from './components/DeleteAccount';
 import PersonalInfo from './components/PersonalInfo';
@@ -18,11 +19,14 @@ import MenuItem from './components/MenuItem';
 
 function App() {
 
+  const RESTURL = 'https://webfoodr5.herokuapp.com';
+
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setfilteredRestaurants] = useState([]);
   const [items, setItems] = useState([]);
   const [filteredItems, setfilteredItems] = useState([]);
   const [restaurantTypes, setRestaurantTypes] = useState([]);
+  const [restaurantItemTypes, setRestaurantItemTypes] = useState([]);
   const [userRoles, setUserRoles] = useState([]);
   const [personInfo, setPersonInfo] = useState("");
   const [filterText, setFilterText] = useState("");
@@ -82,11 +86,11 @@ function App() {
       GetPersonInfo(decoded.userid);
     };
     GetRestaurants(urole, uid);
-    axios.get('https://webfoodr5.herokuapp.com/restauranttypes')
+    axios.get(RESTURL + '/restauranttypes')
     .then(response => {
       setRestaurantTypes(response.data);
     });
-    axios.get('https://webfoodr5.herokuapp.com/userroles')
+    axios.get(RESTURL + '/userroles')
     .then(response => {
       setUserRoles(response.data);
     });
@@ -140,6 +144,20 @@ function App() {
     setfilteredRestaurants(newrestaurants);
   }
 
+  //* Update filteredItems object *
+  const FilterItemsBySearchText = (text) => {
+    setFilterText(text);   
+    let newitems = items.filter(n => n.name.toLowerCase().includes(text.toLowerCase()) || n.description.toLowerCase().includes(text.toLowerCase()));
+    if(filterCatID >= 0) newitems = newitems.filter(f => f.iditemCategory === filterCatID);
+    setfilteredItems(newitems);
+  }
+  const FilterItemsByCatID = (id) => {
+    setFilterCatID(id);
+    let newitems = items.filter(n => n.name.toLowerCase().includes(filterText.toLowerCase()) || n.description.toLowerCase().includes(filterText.toLowerCase()));
+    if(id >= 0) newitems = newitems.filter(f => f.iditemCategory === id);
+    setfilteredItems(newitems);
+  }
+
   //* Create restaurant button clicked : POST new restaurant *
   const CreateRestaurantBtnClicked = (formdata) => {
     //Generate JSON body
@@ -155,13 +173,13 @@ function App() {
       "idperson" : stateVars.loggedinUserID,
     }
     //POST query
-    axios.post('https://webfoodr5.herokuapp.com/restaurants', jsonBody)
+    axios.post(RESTURL + '/restaurants', jsonBody)
     .then(response => {
       //ok : Try to add image
       let fdata = new FormData();
       fdata.append('ID', response.data);
       fdata.append('file', formdata["itemImage"].files[0]);
-      axios.put('https://webfoodr5.herokuapp.com/restaurantimage', fdata)
+      axios.put(RESTURL + '/restaurantimage', fdata)
       .then(response => {
         ShowMessageBar("Restaurant added successfully", "alert alert-success");
         GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
@@ -180,8 +198,9 @@ function App() {
     }); 
   }
 
+  //* Get restaurants *
   const GetRestaurants = (urole, uid) => {
-    axios.get('https://webfoodr5.herokuapp.com/restaurants')
+    axios.get(RESTURL + '/restaurants')
     .then(response => {
       setRestaurants(response.data);
       var rants = response.data;
@@ -189,8 +208,6 @@ function App() {
       setfilteredRestaurants(rants);
     });
   }
-
-
 
   //* Signup Submit button clicked : POST new user *
   const SignupBtnClicked = (formdata) => {
@@ -208,7 +225,7 @@ function App() {
       "idrole" : formdata["selectRole"].value
     };
     //POST query
-    axios.post('https://webfoodr5.herokuapp.com/users', jsonBody)
+    axios.post(RESTURL + '/users', jsonBody)
     .then(response => {
       //ok : Set messagebar text, wait and change view
       ShowMessageBar(response.data.message, "alert alert-success");
@@ -228,7 +245,7 @@ function App() {
 
   //* Signin Submit button clicked POST login data and get token *
   const SigninBtnClicked = (formdata) => {
-      axios.post('https://webfoodr5.herokuapp.com/loginbasic', {}, {
+      axios.post(RESTURL + '/loginbasic', {}, {
       auth: {
         username: formdata["inputUserName"].value,
         password: formdata["inputPassword"].value
@@ -270,28 +287,32 @@ function App() {
 
   //* Get person info *
   const GetPersonInfo = (UID) => {
-    axios.get('https://webfoodr5.herokuapp.com/user', { params: {userID: UID} })
+    axios.get(RESTURL + '/user', { params: {userID: UID} })
     .then(response => { setPersonInfo(response.data); 
     });
   }
 
-  //* Get Restaurant menu items *
+  //* Get Restaurant menu items and categories*
   const GetRestaurantMenuItems = (RID) => {
-    axios.get('https://webfoodr5.herokuapp.com/itemsbyrestaurant', { params: {restaurandID: RID} })
+    axios.get(RESTURL + '/itemsbyrestaurant', { params: {restaurandID: RID} })
     .then(response => {
       setItems(response.data);
       setfilteredItems(response.data);
-      console.log(response.data);
-      //VAIHDA NÄKYMÄÄKIN!
+      axios.get(RESTURL + '/categoriesbyrestaurant', { params: {restaurantID: RID} })
+      .then(response => { 
+        setRestaurantItemTypes(response.data);
+        ChangeView(VIEWS.MENUITEM);
+      });
     });
   }
 
   //Return Single-Page application
   return (
     <div>
-      <Navbar onNavItemClicked={ChangeView} onSearchBtnClicked={FilterRestaurantsBySearchText} onSignoutClicked={SignOut} statevars={stateVars} />
-      { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes} onItemClicked={FilterRestaurantsByCatID}/> : 
-        message !== "" ? <div className="messageArea"><div className={msgClass} role="alert">{message}</div></div> : <div className="messageArea"/>}
+      <Navbar onNavItemClicked={ChangeView} onSearchBtnClicked={stateVars.viewState === VIEWS.RESTAURANTS ? FilterRestaurantsBySearchText : FilterItemsBySearchText} onSignoutClicked={SignOut} statevars={stateVars} />
+      { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes} onItemClicked={FilterRestaurantsByCatID}/> : <></> }
+      { stateVars.viewState === VIEWS.MENUITEM ? <ItemTypes types={restaurantItemTypes} onItemClicked={FilterItemsByCatID}/> : <></> }
+      { message !== "" ? <div className="messageArea"><div className={msgClass} role="alert">{message}</div></div> : <div className="messageArea"/>}
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
       { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }

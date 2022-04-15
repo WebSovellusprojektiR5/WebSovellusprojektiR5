@@ -2,6 +2,7 @@ package com.websovellusprojektiR5.R5_RestAPI.Services;
 
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +24,7 @@ public class RestaurantService {
 
     @PostConstruct
     public List<Restaurant> getRestaurants(){
-        return restaurantRepo.findAll();
+        return restaurantRepo.findAll(Sort.by("name"));
     }
     public List<Restaurant> getActiveRestaurants(){
         return restaurantRepo.getActive();
