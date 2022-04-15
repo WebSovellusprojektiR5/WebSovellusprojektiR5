@@ -15,7 +15,6 @@ import NewRestaurant from './components/NewRestaurant';
 import RestaurantsView from './components/RestaurantsView';
 import Shoppingcart from './components/Shoppingcart';
 
-
 function App() {
 
   const [restaurants, setRestaurants] = useState([]);
@@ -27,7 +26,6 @@ function App() {
   const [filterCatID, setFilterCatID] = useState(-1);
   const [message, setMessage] = useState("");
   const [msgClass, setMsgClass] = useState("alert alert-primary");
-  const [restResponse, setRestResponse] = useState("");
 
   //* Set top bar message text (not visible if empty or restaurant view active) and Bootstrap style *
   //Example BootStrap styles: alert alert-primary, alert alert-danger, alert alert-success
@@ -122,7 +120,7 @@ function App() {
 
   //* Update filteredRestaurants object *
   const FilterRestaurantsBySearchText = (text) => {
-    setFilterText(text);
+    setFilterText(text);   
     let newrestaurants = restaurants.filter(n => n.name.toLowerCase().includes(text.toLowerCase()) || n.description.toLowerCase().includes(text.toLowerCase()));
     if(stateVars.loggedinUserRole === "owner") newrestaurants = restaurants.filter(n => n.idperson === stateVars.loggedinUserID);
     if(filterCatID >= 0 && filterCatID < 1000) newrestaurants = newrestaurants.filter(f => f.idrestauranttype === filterCatID);
@@ -156,29 +154,26 @@ function App() {
     axios.post('https://webfoodr5.herokuapp.com/restaurants', jsonBody)
     .then(response => {
       //ok : Try to add image
-      PutFile('https://webfoodr5.herokuapp.com/restaurantimage', response.data, formdata["itemImage"].files[0]);
-      //Get restaurants
-      GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
-      //Set messagebar text, wait and change view
-      let msg = "Restaurant added successfully";
-      //if (restResponse.toLowerCase().includes("error")) msg += ". Got " + restResponse;     
-      ShowMessageBar(msg, "alert alert-success");
-      setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
+      let fdata = new FormData();
+      fdata.append('ID', response.data);
+      fdata.append('file', formdata["itemImage"].files[0]);
+      axios.put('https://webfoodr5.herokuapp.com/restaurantimage', fdata)
+      .then(response => {
+        ShowMessageBar("Restaurant added successfully", "alert alert-success");
+        GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
+        setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
+      })
+      .catch(error => {
+        ShowMessageBar(error.toString(), "alert alert-success");
+        GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
+        setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
+      })
     }).catch(error => {
       //nok : Set messagebar errormessage, wait and set info message
       if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
       else ShowMessageBar(error.response.data.message, "alert alert-danger");
       setTimeout(() => ShowMessageBar("Create Restaurant - Enter valid data to each field"), 6000);
     }); 
-  }
-
-  //* Generic PUT file call *
-  const PutFile = async (path, id, image) => {
-    let fdata = new FormData();
-    fdata.append('ID', id);
-    fdata.append('file', image);
-    const temp = await axios.put(path, fdata);
-    setRestResponse(temp.data);
   }
 
   const GetRestaurants = (urole, uid) => {
