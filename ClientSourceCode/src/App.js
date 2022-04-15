@@ -13,7 +13,8 @@ import PersonalInfo from './components/PersonalInfo';
 import RestaurantInfo from './components/RestaurantInfo';
 import NewRestaurant from './components/NewRestaurant';
 import RestaurantsView from './components/RestaurantsView';
-import Shoppingcart from './components/Shoppingcart';
+import ShoppingCart from './components/ShoppingCart';
+import MenuItem from './components/MenuItem';
 
 function App() {
 
@@ -46,7 +47,8 @@ function App() {
     PERSONALINFO : "personalinfo",
     RESTAURANTINFO : "restaurantinfo",
     NEWRESTAURANT : "newrestaurant",
-    SHOPPINGCART : "Shoppingcart"
+    SHOPPINGCART : "shoppingcart",
+    MENUITEM : "menuitem"
   }
 
   //* Application state variables *
@@ -269,6 +271,11 @@ function App() {
     });
   }
 
+  const GetRestaurantMenu = (UID) => {
+   // axios.get('https://webfoodr5.herokuapp.com/itemsbyrestaurant', { params: {userID: UID} })
+  //  .then(response => { itemsByRestaurant(response.data); 
+  //  });
+ }
 
   //Return Single-Page application
   return (
@@ -287,7 +294,7 @@ function App() {
       { stateVars.viewState === VIEWS.RESTAURANTS ?
         <div className="pageContainer">
         {
-            filteredRestaurants.map(i => <RestaurantsView key={i.id} item={i} />)
+            filteredRestaurants.map(i => <RestaurantsView key={i.id} item={i} onRestaurantClicked={GetRestaurantMenu} />)
         }
         </div> : <></> 
       }
