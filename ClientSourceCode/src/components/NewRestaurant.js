@@ -25,7 +25,7 @@ export default function NewRestaurant(props) {
         <form className="row g-3" encType="multipart/form-data" onSubmit = {handleSubmit}>
             <div className="col-md-6">
                 <label htmlFor="inputRestaurantName" className="form-label">Restaurant Name</label>
-                <input type="restaurantName" className="form-control" id="inputRestaurantName" required/>
+                <input type="restaurantName" maxLength="80" className="form-control" id="inputRestaurantName" required/>
             </div>
 
             <div className="form-group">
@@ -35,25 +35,23 @@ export default function NewRestaurant(props) {
             
             <div className="col-md-12">
                 <label htmlFor="inputSlogan" className="form-label">Slogan</label>
-                <input type="slogan" className="form-control" id="inputSlogan" required/>
+                <input type="text" maxLength="255" className="form-control" id="inputSlogan" required/>
             </div>
-
-
             <div className="col-12">
                 <label htmlFor="inputAddress1" className="form-label">Address 1</label>
-                <input type="text" className="form-control" id="inputAddress1" required/>
+                <input type="text" maxLength="80" className="form-control" id="inputAddress1" required/>
             </div>
             <div className="col-12">
                 <label htmlFor="inputAddress2" className="form-label">Address 2</label>
-                <input type="text" className="form-control" id="inputAddress2" placeholder="Streetname, Apartment, studio, or floor"/>
+                <input type="text" maxLength="80" className="form-control" id="inputAddress2" placeholder="Streetname, Apartment, studio, or floor"/>
             </div>
             <div className="col-md-6">
                 <label htmlFor="inputCity" className="form-label">City</label>
-                <input type="text" className="form-control" id="inputCity" required/>
+                <input type="text" maxLength="45" className="form-control" id="inputCity" required/>
             </div>
             <div className="col-md-6">
                 <label htmlFor="inputPhone" className="form-label">Phone Number</label>
-                <input type="text" className="form-control" id="inputPhone" required/>
+                <input type="tel" maxLength="80" className="form-control" id="inputPhone" required/>
             </div>
 
 

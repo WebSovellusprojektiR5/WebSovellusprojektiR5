@@ -15,7 +15,8 @@ export default function Navbar(props) {
         PERSONALINFO : "personalinfo",
         RESTAURANTINFO : "restaurantinfo",
         NEWRESTAURANT : "newrestaurant",
-        SHOPPINGCART : "shoppingcart"
+        SHOPPINGCART : "shoppingcart",
+        MENUITEM : "menuitem"
     }
 
     //State Hook
@@ -47,9 +48,9 @@ export default function Navbar(props) {
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.PERSONALINFO)}>Personal info</a>
-                                { props.statevars.loggedinUserRole === "owner" ?
+                                { props.statevars.loggedinUserRole === "owner" && props.statevars.viewState === VIEWS.MENUITEM ?
                                 <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.RESTAURANTINFO)}>Restaurant Info</a> : <></> }
-                                { props.statevars.loggedinUserRole === "owner" ?
+                                { props.statevars.loggedinUserRole === "owner" && props.statevars.viewState === VIEWS.MENUITEM ? 
                                 <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWMENUITEM)}>Create Menu Item</a> : <></> }
                                 { props.statevars.loggedinUserRole === "owner" ?
                                 <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWRESTAURANT)}>Create Restaurant</a> : <></> }

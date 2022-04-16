@@ -7,7 +7,7 @@ export default function SignUp(props) {
     const handleSubmit = (e) => {
         e.preventDefault();
         //Verify password
-        if(e.target["inputPassword1"].value === e.target["inputPassword2"].value && e.target["inputPassword1"].value.length > 8) {
+        if(e.target["inputPassword1"].value === e.target["inputPassword2"].value) {
             //ok : call app.js function
             props.onSubmitBtnClicked(e.target);
         }   
@@ -29,43 +29,43 @@ export default function SignUp(props) {
         <form className="row g-3" onSubmit = {handleSubmit}>
             <div className="col-md-6">
                 <label htmlFor="inputFirstName" className="form-label">First Name</label>
-                <input type="text" className="form-control" id="inputFirstName" required/>
+                <input type="text" maxLength="30" className="form-control" id="inputFirstName" required/>
             </div>
             <div className="col-md-6">
                 <label htmlFor="inputLastName" className="form-label">Last Name</label>
-                <input type="text" className="form-control" id="inputLastName" required/>
+                <input type="text" maxLength="30" className="form-control" id="inputLastName" required/>
             </div>
             <div className="col-md-6">
                 <label htmlFor="inputUserName" className="form-label">User name</label>
-                <input type="text" className="form-control" id="inputUserName" required/>
+                <input type="text" maxLength="16" className="form-control" id="inputUserName" required/>
             </div>
             <div className="col-md-6">
                 <label htmlFor="inputPhone" className="form-label">Phone Number</label>
-                <input type="text" className="form-control" id="inputPhone" required/>
+                <input type="tel" maxLength="20" className="form-control" id="inputPhone" required/>
             </div>
             <div className="col-md-6">
                 <label htmlFor="inputPassword1" className="form-label">Password</label>
-                <input type="password" className="form-control" id="inputPassword1" required/>
+                <input type="password" minLength="10" maxLength="80" className="form-control" id="inputPassword1" required/>
             </div>
             <div className="col-md-6">
                 <label htmlFor="inputPassword2" className="form-label">Confirm Password</label>
-                <input type="password" className="form-control" id="inputPassword2" required/>
+                <input type="password" minLength="10" maxLength="80" className="form-control" id="inputPassword2" required/>
             </div>
             <div className="col-12">
                 <label htmlFor="inputAddress1" className="form-label">Address 1</label>
-                <input type="text" className="form-control" id="inputAddress1" required/>
+                <input type="text" maxLength="80" lassName="form-control" id="inputAddress1" required/>
             </div>
             <div className="col-12">
                 <label htmlFor="inputAddress2" className="form-label">Address 2</label>
-                <input type="text" className="form-control" id="inputAddress2" placeholder="Streetname, Apartment, studio, or floor"/>
+                <input type="text" maxLength="80" className="form-control" id="inputAddress2" placeholder="Streetname, Apartment, studio, or floor"/>
             </div>
             <div className="col-md-6">
                 <label htmlFor="inputCity" className="form-label">City</label>
-                <input type="text" className="form-control" id="inputCity" required/>
+                <input type="text" maxLength="20" className="form-control" id="inputCity" required/>
             </div>
             <div className="col-md-2">
                 <label htmlFor="inputZip" className="form-label">Zip</label>
-                <input type="text" className="form-control" id="inputZip" required/>
+                <input type="text" maxLength="10" className="form-control" id="inputZip" required/>
             </div>
             <div className="col-12">
                 <label htmlFor="RoleSelect" className="form-label">Choose Role</label>

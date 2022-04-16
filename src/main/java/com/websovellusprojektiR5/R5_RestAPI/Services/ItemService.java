@@ -52,43 +52,35 @@ public class ItemService {
         return itemRepo.findByRestaurantIDitemcategoryID(rid, cid);
     }
 
-    public Boolean addItemCategory (ItemCategory itemCategory) {
-        if(itemCategoryRepo.findByCategoryName(itemCategory.getName()) == null) {
-            itemCategoryRepo.save(itemCategory);
-            return true;
+    public ItemCategory addItemCategory (ItemCategory itemCategory) {
+        ItemCategory cat = itemCategoryRepo.findByCategoryName(itemCategory.getName());
+        if(cat == null) {
+            cat = itemCategoryRepo.save(itemCategory);
         }
-        else return false;
+        return cat;
     }
 
-    public String addItem (Item item) {
-        if(itemRepo.findByRestaurantIDname(item.getIdrestaurant(), item.getName()).size() > 0) {
-            return "Item on jo olemassa!";
-        }
-        if(restaurantRepo.findById(item.getIdrestaurant()).orElse(null) == null)
-            return "Ravintolaa ei ole olemassa";
-        if(itemCategoryRepo.findByID(item.getIditemCategory()) == null)
-            return "Kategoriaa ei ole olemassa!";
+    public Item addItem (Item item) {
         item.setActive(true);
-        itemRepo.save(item);
-        return "";
+        return itemRepo.save(item);
     }
 
-    public String editItemImage(Long id, MultipartFile mpf) {
-        if (itemRepo.findById(id).orElse(null) == null) return "Item ei löydy!";
+    public String updateItemImage(Long id, MultipartFile mpf) {
+        if (itemRepo.findById(id).orElse(null) == null) return "Item not found!";
         String imageURL = imageService.UploadImage(mpf);
-        if (imageURL == "") return "Kuvan lataaminen pilveen epäonnistui!";
+        if (imageURL == "") return "Error: Uploading picture to Cloudinary failed!";
         if (itemRepo.updateItemImage(id, imageURL) > 0)
-            return "Kuva lisätty OK! URL: " + imageURL;
-        else return "Kuvan lisääminen kantaan epäonnistui!";
+            return "Picture updated OK! URL: " + imageURL;
+        else return "Error: Updating picture URL to database failed!";
     }
 
-    public String editItemCategoryImage(Long id, MultipartFile mpf) {
-        if (itemCategoryRepo.findById(id).orElse(null) == null) return "Item kategoriaa ei löydy!";
+    public String updateItemCategoryImage(Long id, MultipartFile mpf) {
+        if (itemCategoryRepo.findById(id).orElse(null) == null) return "Item category not found!";
         String imageURL = imageService.UploadImage(mpf);
-        if (imageURL == "") return "Kuvan lataaminen pilveen epäonnistui!";
+        if (imageURL == "") return "Error: Uploading picture to Cloudinary failed!";
         if (itemCategoryRepo.updateItemCategoryImage(id, imageURL) > 0)
-            return "Kuva lisätty OK! URL: " + imageURL;
-        else return "Kuvan lisääminen kantaan epäonnistui!";
+            return "Picture updated OK! URL: " + imageURL;
+        else return "Error: Updating picture URL to database failed!";
     }
 
     public String editItem (Item item) {
