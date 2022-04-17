@@ -41,8 +41,8 @@ export default function NewMenuItem(props) {
             </div>
 
             <div className="col-md-3">
-                <label htmlFor="inputPassword4" className="form-label">Price</label>
-                <input type="number" min="0.01" max="10000.00" step="0.01" className="form-control" id="inputPrice" required/>
+                <label htmlFor="inputPrice" className="form-label">Price</label>
+                <input type="number" min="0.01" max="10000.00" step="0.01" placeholder="1.00" className="form-control" id="inputPrice" required/>
             </div>
             <div className="col-md-6">
                 <label htmlFor="ItemType" className="form-label">Category</label>
