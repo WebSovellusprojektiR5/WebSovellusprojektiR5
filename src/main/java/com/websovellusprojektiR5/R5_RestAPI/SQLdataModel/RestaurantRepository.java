@@ -16,12 +16,15 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Query(value = "UPDATE restaurant SET thumbnail_url=?2 WHERE idrestaurant = ?1", nativeQuery = true)
     int updateRestaurantImage(Long restaurantID, String url);
 
-    @Query(value = "SELECT * FROM restaurant WHERE idrestaurant = ?1 ORDER BY name", nativeQuery = true)
+    //return restaurant info by id
+    @Query(value = "SELECT * FROM restaurant WHERE idrestaurant = ?1", nativeQuery = true)
     Restaurant findByID(Long restaurantID);
 
+    //return active restaurants from specific owner
     @Query(value = "SELECT * FROM restaurant WHERE owner_idperson = ?1 AND active = true", nativeQuery = true)
     List<Restaurant> findByOwnerID(Long ownerID);
 
+    //return all active restaurants
     @Query(value = "SELECT * FROM restaurant WHERE active = true ORDER BY name", nativeQuery = true)
     List<Restaurant> getActive();
 }

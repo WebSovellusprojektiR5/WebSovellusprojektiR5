@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface OrderItemsRepository extends JpaRepository<OrderItems, Long> {
+    //return items in order
     @Query(value = "SELECT * FROM order_has_items WHERE idorder = ?1", nativeQuery = true)
     List<OrderItems> findItemsInOrder(Long orderID);
 }
