@@ -16,6 +16,8 @@ public class UserService {
     UserRoleRepository userRoleRepo;
     @Autowired
     PasswordEncoder pwdEncoder;
+    @Autowired
+    RestaurantRepository restaurantRepo;
 
     @PostConstruct
     public List<User> getUsers(){
@@ -55,6 +57,9 @@ public class UserService {
     public String deleteUser(Long userID){
         if(userRepo.findById(userID).orElse(null) == null)
             return "Error: User doesn't exist!";
+
+        if(restaurantRepo.findByOwnerID(userID).size() > 0)
+            return "Error: Cannot delete account! This account is linked to active restaurants!";
 
         User user = userRepo.getById(userID);
         user.setFirstname("");

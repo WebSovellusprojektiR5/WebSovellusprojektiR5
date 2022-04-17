@@ -61,7 +61,7 @@ public class RestaurantService {
     }
 
     public String updateRestaurantImage(Long restaurantID, MultipartFile mpf) {
-        if (restaurantRepo.findById(restaurantID).orElse(null) == null) return "Ravintolaa ei löydy!";
+        if (restaurantRepo.findById(restaurantID).orElse(null) == null) return "Restaurant not found!";
         String imageURL = imageService.UploadImage(mpf);
         if (imageURL == "") return "Error: Uploading picture to Cloudinary failed!";
         if (restaurantRepo.updateRestaurantImage(restaurantID, imageURL) > 0)

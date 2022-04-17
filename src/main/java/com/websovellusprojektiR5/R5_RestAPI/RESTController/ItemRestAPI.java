@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -43,16 +44,16 @@ public class ItemRestAPI {
     }
 
     @PostMapping(path = "/categories", consumes = {"application/json"})
-    public ResponseEntity<Map<String, String>> addItemCategory(@RequestBody ItemCategory category){
-        if (itemService.addItemCategory(category)) return new ResponseEntity<> (HttpStatus.OK);
-        else return new ResponseEntity<>(Map.of("message", "Kategoria on jo olemassa!"), HttpStatus.NOT_ACCEPTABLE);
+    public ItemCategory addItemCategory(@RequestBody ItemCategory category){
+        return itemService.addItemCategory(category);
     }
 
     @PostMapping(path = "/items", consumes = {"application/json"})
-    public ResponseEntity<Map<String, String>> addItem(@RequestBody Item item){
-        String status = itemService.addItem(item);
-        if (status == "") return new ResponseEntity<> (HttpStatus.OK);
-        else return new ResponseEntity<>(Map.of("message", status), HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity<Long> addItem(@RequestBody Item item){
+        Item res = itemService.addItem(item);
+        Long ret = -1l;
+        if (res != null) ret = res.getId();
+        return new ResponseEntity<Long> (ret, HttpStatus.OK);
     }
 
     @PutMapping(path = "/items", consumes = {"application/json"})
@@ -68,5 +69,9 @@ public class ItemRestAPI {
         if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
         else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
     }
-    //Kuvan lisääminen vielä puuttuu.. pitäisikö sisällyttää addItem ja addItemCatagoryyn?
+
+    @PutMapping(path = "/itemimage")
+    public String editRestaurantimage(@RequestParam Long ID, @RequestParam("file") MultipartFile mpf){
+        return itemService.updateItemImage(ID, mpf);
+    }
 }

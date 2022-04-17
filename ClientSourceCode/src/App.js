@@ -20,6 +20,7 @@ import MenuItem from './components/MenuItem';
 function App() {
 
   const RESTURL = 'https://webfoodr5.herokuapp.com';
+  //const RESTURL = 'http://localhost:8080';
 
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setfilteredRestaurants] = useState([]);
@@ -33,6 +34,8 @@ function App() {
   const [filterCatID, setFilterCatID] = useState(-1);
   const [message, setMessage] = useState("");
   const [msgClass, setMsgClass] = useState("alert alert-primary");
+  const [activeRestaurantID, setActiveRestaurantID] = useState(-1);
+  const [activeRestaurantName, setActiveRestaurantName] = useState("");
 
   //* Set top bar message text (not visible if empty or restaurant view active) and Bootstrap style *
   //Example BootStrap styles: alert alert-primary, alert alert-danger, alert alert-success
@@ -64,8 +67,7 @@ function App() {
     "loggedinToken" : "",
     "loggedinUserRoleID" : -1,
     "loggedinUserRole" : "",
-    "loggedinUserID" : -1,
-    "selectedRestaurantID" : -1
+    "loggedinUserID" : -1
   });
 
   //* First entry or page refresh: GET restaurants, restauranttypes and userroles. Sign in if token is stored *
@@ -97,8 +99,6 @@ function App() {
 
   }, []);
 
-
-
   //* NavBar Navigation button clicked : Update stateVars.viewState *
   const ChangeView = (view, newStateVars = "", forceUpdate = false) => {
     if(view !== stateVars.viewState || forceUpdate) {
@@ -109,6 +109,8 @@ function App() {
        (view === VIEWS.NEWMENUITEM || view === VIEWS.NEWRESTAURANT || view === VIEWS.RESTAURANTINFO)) view = VIEWS.RESTAURANTS;  
       newStateVars.viewState = view;
       setStateVars(newStateVars); 
+      //Hide Active restaurant name bar
+      if (view !== VIEWS.NEWMENUITEM && view !== VIEWS.MENUITEM && VIEWS !== VIEWS.RESTAURANTINFO) setActiveRestaurantName("");
       ShowMessageBar("");
     } 
   }
@@ -186,7 +188,7 @@ function App() {
         setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
       })
       .catch(error => {
-        ShowMessageBar(error.toString(), "alert alert-success");
+        ShowMessageBar(error.toString(), "alert alert-danger");
         GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
         setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
       })
@@ -209,8 +211,54 @@ function App() {
     });
   }
 
+  //* Create Item button clicked : POST new item *
+  const CreateItemBtnClicked = (formdata) => {
+    //Generate JSON body
+    let jsonBody = {
+      "name" : formdata["inputItemName"].value,
+      "description" : formdata["inputDescription"].value,
+      "price" : parseFloat(formdata["inputPrice"].value),
+      "idrestaurant" : activeRestaurantID
+    }
+    //ok : Add item category if not exist already
+    axios.post(RESTURL + '/categories', {"name" : formdata["ItemType"].value })
+    .then(response => {   
+      jsonBody["iditemcategory"] = response.data.id;
+      //ok : Add item
+      axios.post(RESTURL + '/items', jsonBody)
+      .then(response => {
+        //ok : Try to add image
+        let fdata = new FormData();
+        fdata.append('ID', response.data);
+        fdata.append('file', formdata["itemImage"].files[0]);
+        axios.put(RESTURL + '/itemimage', fdata)
+        .then(response => {
+          ShowMessageBar("Item added successfully", "alert alert-success");
+          GetRestaurantMenuItems(activeRestaurantID);
+          setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.MENUITEM); }, 3000);
+        })
+        .catch(error => {
+          //nok: Image adding failed (Item is added without image)
+          ShowMessageBar(error.toString(), "alert alert-danger");
+          GetRestaurantMenuItems(activeRestaurantID);
+          setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.MENUITEM); }, 3000);
+        })
+      })
+      .catch(error => {
+        //nok: Item adding failed!
+        ShowMessageBar(error.toString(), "alert alert-danger");
+        setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.MENUITEM); }, 3000);
+      })        
+    })
+    .catch(error => {
+      //nok: Item category failed!
+      ShowMessageBar(error.toString(), "alert alert-danger");
+      setTimeout(() => ShowMessageBar("Create Menu Item - Enter valid data to each field"), 6000);
+    });        
+  }
+
   //* Signup Submit button clicked : POST new user *
-  const SignupBtnClicked = (formdata) => {
+  const SignupBtnClicked = (formdata, method="POST") => {
     //Generate JSON body
     let city = formdata["inputZip"].value + ' ' + formdata["inputCity"].value;
     let jsonBody = {
@@ -224,8 +272,11 @@ function App() {
       "password" : formdata["inputPassword1"].value,
       "idrole" : formdata["selectRole"].value
     };
-    //POST query
-    axios.post(RESTURL + '/users', jsonBody)
+    if(method === "PUT") jsonBody["id"] = stateVars.loggedinUserID;
+    //POST/PUT query
+    const config = { method: method, url: RESTURL + '/users', data: jsonBody }
+    //axios.post(RESTURL + '/users', jsonBody)
+    axios(config)
     .then(response => {
       //ok : Set messagebar text, wait and change view
       ShowMessageBar(response.data.message, "alert alert-success");
@@ -234,14 +285,36 @@ function App() {
       //nok : Set messagebar errormessage, wait and set info message
       if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
       else ShowMessageBar(error.response.data.message, "alert alert-danger");
-      setTimeout(() => ShowMessageBar("SIGN UP - Enter valid data to each field"), 6000);
+      setTimeout(() => {method === "POST" ? ShowMessageBar("SIGN UP - Enter valid data to each field") : ShowMessageBar("")}, 6000); 
     });
   }
 
+  //* Edit user button clicked: edit user (PUT) *
   const EditUserBtnClicked = (formdata) => {
-    //KESKEN! KUTSU PUT user kun REST on koodattu (mahd. käyttää ylläolevaa?)
-    console.log(formdata);
+    SignupBtnClicked(formdata, "PUT");
   }
+
+  //* Delete user account clicked : clear user data and set not active (DELETE) *
+  const DeleteAccountClicked = (confirmed) => {
+    if(confirmed) {
+      let fdata = new FormData();
+      fdata.append('userID', stateVars.loggedinUserID);
+      axios.put(RESTURL + "/userdelete", fdata)
+      .then(response => {
+        //ok : Set messagebar text, wait and change view
+        ShowMessageBar(response.data.message, "alert alert-success");
+        setTimeout(() => { ShowMessageBar(""); SignOut(); }, 3000);
+        SignOut();
+      })
+      .catch(error => {
+        //nok : Set messagebar errormessage, wait and set info message
+        if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
+        else ShowMessageBar(error.response.data.message, "alert alert-danger");
+        setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+      });
+    }
+    else ChangeView(stateVars.lastViewState);
+  } 
 
   //* Signin Submit button clicked POST login data and get token *
   const SigninBtnClicked = (formdata) => {
@@ -301,6 +374,8 @@ function App() {
       axios.get(RESTURL + '/categoriesbyrestaurant', { params: {restaurantID: RID} })
       .then(response => { 
         setRestaurantItemTypes(response.data);
+        setActiveRestaurantID(RID);
+        setActiveRestaurantName(restaurants.filter(i => i.id === RID)[0].name);
         ChangeView(VIEWS.MENUITEM);
       });
     });
@@ -311,10 +386,11 @@ function App() {
     <div>
       <Navbar onNavItemClicked={ChangeView} onSearchBtnClicked={stateVars.viewState === VIEWS.RESTAURANTS ? FilterRestaurantsBySearchText : FilterItemsBySearchText} onSignoutClicked={SignOut} statevars={stateVars} />
       { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes} onItemClicked={FilterRestaurantsByCatID}/> : <></> }
+      { activeRestaurantName !== "" ? <div className="messageArea"><div className="alert alert-info" role="alert">{activeRestaurantName}</div></div> : <></>}
       { stateVars.viewState === VIEWS.MENUITEM ? <ItemTypes types={restaurantItemTypes} onItemClicked={FilterItemsByCatID}/> : <></> }
       { message !== "" ? <div className="messageArea"><div className={msgClass} role="alert">{message}</div></div> : <div className="messageArea"/>}
-      { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem/> : <></> }
-      { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount/> : <></> }
+      { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem types={restaurantItemTypes} showMessage={ShowMessageBar} onSubmitBtnClicked={CreateItemBtnClicked} /> : <></> }
+      { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount onSubmitBtnClicked={DeleteAccountClicked}/> : <></> }
       { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={CreateRestaurantBtnClicked} types={restaurantTypes} /> : <></> }
