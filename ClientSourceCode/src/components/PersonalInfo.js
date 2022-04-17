@@ -7,7 +7,7 @@ export default function PersonalInfo(props) {
     const handleSubmit = (e) => {
         e.preventDefault();
         //Verify password
-        if(e.target["inputPassword1"].value === e.target["inputPassword2"].value && e.target["inputPassword1"].value.length > 8) {
+        if(e.target["inputPassword1"].value === e.target["inputPassword2"].value) {
             //ok : call app.js function
             props.onSubmitBtnClicked(e.target);
         }   
@@ -33,46 +33,48 @@ export default function PersonalInfo(props) {
                     <form className="row g-3" onSubmit = {handleSubmit}>
                             <div className="col-md-6">
                                 <label htmlFor="inputFirstName" className="form-label">First Name</label>
-                                <input type="name" className="form-control" id="inputFirstName" defaultValue={props.data.firstname}/>
+                                <input type="text" maxLength="30" className="form-control" id="inputFirstName" defaultValue={props.data.firstname}/>
                             </div>
                             <div className="col-md-6">
                                 <label htmlFor="inputLastName" className="form-label">Last Name</label>
-                                <input type="lastName" className="form-control" id="inputLastName" defaultValue={props.data.lastname}/>
+                                <input type="text" maxLength="30" className="form-control" id="inputLastName" defaultValue={props.data.lastname}/>
                             </div>
                             <div className="col-md-6">
                                 <label htmlFor="inputPassword1" className="form-label">Password</label>
-                                <input type="password" className="form-control" id="inputPassword1"/>
+                                <input type="password" minLength="10" maxLength="80" className="form-control" id="inputPassword1"/>
                             </div>
                             <div className="col-md-6">
                                 <label htmlFor="inputPassword2" className="form-label">Confirm Password</label>
-                                <input type="password" className="form-control" id="inputPassword2"/>
+                                <input type="password" minLength="10" maxLength="80" className="form-control" id="inputPassword2"/>
                             </div>
                             <div className="col-12">
                                 <label htmlFor="inputPhoneNumber" className="form-label">Phone Number</label>  
-                                <input type="phoneNumber" className="form-control" id="inpuPhoneNumber" defaultValue={props.data.phone}/>
+                                <input type="tel" maxLength="20" className="form-control" id="inputPhone" defaultValue={props.data.phone}/>
                             </div>
                             <div className="col-12">
                                 <label htmlFor="inputAddress1" className="form-label">Address 1</label>
-                                <input type="text" className="form-control" id="inputAddress1" defaultValue={props.data.address1} placeholder="Streetname, Apartment, studio, or floor"/>
+                                <input type="text" maxLength="80" className="form-control" id="inputAddress1" defaultValue={props.data.address1} placeholder="Streetname, Apartment, studio, or floor"/>
                             </div>
                             <div className="col-12">
                                 <label htmlFor="inputAddress2" className="form-label">Address 2</label>
-                                <input type="text" className="form-control" id="inputAddress2" defaultValue={props.data.address2} placeholder="Streetname, Apartment, studio, or floor"/>
+                                <input type="text" maxLength="80" className="form-control" id="inputAddress2" defaultValue={props.data.address2} placeholder="Streetname, Apartment, studio, or floor"/>
                             </div>
                             <div className="col-md-6">
                                 <label htmlFor="inputCity" className="form-label">City</label>
-                                <input type="text" className="form-control" id="inputCity" defaultValue={props.data.city.split(' ')[1]}/>
+                                <input type="text" maxLength="20" className="form-control" id="inputCity" defaultValue={props.data.city.split(' ')[1]}/>
                             </div>
                             <div className="col-md-3">
                                 <label htmlFor="inputZip" className="form-label">Zip</label>
-                                <input type="text" className="form-control" id="inputZip" defaultValue={props.data.city.split(' ')[0]}/>
+                                <input type="text" maxLength="10" className="form-control" id="inputZip" defaultValue={props.data.city.split(' ')[0]}/>
                             </div>    
                             <div className="col-12">
-                                <br/>
+                            <br/>
+                            <label className="form-label">Username: {props.data.username}</label><br/>
                             <label className="form-label">Role: {props.roles.find(r => r.id === props.data.idrole).role}</label>
+                            <input type="hidden" id="inputUserName" value={props.data.username}/>
+                            <input type="hidden" id="selectRole" value={props.data.idrole}/>
                             </div>                        
                             <div className="col-12">
-                                <br/>
                                 <button type="submit" className="btn btn-primary">Edit</button>
                             </div>
                         </form>

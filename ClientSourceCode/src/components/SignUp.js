@@ -53,7 +53,7 @@ export default function SignUp(props) {
             </div>
             <div className="col-12">
                 <label htmlFor="inputAddress1" className="form-label">Address 1</label>
-                <input type="text" maxLength="80" lassName="form-control" id="inputAddress1" required/>
+                <input type="text" maxLength="80" className="form-control" id="inputAddress1" required/>
             </div>
             <div className="col-12">
                 <label htmlFor="inputAddress2" className="form-label">Address 2</label>
