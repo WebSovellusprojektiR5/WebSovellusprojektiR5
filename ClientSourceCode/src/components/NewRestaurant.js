@@ -25,7 +25,7 @@ export default function NewRestaurant(props) {
         <form className="row g-3" encType="multipart/form-data" onSubmit = {handleSubmit}>
             <div className="col-md-6">
                 <label htmlFor="inputRestaurantName" className="form-label">Restaurant Name</label>
-                <input type="restaurantName" maxLength="80" className="form-control" id="inputRestaurantName" required/>
+                <input type="text" maxLength="80" className="form-control" id="inputRestaurantName" required/>
             </div>
 
             <div className="form-group">
