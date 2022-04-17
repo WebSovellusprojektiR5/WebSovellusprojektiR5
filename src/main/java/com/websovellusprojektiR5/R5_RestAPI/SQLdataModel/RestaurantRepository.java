@@ -19,7 +19,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Query(value = "SELECT * FROM restaurant WHERE idrestaurant = ?1 ORDER BY name", nativeQuery = true)
     Restaurant findByID(Long restaurantID);
 
-    @Query(value = "SELECT * FROM restaurant WHERE owner_idperson = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM restaurant WHERE owner_idperson = ?1 AND active = true", nativeQuery = true)
     List<Restaurant> findByOwnerID(Long ownerID);
 
     @Query(value = "SELECT * FROM restaurant WHERE active = true ORDER BY name", nativeQuery = true)

@@ -39,22 +39,22 @@ public class OrderService {
 
     public String addItemToOrder(OrderItems orderItem){
         if(orderRepo.findById(orderItem.getIdorder()).orElse(null) == null)
-            return "Tilausta ei ole olemassa";
+            return "Error: Order doesn't exist";
         if(itemRepo.findById(orderItem.getIditem()).orElse(null) == null)
-            return "Annosta ei ole olemassa";
+            return "Error: Item doesn't exist";
 
         orderItemsRepo.save(orderItem);
-        return "";
+        return "Item added OK";
     }
 
     public String addOrder(Order order){
         if(restaurantRepo.findById(order.getIdrestaurant()).orElse(null) == null)
-            return "Ravintolaa ei ole olemassa";
+            return "Error: Restaurant doesn't exist";
         if(userRepo.findById(order.getIdperson()).orElse(null) == null)
-            return "Käyttäjää ei ole olemassa";
+            return "Error: User doesn't exist";
 
         orderRepo.save(order);
-        return "";
+        return "Order created OK";
     }
 
     public List<OrderItems> getItemsInOrder(Long orderID){

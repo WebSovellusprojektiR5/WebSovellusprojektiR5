@@ -76,7 +76,7 @@ public class RestaurantService {
         hours.setOpening(opening);
         hours.setClosing(closing);
         openRepo.save(hours);
-        return weekday + " aukioloajat päivitetty";
+        return weekday + " opening hours updated OK";
     }
 
     public List<OpeningHours> openingHours(Long restaurantID){
