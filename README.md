@@ -1,1 +1,1 @@
-# WebSovellusprojektiR5 heroku
+# WebSovellusprojektiR5
