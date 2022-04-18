@@ -1,0 +1,140 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "array",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": [],
+    "examples": [
+        [
+            {
+                "id": 0,
+                "idperson": 0,
+                "idrestaurant": 0,
+                "address1": "address1",
+                "address2": "address2",
+                "ordered_time": "8:00",
+                "completed_time": "11:00",
+                "comment": "comment"
+            }
+        ]
+    ],
+    "additionalItems": true,
+    "items": {
+        "$id": "#/items",
+        "anyOf": [
+            {
+                "$id": "#/items/anyOf/0",
+                "type": "object",
+                "title": "The first anyOf schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": {},
+                "examples": [
+                    {
+                        "id": 0,
+                        "idperson": 0,
+                        "idrestaurant": 0,
+                        "address1": "address1",
+                        "address2": "address2",
+                        "ordered_time": "8:00",
+                        "completed_time": "11:00",
+                        "comment": "comment"
+                    }
+                ],
+                "required": [
+                    "id",
+                    "idperson",
+                    "idrestaurant",
+                    "address1",
+                    "address2",
+                    "ordered_time",
+                    "completed_time",
+                    "comment"
+                ],
+                "properties": {
+                    "id": {
+                        "$id": "#/items/anyOf/0/properties/id",
+                        "type": "integer",
+                        "title": "The id schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": 0,
+                        "examples": [
+                            0
+                        ]
+                    },
+                    "idperson": {
+                        "$id": "#/items/anyOf/0/properties/idperson",
+                        "type": "integer",
+                        "title": "The idperson schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": 0,
+                        "examples": [
+                            0
+                        ]
+                    },
+                    "idrestaurant": {
+                        "$id": "#/items/anyOf/0/properties/idrestaurant",
+                        "type": "integer",
+                        "title": "The idrestaurant schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": 0,
+                        "examples": [
+                            0
+                        ]
+                    },
+                    "address1": {
+                        "$id": "#/items/anyOf/0/properties/address1",
+                        "type": "string",
+                        "title": "The address1 schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                            "address1"
+                        ]
+                    },
+                    "address2": {
+                        "$id": "#/items/anyOf/0/properties/address2",
+                        "type": "string",
+                        "title": "The address2 schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                            "address2"
+                        ]
+                    },
+                    "ordered_time": {
+                        "$id": "#/items/anyOf/0/properties/ordered_time",
+                        "type": "string",
+                        "title": "The ordered_time schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                            "8:00"
+                        ]
+                    },
+                    "completed_time": {
+                        "$id": "#/items/anyOf/0/properties/completed_time",
+                        "type": "string",
+                        "title": "The completed_time schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                            "11:00"
+                        ]
+                    },
+                    "comment": {
+                        "$id": "#/items/anyOf/0/properties/comment",
+                        "type": "string",
+                        "title": "The comment schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                            "comment"
+                        ]
+                    }
+                },
+                "additionalProperties": true
+            }
+        ]
+    }
+}
