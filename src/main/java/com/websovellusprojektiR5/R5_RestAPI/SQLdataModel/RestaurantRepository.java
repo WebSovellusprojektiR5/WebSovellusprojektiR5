@@ -1,5 +1,6 @@
 package com.websovellusprojektiR5.R5_RestAPI.SQLdataModel;
 
+import com.sun.istack.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +15,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Modifying
     @Transactional
     @Query(value = "UPDATE restaurant SET thumbnail_url=?2 WHERE idrestaurant = ?1", nativeQuery = true)
-    int updateRestaurantImage(Long restaurantID, String url);
+    int updateRestaurantImage(Long restaurantID, @NotNull String url);
 
     //return restaurant info by id
     @Query(value = "SELECT * FROM restaurant WHERE idrestaurant = ?1", nativeQuery = true)
