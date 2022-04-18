@@ -2,7 +2,6 @@ import React from 'react'
 import {useEffect} from 'react';
 
 export default function PersonalInfo(props) {
-
     //Form submit button pressed : Validate password and fire app.js onSubmitBtnClicked
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -19,8 +18,10 @@ export default function PersonalInfo(props) {
             setTimeout(() => props.showMessage(""), 7000);
         }
     }
-
+    console.log(props.history);
+    console.log(props.items);
     return (
+        
     <div className="containerTree">
         <p>
             <a className="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Personal Info</a>
@@ -85,30 +86,31 @@ export default function PersonalInfo(props) {
             <div className="col">
                 <div className="collapse multi-collapse" id="multiCollapseExample2">
                     <div className="card card-body">
-                    <div class="container mt-5">
-            <div class="d-flex justify-content-center row">
-                <div class="col-md-10">
-                    <div class="rounded">
-                        <div class="table-responsive table-borderless">
-                            <table class="table">
+                    <div className="container mt-5">
+            <div className="d-flex justify-content-center row">
+                <div className="col-md-10">
+                    <div className="rounded">
+                        <div className="table-responsive table-borderless">
+                            <table className="table">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">#</th>
+                                        <th className="text-center">#</th>
                                         <th>Company name</th>
                                         <th>status</th>
                                         <th>Total</th>
                                         <th>Created</th>
                                     </tr>
                                 </thead>
-                                <tbody class="table-body">
-                                    <tr class="cell-1">
-                                        <td class="text-center">1</td>
-                                        
-                                        <td className="restaurantName">Tarziella</td>
-                                        <td><span class="badge badge-success">Fullfilled</span></td>
-                                        <td className="price">15,00€</td>
-                                        <td className="orderDate">18/04/2022</td>
-                                    </tr>
+                                <tbody className="table-body">
+                                    {props.history.length > 0 ?
+                                     props.history.map((d) =>
+                                    <tr key={d.id} className="cell-1">
+                                        <td className="text-center">{d.id}</td>                                       
+                                        <td className="restaurantName">{props.items.filter(n => n.id === d.idrestaurant)[0].name}</td>
+                                        <td><span className="badge badge-success">Fullfilled</span></td>
+                                        <td className="price">NA</td>
+                                        <td className="orderDate">{d.completed_time}</td>
+                                    </tr>) : <tr><td>Empty</td></tr>}
                                 </tbody>
                             </table>
                         </div>

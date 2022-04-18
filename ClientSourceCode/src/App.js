@@ -27,6 +27,7 @@ function App() {
 
   const [restaurants, setRestaurants] = useState([]);
   const [shoppingCart, setShoppingCart] = useState([]);
+  const [persHistory, setPersHistory] = useState([]);
   const [filteredRestaurants, setfilteredRestaurants] = useState([]);
   const [items, setItems] = useState([]);
   const [filteredItems, setfilteredItems] = useState([]);
@@ -451,6 +452,30 @@ function App() {
   const GetPersonInfo = (UID) => {
     axios.get(RESTURL + '/user', { params: {userID: UID} })
     .then(response => { setPersonInfo(response.data); 
+    })
+    .catch(error => {
+      //nok : Set messagebar errormessage, wait and set info message
+      if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
+      else ShowMessageBar(error.response.data.message, "alert alert-danger");
+      setTimeout(() => { ShowMessageBar(""); }, 3000);
+    });
+    GetPersonHistory(UID);
+  }
+
+  const GetPersonHistory = (UID, first = 0, limit = 10) => {
+    const jsonParams = {
+      "customerID" : UID,
+      "first_order" : first,
+      "limit" : limit
+    }
+    axios.get(RESTURL + '/ordersbyuser', { params: jsonParams })
+    .then(response => { setPersHistory(response.data); 
+    })
+    .catch(error => {
+      //nok : Set messagebar errormessage, wait and set info message
+      if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
+      else ShowMessageBar(error.response.data.message, "alert alert-danger");
+      setTimeout(() => { ShowMessageBar(""); }, 3000);
     });
   }
 
@@ -595,7 +620,7 @@ function App() {
       { message !== "" ? <div className="messageArea"><div className={msgClass} role="alert">{message}</div></div> : <div className="messageArea"/>}
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem types={restaurantItemTypes} showMessage={ShowMessageBar} onSubmitBtnClicked={CreateItemBtnClicked} /> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount onSubmitBtnClicked={DeleteAccountClicked}/> : <></> }
-      { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }
+      { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo items={restaurants} history={persHistory} data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo data={restaurants.filter(i => i.id === activeRestaurantID)[0]} types={restaurantTypes} onSubmitBtnClicked={EditRestaurantBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTORDERS ? <RestaurantOrders data={restaurants.filter(i => i.id === activeRestaurantID)[0]} types={restaurantTypes} onSubmitBtnClicked={EditRestaurantBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.ITEMINFO ? <ItemInfo showMessage={ShowMessageBar} types={restaurantItemTypes} data={items.filter(i => i.id === activeItemID)[0]} onSubmitBtnClicked={EditItemBtnClicked}/> : <></> }
