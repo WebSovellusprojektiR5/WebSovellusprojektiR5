@@ -32,22 +32,36 @@ public class OrderRestAPI {
     }
 
     @PostMapping(value = "/ordersbyuser", consumes = {"application/json"})
-    public ResponseEntity<Map<String, String>> addOrder(Order order){
-        String status = orderService.addOrder(order);
-        if (status == "") return new ResponseEntity<> (HttpStatus.OK);
-        else return new ResponseEntity<>(Map.of("message", status), HttpStatus.NOT_ACCEPTABLE);
+    public Order addOrder(Order order){
+        return orderService.addOrder(order);
     }
 
     @PostMapping(value = "/orderitem", consumes = {"application/json"})
-    public ResponseEntity<Map<String, String>> addItemToOrder(OrderItems item){
-        String status = orderService.addItemToOrder(item);
-        if (status == "") return new ResponseEntity<> (HttpStatus.OK);
-        else return new ResponseEntity<>(Map.of("message", status), HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity<Map<String, String>> addItemToOrder(@RequestBody OrderItems item){
+        String ret = orderService.addItemToOrder(item);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/orderitem", consumes = {"application/json"})
+    public ResponseEntity<Map<String, String>> updateItemInOrder(@RequestBody OrderItems item){
+        String ret = orderService.addItemToOrder(item);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
     }
 
     @CrossOrigin
     @GetMapping(value = "/orderitem")
     public List<OrderItems> getItemsInOrder(@RequestParam Long orderID){
         return  orderService.getItemsInOrder(orderID);
+    }
+
+    @CrossOrigin
+    @DeleteMapping(value = "/orderitem")
+    public ResponseEntity<Map<String, String>> deleteItemFromOrder(@RequestParam Long orderID, @RequestParam Long itemID) {
+        String ret = orderService.deleteItemFromOrder(orderID, itemID);
+        if (ret.toLowerCase().contains("error"))
+            return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
     }
 }
