@@ -181,6 +181,7 @@ function App() {
       "idperson" : stateVars.loggedinUserID,
     }
     if(method === "PUT") jsonBody["id"] = activeRestaurantID;
+    if(formdata["itemImage"].value === "") jsonBody["thumbnail_url"] = restaurants.filter(i => i.id === activeRestaurantID)[0].thumbnail_url;
     //POST/PUT query
     const config = { method: method, url: RESTURL + '/restaurants', data: jsonBody }
     axios(config)
@@ -206,10 +207,9 @@ function App() {
         })
       }
       else {
-        console.log("No image");
         ShowMessageBar("Restaurant edited successfully", "alert alert-success");
-        //GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
-        //setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
+        GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
+        setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
       }
     }).catch(error => {
       //nok : Set messagebar errormessage, wait and set info message
@@ -265,6 +265,7 @@ function App() {
       "price" : parseFloat(formdata["inputPrice"].value).toFixed(2),
       "idrestaurant" : activeRestaurantID
     }   
+    if(formdata["itemImage"].value === "") jsonBody["thumbnail_url"] = items.filter(i => i.id === activeItemID)[0].thumbnail_url;
     if(method === "PUT") jsonBody["id"] = activeItemID;
     //ok : Add item category if not exist already
     axios.post(RESTURL + '/categories', {"name" : formdata["ItemType"].value })

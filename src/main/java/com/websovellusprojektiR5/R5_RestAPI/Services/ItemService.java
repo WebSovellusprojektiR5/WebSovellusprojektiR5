@@ -36,7 +36,7 @@ public class ItemService {
         //Collect itemcategory list from categoryids
         List<ItemCategory> cats = new ArrayList<>();
         for(Long i : catids)
-            cats.add(itemCategoryRepo.findByID(i));
+            if(!cats.contains(itemCategoryRepo.findByID(i))) cats.add(itemCategoryRepo.findByID(i));
         return  cats;
     }
 
