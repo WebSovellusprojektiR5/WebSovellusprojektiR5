@@ -46,9 +46,19 @@ public class OrderService {
             return "Error: Order doesn't exist";
         if(itemRepo.findById(orderItem.getIditem()).orElse(null) == null)
             return "Error: Item doesn't exist";
-
+        if(orderItemsRepo.getOrderItem(orderItem.getIdorder(), orderItem.getIditem()) != null){
+            orderItem.setId(orderItemsRepo.getOrderItem(orderItem.getIdorder(), orderItem.getIditem()).getId());
+        }
         orderItemsRepo.save(orderItem);
         return "Item added OK";
+    }
+
+    public String deleteItemFromOrder(Long orderID, Long itemID){
+        if(orderItemsRepo.getOrderItem(orderID, itemID) == null){
+            return "Error: No such item in order";
+        }
+        orderItemsRepo.delete(orderItemsRepo.getOrderItem(orderID, itemID));
+        return "Item deleted OK";
     }
 
     public Order addOrder(Order order){
@@ -56,10 +66,35 @@ public class OrderService {
             return null;
         if(userRepo.findById(order.getIdperson()).orElse(null) == null)
             return null;
+        order = setNullToString(order);
         return orderRepo.save(order);
+    }
+
+    public String deleteOrder(Long orderID){
+        if(orderRepo.findById(orderID).orElse(null) == null)
+            return "Error: Order doesn't exist";
+        if(getItemsInOrder(orderID).size() > 0)
+            return "Error: Order has items in it";
+
+        orderRepo.deleteById(orderID);
+        return "Order deleted OK";
     }
 
     public List<OrderItems> getItemsInOrder(Long orderID){
         return orderItemsRepo.findItemsInOrder(orderID);
+    }
+
+    //set null fields to empty strings
+    private Order setNullToString(Order order){
+        if(order.getComment() == null){
+            order.setComment("");
+        }
+        if(order.getAddress1() == null){
+            order.setAddress1("");
+        }
+        if(order.getAddress2() == null){
+            order.setAddress2("");
+        }
+        return order;
     }
 }

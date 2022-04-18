@@ -29,6 +29,9 @@ public class Order {
     @Column(name = "completed_time")
     private Timestamp completed_time;
 
+    @Column(name = "comment")
+    private String comment;
+
     public Order() {
     }
 
@@ -37,13 +40,15 @@ public class Order {
                  String address1,
                  String address2,
                  Timestamp ordered_time,
-                 Timestamp completed_time){
+                 Timestamp completed_time,
+                 String comment){
         this.idperson = idperson;
         this.idrestaurant = idrestaurant;
         this.address1 = address1;
         this.address2 = address2;
         this.ordered_time = ordered_time;
         this.completed_time = completed_time;
+        this.comment = comment;
     }
 
     public Long getId() {
@@ -100,5 +105,13 @@ public class Order {
 
     public void setCompleted_time(Timestamp completed_time) {
         this.completed_time = completed_time;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

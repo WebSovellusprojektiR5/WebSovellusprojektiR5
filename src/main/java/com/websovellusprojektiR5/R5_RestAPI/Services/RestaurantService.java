@@ -38,6 +38,7 @@ public class RestaurantService {
     }
 
     public Restaurant addRestaurant(Restaurant restaurant){
+        restaurant = setNullToString(restaurant);
         restaurant.setActive(true);
         return restaurantRepo.save(restaurant);
     }
@@ -45,6 +46,7 @@ public class RestaurantService {
     public Restaurant editRestaurant(Restaurant restaurant){
         if(restaurantRepo.findById(restaurant.getId()).orElse(null) == null)
             return null;
+        restaurant = setNullToString(restaurant);
         restaurant.setActive(true);
         return restaurantRepo.save(restaurant);
     }
@@ -80,5 +82,34 @@ public class RestaurantService {
 
     public List<OpeningHours> openingHours(Long restaurantID){
         return openRepo.getRestaurantOpeningHours(restaurantID);
+    }
+
+    //set null fields to empty strings
+    private Restaurant setNullToString(Restaurant restaurant){
+        if(restaurant.getAddress1() == null){
+            restaurant.setAddress1("");
+        }
+        if(restaurant.getAddress2() == null){
+            restaurant.setAddress2("");
+        }
+        if(restaurant.getCity() == null){
+            restaurant.setCity("");
+        }
+        if(restaurant.getName() == null){
+            restaurant.setName("");
+        }
+        if(restaurant.getDescription() == null){
+            restaurant.setDescription("");
+        }
+        if(restaurant.getPicture_url() == null){
+            restaurant.setPicture_url("");
+        }
+        if(restaurant.getThumbnail_url() == null){
+            restaurant.setThumbnail_url("");
+        }
+        if(restaurant.getPhone() == null){
+            restaurant.setPhone("");
+        }
+        return restaurant;
     }
 }

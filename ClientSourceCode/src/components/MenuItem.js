@@ -14,7 +14,7 @@ export default function MenuItem(props) {
         <div className="Hinta">{props.item.price}€</div>
         {props.userRole.toLowerCase() === "owner" ?
         <div><button type="button" className="btn btn-primary" onClick={() => props.onEditItemClicked(props.item.id)}>Edit</button>
-        <button type="button" className="btn btn-danger" onClick={() => props.onDeleteItemClicked(props.item.id)}>Delete</button></div> : 
+        <button type="button" className="btn btn-danger" onClick={() => props.onDeleteItemClicked(props.item.id)}>Delete</button></div> : t
           <div className="input-group">
             <input type="number" min="1" max="100" step="1" placeholder="1" className="form-control" id="inputQuantity" value = {qty} onChange={(event) => setQty(event.target.value)} required/>
             <button className="btn btn-outline-primary" type="button" onClick={() => props.onAddToChartClicked(props.item.id, qty)}>Button</button>
