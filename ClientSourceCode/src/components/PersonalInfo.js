@@ -94,23 +94,20 @@ export default function PersonalInfo(props) {
                                 <thead>
                                     <tr>
                                         <th class="text-center">#</th>
-                                        <th>Order #</th>
                                         <th>Company name</th>
                                         <th>status</th>
                                         <th>Total</th>
                                         <th>Created</th>
-                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-body">
                                     <tr class="cell-1">
                                         <td class="text-center">1</td>
-                                        <td>#SO-13487</td>
-                                        <td>Tarziella</td>
+                                        
+                                        <td className="restaurantName">Tarziella</td>
                                         <td><span class="badge badge-success">Fullfilled</span></td>
-                                        <td>15,00€</td>
-                                        <td>18/04/2022</td>
-                                        <td><i class="fa fa-ellipsis-h text-black-50"></i></td>
+                                        <td className="price">15,00€</td>
+                                        <td className="orderDate">18/04/2022</td>
                                     </tr>
                                 </tbody>
                             </table>
