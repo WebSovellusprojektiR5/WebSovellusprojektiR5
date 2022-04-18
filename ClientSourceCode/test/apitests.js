@@ -1,3 +1,4 @@
+const { should } = require('chai');
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
@@ -8,7 +9,7 @@ chai.use(chaiJsonSchemaAjv);
 const restaurantInfoArraySchema = require('../schemas/restaurantsInfoArray.schema.json');
 
 describe('webfoodr5 tests', function(){
-    describe('get restaurants', function(){
+    describe('get all active restaurants', function(){
         it('should return all active restaurants', function(done){
             //send http request
             chai.request('https://webfoodr5.herokuapp.com')
@@ -23,8 +24,31 @@ describe('webfoodr5 tests', function(){
                     expect(res.body).to.be.jsonSchema(restaurantInfoArraySchema);
                     done();
                 })
-            
-            
+        })
+    })
+    describe('add new restaurant', function(){
+        it('should accept restaurant data when data is correct', function(done){
+            chai.request('https://webfoodr5.herokuapp.com')
+                .post('/restaurants')
+                .send({
+                    name: "testing",
+                    description: "kokeileva keittiö",
+                    thumbnail_url: "",
+                    picture_url: "",
+                    price_level: 3,
+                    address1: "",
+                    address2: "",
+                    city: "",
+                    phone: "",
+                    idperson: 1,
+                    idrestauranttype: 2,
+                    active: true
+                })
+                .end(function(err, res){
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(201);
+                    done();
+            })
         })
     })
 })
