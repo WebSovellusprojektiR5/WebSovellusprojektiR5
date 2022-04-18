@@ -17,6 +17,7 @@ import NewRestaurant from './components/NewRestaurant';
 import RestaurantsView from './components/RestaurantsView';
 import ShoppingCart from './components/ShoppingCart';
 import MenuItem from './components/MenuItem';
+import RestaurantOrders from './components/RestaurantOrders';
 
 
 function App() {
@@ -60,7 +61,8 @@ function App() {
     ITEMINFO : "iteminfo",
     NEWRESTAURANT : "newrestaurant",
     SHOPPINGCART : "shoppingcart",
-    MENUITEM : "menuitem"
+    MENUITEM : "menuitem",
+    RESTAURANTORDERS : "restaurantorders"
   }
 
   //* Application state variables *
@@ -487,6 +489,7 @@ function App() {
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount onSubmitBtnClicked={DeleteAccountClicked}/> : <></> }
       { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo data={restaurants.filter(i => i.id === activeRestaurantID)[0]} types={restaurantTypes} onSubmitBtnClicked={EditRestaurantBtnClicked}/> : <></> }
+      { stateVars.viewState === VIEWS.RESTAURANTORDERS ? <RestaurantOrders data={restaurants.filter(i => i.id === activeRestaurantID)[0]} types={restaurantTypes} onSubmitBtnClicked={EditRestaurantBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.ITEMINFO ? <ItemInfo showMessage={ShowMessageBar} types={restaurantItemTypes} data={items.filter(i => i.id === activeItemID)[0]} onSubmitBtnClicked={EditItemBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={CreateRestaurantBtnClicked} types={restaurantTypes} /> : <></> }
       { stateVars.viewState === VIEWS.SHOPPINGCART? <ShoppingCart/> : <></> }

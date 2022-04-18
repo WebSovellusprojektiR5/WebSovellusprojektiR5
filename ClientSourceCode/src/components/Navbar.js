@@ -16,7 +16,8 @@ export default function Navbar(props) {
         RESTAURANTINFO : "restaurantinfo",
         NEWRESTAURANT : "newrestaurant",
         SHOPPINGCART : "shoppingcart",
-        MENUITEM : "menuitem"
+        MENUITEM : "menuitem",
+        RESTAURANTORDERS : "restaurantorders"
     }
 
     //State Hook
@@ -51,6 +52,8 @@ export default function Navbar(props) {
                                 { props.statevars.loggedinUserRole.toLowerCase() === "owner" && props.statevars.viewState === VIEWS.MENUITEM ?
                                 <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.RESTAURANTINFO)}>Restaurant Info</a> : <></> }
                                 { props.statevars.loggedinUserRole.toLowerCase() === "owner" && props.statevars.viewState === VIEWS.MENUITEM ? 
+                                <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.RESTAURANTORDERS)}>Restaurant Order History</a> : <></> }
+                                { props.statevars.loggedinUserRole.toLowerCase() === "owner" && props.statevars.viewState === VIEWS.MENUITEM ?
                                 <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWMENUITEM)}>Create Menu Item</a> : <></> }
                                 { props.statevars.loggedinUserRole.toLowerCase() === "owner" ?
                                 <a className="dropdown-item" href="#" onClick={() => props.onNavItemClicked(VIEWS.NEWRESTAURANT)}>Create Restaurant</a> : <></> }
