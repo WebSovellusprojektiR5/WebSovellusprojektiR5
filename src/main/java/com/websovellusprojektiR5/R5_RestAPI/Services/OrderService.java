@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -34,6 +35,10 @@ public class OrderService {
 
     public List<Order> getOrdersByCustomer(Long customerID){
         return orderRepo.findByCustomer(customerID);
+    }
+
+    public Order getOrderByOrderID(Long orderID){
+        return orderRepo.findOrderById(orderID);
     }
 
     //Get <limit> orders by <customerID> starting from <first_order>

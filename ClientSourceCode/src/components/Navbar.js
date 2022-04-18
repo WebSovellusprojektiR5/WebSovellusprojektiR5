@@ -69,7 +69,7 @@ export default function Navbar(props) {
                     <ul className="navbar-nav">
                         { props.statevars.loggedinToken !== "" && props.statevars.loggedinUserRole.toLowerCase() !== "owner" ?
                         <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.SHOPPINGCART)}>Shopping Cart</a>
+                            { props.rid >= 0 ? <a className="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.SHOPPINGCART)}>Shopping Cart</a> : <></> }
                         </li> : <></> }
                         <li className="nav-item">
                             <a className="nav-link" href="#" onClick={() => props.onNavItemClicked(VIEWS.SIGNUP)}>Sign Up</a>

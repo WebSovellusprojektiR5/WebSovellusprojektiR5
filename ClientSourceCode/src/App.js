@@ -41,7 +41,7 @@ function App() {
   const [activeRestaurantID, setActiveRestaurantID] = useState(-1);
   const [activeItemID, setActiveItemID] = useState(-1);
   const [activeRestaurantName, setActiveRestaurantName] = useState("");
-  const [activeOrderID, setActiveOrderID] = useState(-1);
+
 
   //* Set top bar message text (not visible if empty or restaurant view active) and Bootstrap style *
   //Example BootStrap styles: alert alert-primary, alert alert-danger, alert alert-success
@@ -110,6 +110,10 @@ function App() {
   //* NavBar Navigation button clicked : Update stateVars.viewState *
   const ChangeView = (view, newStateVars = "", forceUpdate = false) => {
     if(view !== stateVars.viewState || forceUpdate) {
+      if(view === VIEWS.SHOPPINGCART && activeRestaurantID >= 0) {
+        UpdateShoppingCart();
+        setActiveRestaurantName(restaurants.filter(i => i.id === activeRestaurantID)[0].name)
+      }
       if(newStateVars === "") newStateVars = {...stateVars};
       newStateVars.lastViewState = newStateVars.viewState;
       //Only owner can select some VIEWS. Otherwise set restaurants view
@@ -118,7 +122,7 @@ function App() {
       newStateVars.viewState = view;
       setStateVars(newStateVars); 
       //Hide Active restaurant name bar
-      if (view !== VIEWS.NEWMENUITEM && view !== VIEWS.MENUITEM && VIEWS !== VIEWS.RESTAURANTINFO) setActiveRestaurantName("");
+      if (view !== VIEWS.NEWMENUITEM && view !== VIEWS.MENUITEM && view !== VIEWS.RESTAURANTINFO && view === VIEWS.SHOPPINGCART) setActiveRestaurantName("");
       ShowMessageBar("");
     } 
   }
@@ -281,7 +285,6 @@ function App() {
       .then(response => {
         //ok : Try to add image
         if(formdata["itemImage"].value !== "") {
-          console.log("kuva");
           let fdata = new FormData();
           fdata.append('ID', response.data);
           fdata.append('file', formdata["itemImage"].files[0]);
@@ -299,7 +302,6 @@ function App() {
           })
         }
         else {
-          console.log("ei kuvaa");
           ShowMessageBar("Item added successfully", "alert alert-success");
           GetRestaurantMenuItems(activeRestaurantID);
           setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.MENUITEM); }, 3000);
@@ -466,9 +468,11 @@ function App() {
         ChangeView(VIEWS.MENUITEM);
       });
     });
-  }
+  } 
 
+  //* Add item to existing order. If order does not exist create it first *
   const AddToChartClicked = (IID, qty) => {
+    let OID = -1;
     if(stateVars.loggedinUserID < 0) {
       ShowMessageBar("You must sign in before making an order!", "alert alert-danger");
       setTimeout(() => ShowMessageBar(""), 6000);
@@ -486,20 +490,21 @@ function App() {
       "quantity" : parseInt(qty)
     }
 
-    //Find active order id
+    //Find active order by restaurant id
     axios.get(RESTURL + '/activeorderbyrestaurant', { params: {restaurantID: activeRestaurantID} })
     .then(response => { 
-      console.log(response);
       if(response.data === '') {
         //not found: add an order
         axios.post(RESTURL + '/ordersbyuser', jsonOrderBody)
         .then(response => {
           //add item to order
-          jsonItemBody["idorder"] = response.data;
+          OID = response.data;
+          jsonItemBody["idorder"] = OID;
           axios.post(RESTURL + "/orderitem", jsonItemBody)
           .then(response => {
             //ok: Item added
-            ShowMessageBar(qty + "x " + items.filter(i => i.id === IID)[0].name + " is added to the shopping chart");
+            UpdateShoppingCart(OID);
+            ShowMessageBar(qty + "x " + items.filter(i => i.id === IID)[0].name + " is added to the shopping chart", "alert alert-success");
             setTimeout(() => { ShowMessageBar(""); }, 3000);
           })
           .catch(error => {
@@ -513,16 +518,16 @@ function App() {
           ShowMessageBar(error.toString(), "alert alert-danger");
           setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
           return;
-        })
-        
+        })       
       }
       else {
         //found: add item to order
-        jsonItemBody["idorder"] = response.data.id;
-        console.log(jsonItemBody);
+        OID = response.data.id;
+        jsonItemBody["idorder"] = OID;
         axios.post(RESTURL + "/orderitem", jsonItemBody)
         .then(response => {
           //ok: Item added
+          UpdateShoppingCart(OID);
           ShowMessageBar(qty + "x " + items.filter(i => i.id === IID)[0].name + " is added to the shopping chart");
           setTimeout(() => { ShowMessageBar(""); }, 3000);
         })
@@ -541,6 +546,31 @@ function App() {
     })       
   }
 
+  //Get order items
+  const UpdateShoppingCart = () => {
+    if(activeRestaurantID < 0) {
+      ShowMessageBar("You must set active restaurant ID!", "alert alert-danger");
+      setTimeout(() => ShowMessageBar(""), 3000);
+      return;
+    }
+    //Find active order by restaurant
+    axios.get(RESTURL + '/activeorderbyrestaurant', { params: {restaurantID: activeRestaurantID} })
+    .then(response => {
+      if (response.data.id >= 0) {
+        //get items by that order
+        axios.get(RESTURL + '/orderitem', { params: {orderID: response.data.id} })
+        .then(response => { setShoppingCart(response.data); })
+        .catch(error => {
+          ShowMessageBar(error.toString(), "alert alert-danger");
+          setTimeout(() => { ShowMessageBar(""); }, 3000);
+        });
+      }
+    })
+    .catch(error => {
+      ShowMessageBar(error.toString(), "alert alert-danger");
+      setTimeout(() => { ShowMessageBar(""); }, 3000);
+    });
+  }
 
 
   const EditItemItemBtnClicked = (IID) => {
@@ -558,7 +588,7 @@ function App() {
   //Return Single-Page application
   return (
     <div>
-      <Navbar onNavItemClicked={ChangeView} onSearchBtnClicked={stateVars.viewState === VIEWS.RESTAURANTS ? FilterRestaurantsBySearchText : FilterItemsBySearchText} onSignoutClicked={SignOut} statevars={stateVars} />
+      <Navbar rid={activeRestaurantID} onNavItemClicked={ChangeView} onSearchBtnClicked={stateVars.viewState === VIEWS.RESTAURANTS ? FilterRestaurantsBySearchText : FilterItemsBySearchText} onSignoutClicked={SignOut} statevars={stateVars} />
       { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes} onItemClicked={FilterRestaurantsByCatID}/> : <></> }
       { activeRestaurantName !== "" ? <div className="messageArea" onClick={RestaurantNameClicked}><div className="alert alert-primary" role="alert">{activeRestaurantName}</div></div> : <></>}
       { stateVars.viewState === VIEWS.MENUITEM ? <ItemTypes types={restaurantItemTypes} onItemClicked={FilterItemsByCatID} onReturnClicked={ChangeView} /> : <></> }
@@ -570,7 +600,7 @@ function App() {
       { stateVars.viewState === VIEWS.RESTAURANTORDERS ? <RestaurantOrders data={restaurants.filter(i => i.id === activeRestaurantID)[0]} types={restaurantTypes} onSubmitBtnClicked={EditRestaurantBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.ITEMINFO ? <ItemInfo showMessage={ShowMessageBar} types={restaurantItemTypes} data={items.filter(i => i.id === activeItemID)[0]} onSubmitBtnClicked={EditItemBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={CreateRestaurantBtnClicked} types={restaurantTypes} /> : <></> }
-      { stateVars.viewState === VIEWS.SHOPPINGCART? <ShoppingCart/> : <></> }
+      { stateVars.viewState === VIEWS.SHOPPINGCART? <ShoppingCart rid={activeRestaurantID} items={items} data={shoppingCart} /> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.SIGNUP ? <SignUp showMessage={ShowMessageBar} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?
