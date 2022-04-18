@@ -85,7 +85,40 @@ export default function PersonalInfo(props) {
             <div className="col">
                 <div className="collapse multi-collapse" id="multiCollapseExample2">
                     <div className="card card-body">
-                       Tähän listaus tilauksista
+                    <div class="container mt-5">
+            <div class="d-flex justify-content-center row">
+                <div class="col-md-10">
+                    <div class="rounded">
+                        <div class="table-responsive table-borderless">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th>Order #</th>
+                                        <th>Company name</th>
+                                        <th>status</th>
+                                        <th>Total</th>
+                                        <th>Created</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-body">
+                                    <tr class="cell-1">
+                                        <td class="text-center">1</td>
+                                        <td>#SO-13487</td>
+                                        <td>Tarziella</td>
+                                        <td><span class="badge badge-success">Fullfilled</span></td>
+                                        <td>15,00€</td>
+                                        <td>18/04/2022</td>
+                                        <td><i class="fa fa-ellipsis-h text-black-50"></i></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
                     </div>
                 </div>
             </div>

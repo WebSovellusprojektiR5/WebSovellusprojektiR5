@@ -49,6 +49,7 @@ public class UserService {
         if(userRepo.findById(user.getId()).orElse(null) == null)
             return "Error: User doesn't exist!";
 
+        user.setActive(true);
         user.setPassword(pwdEncoder.encode(user.getPassword()));
         userRepo.save(user);
         return "User updated OK";
