@@ -25,6 +25,11 @@ public class OrderRestAPI {
         return orderService.getOrdersByRestaurantLimit(restaurantID, first_order, limit);
     }
 
+    @GetMapping("/orderbyorderid")
+    public Order getorderbyorderid(@RequestParam Long orderID){
+        return orderService.getOrderByOrderID(orderID);
+    }
+
     @GetMapping("/activeorderbyrestaurant")
     public ResponseEntity<Order> getactiveorderidbyrestaurant(@RequestParam Long restaurantID) {
         Order res = orderService.getActiveOrderIdByRestaurantId(restaurantID);
