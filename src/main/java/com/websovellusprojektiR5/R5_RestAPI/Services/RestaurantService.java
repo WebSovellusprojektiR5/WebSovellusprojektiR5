@@ -46,6 +46,7 @@ public class RestaurantService {
         if(restaurantRepo.findById(restaurant.getId()).orElse(null) == null)
             return "Error: Restaurant doesn't exist!";
 
+        restaurant.setActive(true);
         restaurantRepo.save(restaurant);
         return "Restaurant updated OK";
     }
