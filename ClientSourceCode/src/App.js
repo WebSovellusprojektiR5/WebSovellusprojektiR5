@@ -23,7 +23,6 @@ import RestaurantOrders from './components/RestaurantOrders';
 function App() {
 
   const RESTURL = 'https://webfoodr5.herokuapp.com';
-  //const RESTURL = 'http://localhost:8080';
 
   const [restaurants, setRestaurants] = useState([]);
   const [shoppingCart, setShoppingCart] = useState([]);
@@ -597,6 +596,31 @@ function App() {
     });
   }
 
+  //* Checkout button clicked
+  const CheckOutClicked = (OID, price) => {
+    const jsonParams = {
+      "orderID" : OID,
+      "price" : price
+    }
+    if(OID >= 0) {
+      let fdata = new FormData();
+      fdata.append('orderID', OID);
+      fdata.append('price', price);
+      axios.put(RESTURL + '/ordersbyuser', fdata)
+      .then(response => {
+        //ok : Set messagebar text, wait and change view
+        ShowMessageBar(response.data.message, "alert alert-success");
+        setTimeout(() => { ShowMessageBar(""); SignOut(); }, 3000);
+        UpdateShoppingCart();
+      })
+      .catch(error => {
+        //nok : Set messagebar errormessage, wait and set info message
+        if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
+        else ShowMessageBar(error.response.data.message, "alert alert-danger");
+        setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+      });
+    }
+  }
 
   const EditItemItemBtnClicked = (IID) => {
     setActiveItemID(IID);
@@ -625,7 +649,7 @@ function App() {
       { stateVars.viewState === VIEWS.RESTAURANTORDERS ? <RestaurantOrders data={restaurants.filter(i => i.id === activeRestaurantID)[0]} types={restaurantTypes} onSubmitBtnClicked={EditRestaurantBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.ITEMINFO ? <ItemInfo showMessage={ShowMessageBar} types={restaurantItemTypes} data={items.filter(i => i.id === activeItemID)[0]} onSubmitBtnClicked={EditItemBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={CreateRestaurantBtnClicked} types={restaurantTypes} /> : <></> }
-      { stateVars.viewState === VIEWS.SHOPPINGCART? <ShoppingCart rid={activeRestaurantID} items={items} data={shoppingCart} /> : <></> }
+      { stateVars.viewState === VIEWS.SHOPPINGCART? <ShoppingCart onCheckOutClicked={CheckOutClicked} rid={activeRestaurantID} items={items} data={shoppingCart} /> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.SIGNUP ? <SignUp showMessage={ShowMessageBar} roles={userRoles} onSubmitBtnClicked={SignupBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTS ?

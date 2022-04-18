@@ -1,5 +1,4 @@
 import React from 'react'
-import {useEffect} from 'react';
 
 export default function PersonalInfo(props) {
     //Form submit button pressed : Validate password and fire app.js onSubmitBtnClicked
@@ -18,8 +17,7 @@ export default function PersonalInfo(props) {
             setTimeout(() => props.showMessage(""), 7000);
         }
     }
-    console.log(props.history);
-    console.log(props.items);
+
     return (
         
     <div className="containerTree">
@@ -108,7 +106,7 @@ export default function PersonalInfo(props) {
                                         <td className="text-center">{d.id}</td>                                       
                                         <td className="restaurantName">{props.items.filter(n => n.id === d.idrestaurant)[0].name}</td>
                                         <td><span className="badge badge-success">Fullfilled</span></td>
-                                        <td className="price">NA</td>
+                                        <td className="price">{d.price}</td>
                                         <td className="orderDate">{d.completed_time}</td>
                                     </tr>) : <tr><td>Empty</td></tr>}
                                 </tbody>
