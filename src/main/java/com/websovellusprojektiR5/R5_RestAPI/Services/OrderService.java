@@ -4,6 +4,7 @@ import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +57,16 @@ public class OrderService {
         }
         orderItemsRepo.save(orderItem);
         return "Item added OK";
+    }
+
+    public String completeOrder(Long orderID){
+        if(orderRepo.findById(orderID).orElse(null) == null)
+            return "Error: Order doesn't exist";
+
+        Order order = orderRepo.findOrderById(orderID);
+        order.setCompleted_time(new Timestamp(System.currentTimeMillis()));
+        orderRepo.save(order);
+        return "Order completed OK";
     }
 
     public String deleteItemFromOrder(Long orderID, Long itemID){

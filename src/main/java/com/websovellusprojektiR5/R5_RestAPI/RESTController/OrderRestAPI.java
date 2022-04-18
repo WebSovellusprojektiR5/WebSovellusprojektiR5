@@ -3,6 +3,7 @@ package com.websovellusprojektiR5.R5_RestAPI.RESTController;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Item;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Order;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.OrderItems;
+import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Restaurant;
 import com.websovellusprojektiR5.R5_RestAPI.Services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,4 +80,12 @@ public class OrderRestAPI {
             return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
         else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
     }
+
+    @PutMapping(value = "/ordersbyuser")
+    public ResponseEntity<Map<String, String>> completeOrder(@RequestParam Long orderID){
+        String ret = orderService.completeOrder(orderID);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
+    }
+
 }
