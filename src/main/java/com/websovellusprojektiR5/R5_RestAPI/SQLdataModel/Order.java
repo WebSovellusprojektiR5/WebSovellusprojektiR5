@@ -23,7 +23,7 @@ public class Order {
     @Column(name = "address2")
     private String address2;
 
-    @Column(name = "ordered_time")
+    @Column(name = "ordered_time", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp ordered_time;
 
     @Column(name = "completed_time")

@@ -28,6 +28,10 @@ public class OrderService {
         return orderRepo.findByRestaurantLimit(restaurantID, first_order, limit);
     }
 
+    public Order getActiveOrderIdByRestaurantId(Long restaurantID) {
+        return orderRepo.findActiveByRestaurantId(restaurantID);
+    }
+
     public List<Order> getOrdersByCustomer(Long customerID){
         return orderRepo.findByCustomer(customerID);
     }
@@ -47,14 +51,12 @@ public class OrderService {
         return "Item added OK";
     }
 
-    public String addOrder(Order order){
+    public Order addOrder(Order order){
         if(restaurantRepo.findById(order.getIdrestaurant()).orElse(null) == null)
-            return "Error: Restaurant doesn't exist";
+            return null;
         if(userRepo.findById(order.getIdperson()).orElse(null) == null)
-            return "Error: User doesn't exist";
-
-        orderRepo.save(order);
-        return "Order created OK";
+            return null;
+        return orderRepo.save(order);
     }
 
     public List<OrderItems> getItemsInOrder(Long orderID){

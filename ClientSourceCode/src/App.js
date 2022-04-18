@@ -22,9 +22,11 @@ import RestaurantOrders from './components/RestaurantOrders';
 
 function App() {
 
-  const RESTURL = 'https://webfoodr5.herokuapp.com';
+  //const RESTURL = 'https://webfoodr5.herokuapp.com';
+  const RESTURL = 'http://localhost:8080';
 
   const [restaurants, setRestaurants] = useState([]);
+  const [shoppingCart, setShoppingCart] = useState([]);
   const [filteredRestaurants, setfilteredRestaurants] = useState([]);
   const [items, setItems] = useState([]);
   const [filteredItems, setfilteredItems] = useState([]);
@@ -39,6 +41,7 @@ function App() {
   const [activeRestaurantID, setActiveRestaurantID] = useState(-1);
   const [activeItemID, setActiveItemID] = useState(-1);
   const [activeRestaurantName, setActiveRestaurantName] = useState("");
+  const [activeOrderID, setActiveOrderID] = useState(-1);
 
   //* Set top bar message text (not visible if empty or restaurant view active) and Bootstrap style *
   //Example BootStrap styles: alert alert-primary, alert alert-danger, alert alert-success
@@ -465,6 +468,80 @@ function App() {
     });
   }
 
+  const AddToChartClicked = (IID, qty) => {
+    if(stateVars.loggedinUserID < 0) {
+      ShowMessageBar("You must sign in before making an order!", "alert alert-danger");
+      setTimeout(() => ShowMessageBar(""), 6000);
+      return;
+    }
+    
+    let jsonOrderBody = {
+      "address1" : "",
+      "address2" : "",
+      "idrestaurant" : activeRestaurantID,
+      "idperson" : stateVars.loggedinUserID
+    }
+    let jsonItemBody = {
+      "iditem" : IID,
+      "quantity" : parseInt(qty)
+    }
+
+    //Find active order id
+    axios.get(RESTURL + '/activeorderbyrestaurant', { params: {restaurantID: activeRestaurantID} })
+    .then(response => { 
+      console.log(response);
+      if(response.data === '') {
+        //not found: add an order
+        axios.post(RESTURL + '/ordersbyuser', jsonOrderBody)
+        .then(response => {
+          //add item to order
+          jsonItemBody["idorder"] = response.data;
+          axios.post(RESTURL + "/orderitem", jsonItemBody)
+          .then(response => {
+            //ok: Item added
+            ShowMessageBar(qty + "x " + items.filter(i => i.id === IID)[0].name + " is added to the shopping chart");
+            setTimeout(() => { ShowMessageBar(""); }, 3000);
+          })
+          .catch(error => {
+            //nok: Adding item
+            ShowMessageBar(error.toString(), "alert alert-danger");
+            setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+          })
+        })
+        .catch(error => {
+          //nok: Adding an order
+          ShowMessageBar(error.toString(), "alert alert-danger");
+          setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+          return;
+        })
+        
+      }
+      else {
+        //found: add item to order
+        jsonItemBody["idorder"] = response.data.id;
+        console.log(jsonItemBody);
+        axios.post(RESTURL + "/orderitem", jsonItemBody)
+        .then(response => {
+          //ok: Item added
+          ShowMessageBar(qty + "x " + items.filter(i => i.id === IID)[0].name + " is added to the shopping chart");
+          setTimeout(() => { ShowMessageBar(""); }, 3000);
+        })
+        .catch(error => {
+          //nok: Adding item
+          ShowMessageBar(error.toString(), "alert alert-danger");
+          setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+        })
+      }   
+    })
+    .catch(error => {
+      //nok: Get order id failed
+      ShowMessageBar(error.toString(), "alert alert-danger");
+      setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+      return;
+    })       
+  }
+
+
 
   const EditItemItemBtnClicked = (IID) => {
     setActiveItemID(IID);
@@ -506,7 +583,7 @@ function App() {
       { stateVars.viewState === VIEWS.MENUITEM ?
         <div className="pageContainer">
         {
-            filteredItems.map(i => <MenuItem key={i.id} item={i} userRole={stateVars.loggedinUserRole} onEditItemClicked={EditItemItemBtnClicked} onDeleteItemClicked={DeleteItemBtnClicked}/>)
+            filteredItems.map(i => <MenuItem key={i.id} item={i} userRole={stateVars.loggedinUserRole} onAddToChartClicked={AddToChartClicked} onEditItemClicked={EditItemItemBtnClicked} onDeleteItemClicked={DeleteItemBtnClicked}/>)
         }
         </div> : <></> 
       }

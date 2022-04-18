@@ -1,5 +1,6 @@
 package com.websovellusprojektiR5.R5_RestAPI.RESTController;
 
+import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Item;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Order;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.OrderItems;
 import com.websovellusprojektiR5.R5_RestAPI.Services.OrderService;
@@ -24,6 +25,12 @@ public class OrderRestAPI {
         return orderService.getOrdersByRestaurantLimit(restaurantID, first_order, limit);
     }
 
+    @GetMapping("/activeorderbyrestaurant")
+    public ResponseEntity<Order> getactiveorderidbyrestaurant(@RequestParam Long restaurantID) {
+        Order res = orderService.getActiveOrderIdByRestaurantId(restaurantID);
+        return new ResponseEntity<Order> (res, HttpStatus.OK);
+    }
+
     @CrossOrigin
     @GetMapping("/ordersbyuser")
     public List<Order> getordersbycustomer(@RequestParam Long customerID, @RequestParam int first_order,
@@ -32,17 +39,18 @@ public class OrderRestAPI {
     }
 
     @PostMapping(value = "/ordersbyuser", consumes = {"application/json"})
-    public ResponseEntity<Map<String, String>> addOrder(Order order){
-        String status = orderService.addOrder(order);
-        if (status == "") return new ResponseEntity<> (HttpStatus.OK);
-        else return new ResponseEntity<>(Map.of("message", status), HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity<Long> addOrder(@RequestBody Order order){
+        Order res = orderService.addOrder(order);
+        Long ret = -1l;
+        if (res != null) ret = res.getId();
+        return new ResponseEntity<Long> (ret, HttpStatus.OK);
     }
 
     @PostMapping(value = "/orderitem", consumes = {"application/json"})
-    public ResponseEntity<Map<String, String>> addItemToOrder(OrderItems item){
-        String status = orderService.addItemToOrder(item);
-        if (status == "") return new ResponseEntity<> (HttpStatus.OK);
-        else return new ResponseEntity<>(Map.of("message", status), HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity<Map<String, String>> addItemToOrder(@RequestBody OrderItems item){
+        String ret = orderService.addItemToOrder(item);
+        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
     }
 
     @CrossOrigin
