@@ -15,8 +15,6 @@ export default function ShoppingCart(props) {
                 <div class="card-body cart">
                     <div class="col-sm-12 empty-cart-cls text-center"> 
                         <h2>ShoppingCart</h2>
-
-                        <div className="containerTwo">
                             <div class="d-flex justify-content-center row">
                                 <div class="col-md-10">
                                     <div class="rounded">
@@ -39,7 +37,7 @@ export default function ShoppingCart(props) {
                                                     <td class="text-center">1</td>
                                                     <td>Medium Wings</td>
                                                     <input type="number" min="1.00" max="10000.00" step="1.00" placeholder="1.00" className="form-control" id="inputQuantity" required/>
-                                                    <td>16.00€</td>
+                                                    <td className="total">16.00€</td>
                                                     <button type="submit" className="btn btn-danger btn-sm">Delete</button>
                                                     <td><i class="fa fa-ellipsis-h text-black-50"></i></td>
                                                 </tr>
@@ -50,8 +48,6 @@ export default function ShoppingCart(props) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-   
                         <div className="col-md-12">
                             <label htmlFor="inputAdditionalInfo" className="form-label">Additional info:</label>
                             <input type="text" maxLength="255" className="form-control" id="inputAdditionalInfo" placeholder="i.e Allergies etc.."/><br/>
