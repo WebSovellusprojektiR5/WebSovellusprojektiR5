@@ -8,7 +8,7 @@ chai.use(chaiJsonSchemaAjv);
 
 const restaurantInfoArraySchema = require('../schemas/restaurantsInfoArray.schema.json');
 
-describe('webfoodr5 tests', function(){
+describe('webfoodr5 restaurant tests', function(){
     describe('get all active restaurants', function(){
         it('should return all active restaurants', function(done){
             //send http request
@@ -46,9 +46,49 @@ describe('webfoodr5 tests', function(){
                 })
                 .end(function(err, res){
                     expect(err).to.be.null;
-                    expect(res).to.have.status(201);
+                    expect(res).to.have.status(200);
                     done();
-            })
+                })
+        })
+    })
+    describe('edit restaurant', function(){
+        it('should accept changes when restaurant data is correct', function(done){
+            chai.request('https://webfoodr5.herokuapp.com')
+                .put('/restaurants')
+                .send({
+                    id: 9,
+                    name: "eipä mittään",
+                    description: "kokeilevaa fuusiota",
+                    thumbnail_url: "",
+                    picture_url: "",
+                    price_level: 3,
+                    address1: "",
+                    address2: "",
+                    city: "",
+                    phone: "",
+                    idperson: 6,
+                    idrestauranttype: 2,
+                    active: true
+                })
+                .end(function(err, res){
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(200);
+                    done();
+                })
+        })
+    })
+    describe('deactivate restaurant', function(){
+        it('should deactivate restaurant if id is correct', function(done){
+            chai.request('http://localhost:3000/')
+                .put('/restaurantdelete')
+                .send({
+                    id: 9
+                })
+                .end(function(err, res){
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(200);
+                    done();
+                })
         })
     })
 })

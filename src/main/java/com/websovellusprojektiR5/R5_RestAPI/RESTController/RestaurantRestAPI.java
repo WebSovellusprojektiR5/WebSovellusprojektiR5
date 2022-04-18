@@ -60,7 +60,7 @@ public class RestaurantRestAPI {
         return new ResponseEntity<Long> (ret, HttpStatus.OK);
     }
 
-    @PutMapping(path = "/restaurantdelete")
+    @PutMapping(path = "/restaurantdelete", consumes = {"application/json"})
     public ResponseEntity<Map<String, String>> deleteRestaurant(@RequestParam Long restaurantID){
         String ret = restaurantService.deleteRestaurant(restaurantID);
         if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);

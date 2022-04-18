@@ -22,8 +22,8 @@ import RestaurantOrders from './components/RestaurantOrders';
 
 function App() {
 
-  //const RESTURL = 'https://webfoodr5.herokuapp.com';
-  const RESTURL = 'http://localhost:8080';
+  const RESTURL = 'https://webfoodr5.herokuapp.com';
+  //const RESTURL = 'http://localhost:8080';
 
   const [restaurants, setRestaurants] = useState([]);
   const [shoppingCart, setShoppingCart] = useState([]);
