@@ -106,7 +106,7 @@ function App() {
       if(newStateVars === "") newStateVars = {...stateVars};
       newStateVars.lastViewState = newStateVars.viewState;
       //Only owner can select some VIEWS. Otherwise set restaurants view
-      if (newStateVars.loggedinUserRole !== "" && newStateVars.loggedinUserRole !== "owner" && 
+      if (newStateVars.loggedinUserRole !== "" && newStateVars.loggedinUserRole.toLowerCase() !== "owner" && 
        (view === VIEWS.NEWMENUITEM || view === VIEWS.NEWRESTAURANT || view === VIEWS.RESTAURANTINFO)) view = VIEWS.RESTAURANTS;  
       newStateVars.viewState = view;
       setStateVars(newStateVars); 
@@ -127,13 +127,14 @@ function App() {
     window.sessionStorage.setItem("sessionToken", null);
     setfilteredRestaurants(restaurants);
     ChangeView(VIEWS.RESTAURANTS);   
+    
   }
 
   //* Update filteredRestaurants object *
   const FilterRestaurantsBySearchText = (text) => {
     setFilterText(text);   
     let newrestaurants = restaurants.filter(n => n.name.toLowerCase().includes(text.toLowerCase()) || n.description.toLowerCase().includes(text.toLowerCase()));
-    if(stateVars.loggedinUserRole === "owner") newrestaurants = newrestaurants.filter(n => n.idperson === stateVars.loggedinUserID);
+    if(stateVars.loggedinUserRole.toLowerCase() === "owner") newrestaurants = newrestaurants.filter(n => n.idperson === stateVars.loggedinUserID);
     if(filterCatID >= 0 && filterCatID < 1000) newrestaurants = newrestaurants.filter(f => f.idrestauranttype === filterCatID);
     if(filterCatID >= 1000) newrestaurants = newrestaurants.filter(f => f.price_level === filterCatID - 1000);  
     setfilteredRestaurants(newrestaurants);
@@ -141,7 +142,7 @@ function App() {
   const FilterRestaurantsByCatID = (id) => {
     setFilterCatID(id);
     let newrestaurants = restaurants.filter(n => n.name.toLowerCase().includes(filterText.toLowerCase()) || n.description.toLowerCase().includes(filterText.toLowerCase()));
-    if(stateVars.loggedinUserRole === "owner") newrestaurants = newrestaurants.filter(n => n.idperson === stateVars.loggedinUserID);
+    if(stateVars.loggedinUserRole.toLowerCase() === "owner") newrestaurants = newrestaurants.filter(n => n.idperson === stateVars.loggedinUserID);
     if(id >= 0 && id < 1000) newrestaurants = newrestaurants.filter(f => f.idrestauranttype === id);
     if(id >= 1000) newrestaurants = newrestaurants.filter(f => f.price_level === id - 1000);
     setfilteredRestaurants(newrestaurants);
@@ -207,7 +208,7 @@ function App() {
     .then(response => {
       setRestaurants(response.data);
       var rants = response.data;
-      if(urole === "owner" && uid >= 0) rants = rants.filter(n => n.idperson === uid);
+      if(urole.toLowerCase() === "owner" && uid >= 0) rants = rants.filter(n => n.idperson === uid);
       setfilteredRestaurants(rants);
     });
   }
@@ -218,7 +219,7 @@ function App() {
     let jsonBody = {
       "name" : formdata["inputItemName"].value,
       "description" : formdata["inputDescription"].value,
-      "price" : parseFloat(formdata["inputPrice"].value),
+      "price" : parseFloat(formdata["inputPrice"].value).toFixed(2),
       "idrestaurant" : activeRestaurantID
     }
     //ok : Add item category if not exist already
@@ -329,6 +330,7 @@ function App() {
       ShowMessageBar("Logged in", "alert alert-success");
       let decoded = jwt_decode(response.data.token);
       let newStateVars={...stateVars};
+      newStateVars.viewState = VIEWS.RESTAURANTS;
       newStateVars.loggedinToken = response.data.token;
       newStateVars.loggedinUserID = decoded.userid;
       newStateVars.loggedinUserRoleID = decoded.roleid; 
@@ -336,15 +338,13 @@ function App() {
       setStateVars(newStateVars); 
       window.sessionStorage.setItem("sessionToken", response.data.token);
       //owner can see only his/her own restaurants
-      if(decoded.userrole === "owner") {
+      if(decoded.userrole.toLowerCase() === "owner") {
         let newrestaurants = restaurants.filter(n => n.idperson === decoded.userid);
         setfilteredRestaurants(newrestaurants);
-      }
-      ChangeView(stateVars.lastViewState, newStateVars);  //Statehook slow updating workaround
+      }     
+      //update personinfo
       GetPersonInfo(decoded.userid);
-      setTimeout(() => { 
-        ShowMessageBar("");               
-      }, 3000);
+      setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS, newStateVars); }, 3000);  //Statehook slow updating workaround              
     }).catch(error => {
       //nok : Set messagebar errormessage, set states, wait and set info message
       let newStateVars={...stateVars};
@@ -382,18 +382,36 @@ function App() {
     });
   }
 
+
+  const EditItemBtnClicked = (IID) => {
+    console.log(IID);
+  }
+  const DeleteItemBtnClicked = (IID) => {
+    console.log(IID);
+  }
+  const EditRestaurantBtnClicked = (formdata) => {
+    console.log(formdata);
+  }
+  const EditRestaurantItemBtnClicked = (RID) => {
+    ChangeView(VIEWS.RESTAURANTINFO);
+  }
+  const DeleteRestaurantItemBtnClicked = (RID) => {
+    console.log(RID);
+  }
+
+  const RestaurantNameClicked = () => {ChangeView(VIEWS.RESTAURANTS); }
   //Return Single-Page application
   return (
     <div>
       <Navbar onNavItemClicked={ChangeView} onSearchBtnClicked={stateVars.viewState === VIEWS.RESTAURANTS ? FilterRestaurantsBySearchText : FilterItemsBySearchText} onSignoutClicked={SignOut} statevars={stateVars} />
       { stateVars.viewState === VIEWS.RESTAURANTS ? <Categories types={restaurantTypes} onItemClicked={FilterRestaurantsByCatID}/> : <></> }
-      { activeRestaurantName !== "" ? <div className="messageArea"><div className="alert alert-info" role="alert">{activeRestaurantName}</div></div> : <></>}
-      { stateVars.viewState === VIEWS.MENUITEM ? <ItemTypes types={restaurantItemTypes} onItemClicked={FilterItemsByCatID}/> : <></> }
+      { activeRestaurantName !== "" ? <div className="messageArea" onClick={RestaurantNameClicked}><div className="alert alert-primary" role="alert">{activeRestaurantName}</div></div> : <></>}
+      { stateVars.viewState === VIEWS.MENUITEM ? <ItemTypes types={restaurantItemTypes} onItemClicked={FilterItemsByCatID} onReturnClicked={ChangeView} /> : <></> }
       { message !== "" ? <div className="messageArea"><div className={msgClass} role="alert">{message}</div></div> : <div className="messageArea"/>}
       { stateVars.viewState === VIEWS.NEWMENUITEM ? <NewMenuItem types={restaurantItemTypes} showMessage={ShowMessageBar} onSubmitBtnClicked={CreateItemBtnClicked} /> : <></> }
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount onSubmitBtnClicked={DeleteAccountClicked}/> : <></> }
       { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }
-      { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo/> : <></> }
+      { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo data={restaurants.filter(i => i.id === activeRestaurantID)[0]} types={restaurantTypes} onSubmitBtnClicked={EditRestaurantBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={CreateRestaurantBtnClicked} types={restaurantTypes} /> : <></> }
       { stateVars.viewState === VIEWS.SHOPPINGCART? <ShoppingCart/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
@@ -401,14 +419,14 @@ function App() {
       { stateVars.viewState === VIEWS.RESTAURANTS ?
         <div className="pageContainer">
         {
-            filteredRestaurants.map(i => <RestaurantsView key={i.id} item={i} onRestaurantClicked={GetRestaurantMenuItems} />)
+            filteredRestaurants.map(i => <RestaurantsView key={i.id} item={i} userRole={stateVars.loggedinUserRole} onRestaurantClicked={GetRestaurantMenuItems} onEditItemClicked={EditRestaurantItemBtnClicked} onDeleteItemClicked={DeleteRestaurantItemBtnClicked}/>)
         }
         </div> : <></> 
       }
       { stateVars.viewState === VIEWS.MENUITEM ?
         <div className="pageContainer">
         {
-            filteredItems.map(i => <MenuItem key={i.id} item={i} />)
+            filteredItems.map(i => <MenuItem key={i.id} item={i} userRole={stateVars.loggedinUserRole} onEditItemClicked={EditItemBtnClicked} onDeleteItemClicked={DeleteItemBtnClicked}/>)
         }
         </div> : <></> 
       }
