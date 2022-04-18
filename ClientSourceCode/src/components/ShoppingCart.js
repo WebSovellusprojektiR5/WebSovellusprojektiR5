@@ -34,8 +34,8 @@ export default function ShoppingCart(props) {
 
                                             <tbody class="table-body">
                                                 <tr class="cell-1">
-                                                    <td class="text-center">1</td>
-                                                    <td>Medium Wings</td>
+                                                    <td class="text-center">1</td> 
+                                                    <td>Medium Wings</td> 
                                                     <input type="number" min="1.00" max="10000.00" step="1.00" placeholder="1.00" className="form-control" id="inputQuantity" required/>
                                                     <td className="total">16.00€</td>
                                                     <button type="submit" className="btn btn-danger btn-sm">Delete</button>
