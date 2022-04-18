@@ -9,7 +9,7 @@ export default function MenuItem(props) {
     console.log(text)
   }
 
-    return(
+  return(
     <div className="pageItemTwo">
         <img src={props.item.thumbnail_url}/>
         <div className="nimi">{props.item.name}</div>

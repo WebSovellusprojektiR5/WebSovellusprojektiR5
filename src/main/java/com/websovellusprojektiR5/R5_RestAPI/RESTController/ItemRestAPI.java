@@ -57,10 +57,11 @@ public class ItemRestAPI {
     }
 
     @PutMapping(path = "/items", consumes = {"application/json"})
-    public ResponseEntity<Map<String, String>> editItem(@RequestBody Item item){
-        String ret = itemService.editItem(item);
-        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
-        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
+    public ResponseEntity<Long> editItem(@RequestBody Item item){
+        Item res = itemService.editItem(item);
+        Long ret = -1l;
+        if (res != null) ret = res.getId();
+        return new ResponseEntity<Long> (ret, HttpStatus.OK);
     }
 
     @PutMapping(path = "/itemdelete")

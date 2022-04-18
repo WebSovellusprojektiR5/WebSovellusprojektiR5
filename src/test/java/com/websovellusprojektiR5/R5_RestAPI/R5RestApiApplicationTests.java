@@ -93,7 +93,7 @@ class R5RestApiApplicationTests {
 		restaurant.setCity("Tampere");
 		restaurant.setName("joopajoo7");
 		restaurant.setDescription("Burgereita ja sen semmoista");
-		String respond = restaurantService.editRestaurant(restaurant);
+		Restaurant respond = restaurantService.editRestaurant(restaurant);
 		List<Restaurant> restaurants = restaurantService.getRestaurants();
 	}
 

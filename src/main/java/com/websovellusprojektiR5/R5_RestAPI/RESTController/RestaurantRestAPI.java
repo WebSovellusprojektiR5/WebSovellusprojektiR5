@@ -53,10 +53,11 @@ public class RestaurantRestAPI {
     }
 
     @PutMapping(path = "/restaurants", consumes = {"application/json"})
-    public ResponseEntity<Map<String, String>> editRestaurant(@RequestBody Restaurant restaurant){
-        String ret = restaurantService.editRestaurant(restaurant);
-        if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
-        else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
+    public ResponseEntity<Long> editRestaurant(@RequestBody Restaurant restaurant){
+        Restaurant res = restaurantService.editRestaurant(restaurant);
+        Long ret = -1l;
+        if (res != null) ret = res.getId();
+        return new ResponseEntity<Long> (ret, HttpStatus.OK);
     }
 
     @PutMapping(path = "/restaurantdelete")

@@ -42,13 +42,11 @@ public class RestaurantService {
         return restaurantRepo.save(restaurant);
     }
 
-    public String editRestaurant(Restaurant restaurant){
+    public Restaurant editRestaurant(Restaurant restaurant){
         if(restaurantRepo.findById(restaurant.getId()).orElse(null) == null)
-            return "Error: Restaurant doesn't exist!";
-
+            return null;
         restaurant.setActive(true);
-        restaurantRepo.save(restaurant);
-        return "Restaurant updated OK";
+        return restaurantRepo.save(restaurant);
     }
 
     public String deleteRestaurant(Long restaurantID){
