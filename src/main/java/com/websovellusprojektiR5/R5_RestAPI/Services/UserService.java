@@ -39,6 +39,7 @@ public class UserService {
         if(userRepo.findByUsername(user.getUsername()) != null){
             return "Error: User already exists!";
         }
+        user = setNullToString(user);
         user.setActive(true);
         user.setPassword(pwdEncoder.encode(user.getPassword()));
         userRepo.save(user);
@@ -49,6 +50,7 @@ public class UserService {
         if(userRepo.findById(user.getId()).orElse(null) == null)
             return "Error: User doesn't exist!";
 
+        user = setNullToString(user);
         user.setActive(true);
         user.setPassword(pwdEncoder.encode(user.getPassword()));
         userRepo.save(user);
@@ -76,5 +78,34 @@ public class UserService {
 
     public User login(String username, String password){
         return userRepo.checkCredentials(username, password);
+    }
+
+    //set null fields to empty strings
+    private User setNullToString(User user){
+        if(user.getAddress1() == null){
+            user.setAddress1("");
+        }
+        if(user.getAddress2() == null){
+            user.setAddress2("");
+        }
+        if(user.getCity() == null){
+            user.setCity("");
+        }
+        if(user.getFirstname() == null){
+            user.setFirstname("");
+        }
+        if(user.getLastname() == null){
+            user.setLastname("");
+        }
+        if(user.getPhone() == null){
+            user.setPhone("");
+        }
+        if(user.getUsername() == null){
+            user.setUsername("");
+        }
+        if(user.getPassword() == null){
+            user.setPassword("");
+        }
+        return user;
     }
 }

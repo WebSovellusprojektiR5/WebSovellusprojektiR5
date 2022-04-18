@@ -34,7 +34,7 @@ public class RestaurantRestAPI {
     }
 
     @PostMapping(path = "/restaurants", consumes = {"application/json"})
-    public ResponseEntity<Long> addRestaurant2(@RequestBody Restaurant restaurant){
+    public ResponseEntity<Long> addRestaurant(@RequestBody Restaurant restaurant){
         Restaurant res = restaurantService.addRestaurant(restaurant);
         Long ret = -1l;
         if (res != null) ret = res.getId();

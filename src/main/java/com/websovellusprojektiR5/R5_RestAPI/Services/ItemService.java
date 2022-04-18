@@ -61,6 +61,7 @@ public class ItemService {
     }
 
     public Item addItem (Item item) {
+        item = setNullToString(item);
         item.setActive(true);
         return itemRepo.save(item);
     }
@@ -87,6 +88,7 @@ public class ItemService {
         if(itemRepo.findById(item.getId()).orElse(null) == null)
             return null;
 
+        item = setNullToString(item);
         item.setActive(true);
         return itemRepo.save(item);
     }
@@ -100,5 +102,17 @@ public class ItemService {
         itemRepo.save(item);
         return "Item de-activated OK";
     }
-
+    //set null fields to empty strings
+    private Item setNullToString(Item item){
+        if(item.getDescription() == null){
+            item.setDescription("");
+        }
+        if(item.getName() == null){
+            item.setName("");
+        }
+        if(item.getThumbnail_url() == null){
+            item.setThumbnail_url("");
+        }
+        return item;
+    }
 }
