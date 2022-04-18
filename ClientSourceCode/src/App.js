@@ -12,6 +12,7 @@ import NewMenuItem from './components/NewMenuItem';
 import DeleteAccount from './components/DeleteAccount';
 import PersonalInfo from './components/PersonalInfo';
 import RestaurantInfo from './components/RestaurantInfo';
+import ItemInfo from './components/ItemInfo';
 import NewRestaurant from './components/NewRestaurant';
 import RestaurantsView from './components/RestaurantsView';
 import ShoppingCart from './components/ShoppingCart';
@@ -20,7 +21,6 @@ import MenuItem from './components/MenuItem';
 function App() {
 
   const RESTURL = 'https://webfoodr5.herokuapp.com';
-  //const RESTURL = 'http://localhost:8080';
 
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setfilteredRestaurants] = useState([]);
@@ -35,6 +35,7 @@ function App() {
   const [message, setMessage] = useState("");
   const [msgClass, setMsgClass] = useState("alert alert-primary");
   const [activeRestaurantID, setActiveRestaurantID] = useState(-1);
+  const [activeItemID, setActiveItemID] = useState(-1);
   const [activeRestaurantName, setActiveRestaurantName] = useState("");
 
   //* Set top bar message text (not visible if empty or restaurant view active) and Bootstrap style *
@@ -55,6 +56,7 @@ function App() {
     DELETEACCOUNT : "deleteaccount",
     PERSONALINFO : "personalinfo",
     RESTAURANTINFO : "restaurantinfo",
+    ITEMINFO : "iteminfo",
     NEWRESTAURANT : "newrestaurant",
     SHOPPINGCART : "shoppingcart",
     MENUITEM : "menuitem"
@@ -162,7 +164,7 @@ function App() {
   }
 
   //* Create restaurant button clicked : POST new restaurant *
-  const CreateRestaurantBtnClicked = (formdata) => {
+  const CreateRestaurantBtnClicked = (formdata, method="POST") => {
     //Generate JSON body
     let jsonBody = {
       "name" : formdata["inputRestaurantName"].value,
@@ -175,30 +177,47 @@ function App() {
       "idrestauranttype" : formdata["selectCategory"].value,
       "idperson" : stateVars.loggedinUserID,
     }
-    //POST query
-    axios.post(RESTURL + '/restaurants', jsonBody)
+    if(method === "PUT") jsonBody["id"] = activeRestaurantID;
+    //POST/PUT query
+    const config = { method: method, url: RESTURL + '/restaurants', data: jsonBody }
+    axios(config)
+    //axios.post(RESTURL + '/restaurants', jsonBody)
     .then(response => {
-      //ok : Try to add image
-      let fdata = new FormData();
-      fdata.append('ID', response.data);
-      fdata.append('file', formdata["itemImage"].files[0]);
-      axios.put(RESTURL + '/restaurantimage', fdata)
-      .then(response => {
-        ShowMessageBar("Restaurant added successfully", "alert alert-success");
-        GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
-        setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
-      })
-      .catch(error => {
-        ShowMessageBar(error.toString(), "alert alert-danger");
-        GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
-        setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
-      })
+      if(formdata["itemImage"].value !== "")
+      {
+        //ok : Try to add image
+        let fdata = new FormData();
+        fdata.append('ID', response.data);
+        fdata.append('file', formdata["itemImage"].files[0]);
+        axios.put(RESTURL + '/restaurantimage', fdata)
+        .then(response => {
+          if(method==="POST") ShowMessageBar("Restaurant added successfully", "alert alert-success");
+          else ShowMessageBar("Restaurant edited successfully", "alert alert-success");
+          GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
+          setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
+        })
+        .catch(error => {
+          ShowMessageBar(error.toString(), "alert alert-danger");
+          GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
+          setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
+        })
+      }
+      else {
+        console.log("No image");
+        ShowMessageBar("Restaurant edited successfully", "alert alert-success");
+        //GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
+        //setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.RESTAURANTS); }, 3000);
+      }
     }).catch(error => {
       //nok : Set messagebar errormessage, wait and set info message
       if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
       else ShowMessageBar(error.response.data.message, "alert alert-danger");
       setTimeout(() => ShowMessageBar("Create Restaurant - Enter valid data to each field"), 6000);
     }); 
+  }
+  //* Edit restaurant button clicked: edit restaurant (PUT) *
+  const EditRestaurantBtnClicked = (formdata) => {
+    CreateRestaurantBtnClicked(formdata, "PUT");
   }
 
   //* Get restaurants *
@@ -211,39 +230,73 @@ function App() {
       setfilteredRestaurants(rants);
     });
   }
+  //* Delete restaurant clicked : set not active (PUT) *
+
+  const DeleteRestaurantItemBtnClicked = (RID) => {
+    if(window.confirm('Are you sure you wish to delete this restaurant?'))
+    {
+      let fdata = new FormData();
+      fdata.append('restaurantID', RID);
+      axios.put(RESTURL + "/restaurantdelete", fdata)
+      .then(response => {
+        //ok : Set messagebar text, wait and change view
+        ShowMessageBar(response.data.message, "alert alert-success");
+        GetRestaurants(stateVars.loggedinUserRole, stateVars.loggedinUserID);
+        setTimeout(() => { ShowMessageBar(""); }, 3000);
+      })
+      .catch(error => {
+        //nok : Set messagebar errormessage, wait and set info message
+        if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
+        else ShowMessageBar(error.response.data.message, "alert alert-danger");
+        setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+      });
+    }
+  }
 
   //* Create Item button clicked : POST new item *
-  const CreateItemBtnClicked = (formdata) => {
+  const CreateItemBtnClicked = (formdata, method="POST") => {
     //Generate JSON body
     let jsonBody = {
       "name" : formdata["inputItemName"].value,
       "description" : formdata["inputDescription"].value,
       "price" : parseFloat(formdata["inputPrice"].value).toFixed(2),
       "idrestaurant" : activeRestaurantID
-    }
+    }   
+    if(method === "PUT") jsonBody["id"] = activeItemID;
     //ok : Add item category if not exist already
     axios.post(RESTURL + '/categories', {"name" : formdata["ItemType"].value })
     .then(response => {   
       jsonBody["iditemcategory"] = response.data.id;
       //ok : Add item
-      axios.post(RESTURL + '/items', jsonBody)
+      //POST/PUT query
+      const config = { method: method, url: RESTURL + '/items', data: jsonBody }
+      axios(config)
       .then(response => {
         //ok : Try to add image
-        let fdata = new FormData();
-        fdata.append('ID', response.data);
-        fdata.append('file', formdata["itemImage"].files[0]);
-        axios.put(RESTURL + '/itemimage', fdata)
-        .then(response => {
+        if(formdata["itemImage"].value !== "") {
+          console.log("kuva");
+          let fdata = new FormData();
+          fdata.append('ID', response.data);
+          fdata.append('file', formdata["itemImage"].files[0]);
+          axios.put(RESTURL + '/itemimage', fdata)
+          .then(response => {
+            ShowMessageBar("Item added successfully", "alert alert-success");
+            GetRestaurantMenuItems(activeRestaurantID);
+            setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.MENUITEM); }, 3000);
+          })
+          .catch(error => {
+            //nok: Image adding failed (Item is added without image)
+            ShowMessageBar(error.toString(), "alert alert-danger");
+            GetRestaurantMenuItems(activeRestaurantID);
+            setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.MENUITEM); }, 3000);
+          })
+        }
+        else {
+          console.log("ei kuvaa");
           ShowMessageBar("Item added successfully", "alert alert-success");
           GetRestaurantMenuItems(activeRestaurantID);
           setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.MENUITEM); }, 3000);
-        })
-        .catch(error => {
-          //nok: Image adding failed (Item is added without image)
-          ShowMessageBar(error.toString(), "alert alert-danger");
-          GetRestaurantMenuItems(activeRestaurantID);
-          setTimeout(() => { ShowMessageBar(""); ChangeView(VIEWS.MENUITEM); }, 3000);
-        })
+        }
       })
       .catch(error => {
         //nok: Item adding failed!
@@ -258,6 +311,33 @@ function App() {
     });        
   }
 
+
+  //* Edit item button clicked *
+  const EditItemBtnClicked = (formdata) => {
+    CreateItemBtnClicked(formdata, "PUT");
+  }
+
+  //* Delete item button clicked *
+  const DeleteItemBtnClicked = (IID) => {
+    if(window.confirm('Are you sure you wish to delete this menu item?'))
+    {
+      let fdata = new FormData();
+      fdata.append('id', IID);
+      axios.put(RESTURL + "/itemdelete", fdata)
+      .then(response => {
+        //ok : Set messagebar text, wait and change view
+        ShowMessageBar(response.data.message, "alert alert-success");
+        GetRestaurantMenuItems(stateVars.loggedinUserRole, stateVars.loggedinUserID);
+        setTimeout(() => { ShowMessageBar(""); }, 3000);
+      })
+      .catch(error => {
+        //nok : Set messagebar errormessage, wait and set info message
+        if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
+        else ShowMessageBar(error.response.data.message, "alert alert-danger");
+        setTimeout(() => { ShowMessageBar(""); ChangeView(stateVars.lastViewState); }, 3000);
+      });
+    }
+  }
   //* Signup Submit button clicked : POST new user *
   const SignupBtnClicked = (formdata, method="POST") => {
     //Generate JSON body
@@ -295,7 +375,7 @@ function App() {
     SignupBtnClicked(formdata, "PUT");
   }
 
-  //* Delete user account clicked : clear user data and set not active (DELETE) *
+  //* Delete user account clicked : clear user data and set not active (PUT) *
   const DeleteAccountClicked = (confirmed) => {
     if(confirmed) {
       let fdata = new FormData();
@@ -382,23 +462,18 @@ function App() {
   }
 
 
-  const EditItemBtnClicked = (IID) => {
-    console.log(IID);
+  const EditItemItemBtnClicked = (IID) => {
+    setActiveItemID(IID);
+    ChangeView(VIEWS.ITEMINFO);
   }
-  const DeleteItemBtnClicked = (IID) => {
-    console.log(IID);
-  }
-  const EditRestaurantBtnClicked = (formdata) => {
-    console.log(formdata);
-  }
+
   const EditRestaurantItemBtnClicked = (RID) => {
+    setActiveRestaurantID(RID);
     ChangeView(VIEWS.RESTAURANTINFO);
-  }
-  const DeleteRestaurantItemBtnClicked = (RID) => {
-    console.log(RID);
   }
 
   const RestaurantNameClicked = () => {ChangeView(VIEWS.RESTAURANTS); }
+
   //Return Single-Page application
   return (
     <div>
@@ -411,6 +486,7 @@ function App() {
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount onSubmitBtnClicked={DeleteAccountClicked}/> : <></> }
       { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo data={restaurants.filter(i => i.id === activeRestaurantID)[0]} types={restaurantTypes} onSubmitBtnClicked={EditRestaurantBtnClicked}/> : <></> }
+      { stateVars.viewState === VIEWS.ITEMINFO ? <ItemInfo showMessage={ShowMessageBar} types={restaurantItemTypes} data={items.filter(i => i.id === activeItemID)[0]} onSubmitBtnClicked={EditItemBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={CreateRestaurantBtnClicked} types={restaurantTypes} /> : <></> }
       { stateVars.viewState === VIEWS.SHOPPINGCART? <ShoppingCart/> : <></> }
       { stateVars.viewState === VIEWS.SIGNIN ? <SignIn showMessage={ShowMessageBar} onSubmitBtnClicked={SigninBtnClicked}/> : <></> }
@@ -425,7 +501,7 @@ function App() {
       { stateVars.viewState === VIEWS.MENUITEM ?
         <div className="pageContainer">
         {
-            filteredItems.map(i => <MenuItem key={i.id} item={i} userRole={stateVars.loggedinUserRole} onEditItemClicked={EditItemBtnClicked} onDeleteItemClicked={DeleteItemBtnClicked}/>)
+            filteredItems.map(i => <MenuItem key={i.id} item={i} userRole={stateVars.loggedinUserRole} onEditItemClicked={EditItemItemBtnClicked} onDeleteItemClicked={DeleteItemBtnClicked}/>)
         }
         </div> : <></> 
       }

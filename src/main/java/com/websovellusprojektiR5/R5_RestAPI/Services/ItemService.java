@@ -83,13 +83,12 @@ public class ItemService {
         else return "Error: Updating picture URL to database failed!";
     }
 
-    public String editItem (Item item) {
+    public Item editItem (Item item) {
         if(itemRepo.findById(item.getId()).orElse(null) == null)
-            return "Error: Item doesn't exist!";
+            return null;
 
         item.setActive(true);
-        itemRepo.save(item);
-        return "Item updated OK";
+        return itemRepo.save(item);
     }
 
     public String deleteItem (Long itemID) {
