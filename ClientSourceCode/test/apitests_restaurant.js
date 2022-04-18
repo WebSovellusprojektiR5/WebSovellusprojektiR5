@@ -79,7 +79,7 @@ describe('webfoodr5 restaurant tests', function(){
     })
     describe('deactivate restaurant', function(){
         it('should deactivate restaurant if id is correct', function(done){
-            chai.request('http://localhost:3000/')
+            chai.request('https://webfoodr5.herokuapp.com')
                 .put('/restaurantdelete')
                 .send({
                     id: 9
