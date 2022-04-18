@@ -1,5 +1,6 @@
 package com.websovellusprojektiR5.R5_RestAPI.RESTController;
 
+import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Item;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.Order;
 import com.websovellusprojektiR5.R5_RestAPI.SQLdataModel.OrderItems;
 import com.websovellusprojektiR5.R5_RestAPI.Services.OrderService;
@@ -24,6 +25,12 @@ public class OrderRestAPI {
         return orderService.getOrdersByRestaurantLimit(restaurantID, first_order, limit);
     }
 
+    @GetMapping("/activeorderbyrestaurant")
+    public ResponseEntity<Order> getactiveorderidbyrestaurant(@RequestParam Long restaurantID) {
+        Order res = orderService.getActiveOrderIdByRestaurantId(restaurantID);
+        return new ResponseEntity<Order> (res, HttpStatus.OK);
+    }
+
     @CrossOrigin
     @GetMapping("/ordersbyuser")
     public List<Order> getordersbycustomer(@RequestParam Long customerID, @RequestParam int first_order,
@@ -32,8 +39,11 @@ public class OrderRestAPI {
     }
 
     @PostMapping(value = "/ordersbyuser", consumes = {"application/json"})
-    public Order addOrder(Order order){
-        return orderService.addOrder(order);
+    public ResponseEntity<Long> addOrder(@RequestBody Order order){
+        Order res = orderService.addOrder(order);
+        Long ret = -1l;
+        if (res != null) ret = res.getId();
+        return new ResponseEntity<Long> (ret, HttpStatus.OK);
     }
 
     @PostMapping(value = "/orderitem", consumes = {"application/json"})

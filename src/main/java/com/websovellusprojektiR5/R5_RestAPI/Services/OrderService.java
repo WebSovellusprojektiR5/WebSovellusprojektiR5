@@ -28,6 +28,10 @@ public class OrderService {
         return orderRepo.findByRestaurantLimit(restaurantID, first_order, limit);
     }
 
+    public Order getActiveOrderIdByRestaurantId(Long restaurantID) {
+        return orderRepo.findActiveByRestaurantId(restaurantID);
+    }
+
     public List<Order> getOrdersByCustomer(Long customerID){
         return orderRepo.findByCustomer(customerID);
     }
@@ -62,7 +66,6 @@ public class OrderService {
             return null;
         if(userRepo.findById(order.getIdperson()).orElse(null) == null)
             return null;
-
         order = setNullToString(order);
         return orderRepo.save(order);
     }
