@@ -16,4 +16,4 @@ Frontend ja viestintä - Casandra
 
 Kokoontuessamme joko Teams-palvelussa tai koululla kaikki opiskelijat pyrkivät osallis-tumaan jokaiseen osa-alueeseen, jotta projektissamme korostuisi toimiva ryhmätyö ja laajempi oppiminen projektin aihealueista.
 
-Aloitimme työskentelyn 14.3.2022 ja toimiva sovellus on palautettu ja testattu 18.4.2022. Kokonaisuudessaan projektiin meni viisi viikkoa ja olemme vähintään kerran viikossa käyneet läpi miten omat vastuualueen tehtävät ovat edenneet sekä pitäneet yh-teisiä ”workshoppeja”. 
+Aloitimme työskentelyn 14.3.2022 ja toimiva sovellus on palautettu ja testattu 18.4.2022. Kokonaisuudessaan projektiin meni viisi viikkoa ja olemme vähintään kerran viikossa käyneet läpi miten omat vastuualueen tehtävät ovat edenneet sekä pitäneet yhteisiä ”workshoppeja”. 
