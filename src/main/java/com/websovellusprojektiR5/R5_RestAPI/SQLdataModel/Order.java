@@ -32,6 +32,9 @@ public class Order {
     @Column(name = "comment")
     private String comment;
 
+    @Column(name = "price")
+    private Double price;
+
     public Order() {
     }
 
@@ -41,7 +44,7 @@ public class Order {
                  String address2,
                  Timestamp ordered_time,
                  Timestamp completed_time,
-                 String comment){
+                 String comment, Double price){
         this.idperson = idperson;
         this.idrestaurant = idrestaurant;
         this.address1 = address1;
@@ -49,6 +52,7 @@ public class Order {
         this.ordered_time = ordered_time;
         this.completed_time = completed_time;
         this.comment = comment;
+        this.price = price;
     }
 
     public Long getId() {
@@ -109,6 +113,14 @@ public class Order {
 
     public String getComment() {
         return comment;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public void setComment(String comment) {

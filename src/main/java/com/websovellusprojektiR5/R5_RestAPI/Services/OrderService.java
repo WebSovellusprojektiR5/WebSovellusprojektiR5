@@ -59,12 +59,13 @@ public class OrderService {
         return "Item added OK";
     }
 
-    public String completeOrder(Long orderID){
+    public String completeOrder(Long orderID, Double price){
         if(orderRepo.findById(orderID).orElse(null) == null)
             return "Error: Order doesn't exist";
 
         Order order = orderRepo.findOrderById(orderID);
         order.setCompleted_time(new Timestamp(System.currentTimeMillis()));
+        order.setPrice(price);
         orderRepo.save(order);
         return "Order completed OK";
     }

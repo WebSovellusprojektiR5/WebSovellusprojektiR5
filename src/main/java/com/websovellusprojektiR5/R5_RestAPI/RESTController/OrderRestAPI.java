@@ -82,8 +82,8 @@ public class OrderRestAPI {
     }
 
     @PutMapping(value = "/ordersbyuser")
-    public ResponseEntity<Map<String, String>> completeOrder(@RequestParam Long orderID){
-        String ret = orderService.completeOrder(orderID);
+    public ResponseEntity<Map<String, String>> completeOrder(@RequestParam Long orderID, @RequestParam Double price){
+        String ret = orderService.completeOrder(orderID, price);
         if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
         else return new ResponseEntity<>(Map.of("message", ret), HttpStatus.OK);
     }
