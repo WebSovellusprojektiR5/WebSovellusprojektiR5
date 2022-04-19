@@ -25,8 +25,10 @@ function App() {
   const RESTURL = 'https://webfoodr5.herokuapp.com';
 
   const [restaurants, setRestaurants] = useState([]);
+  const [users, setUsers] = useState([]);
   const [shoppingCart, setShoppingCart] = useState([]);
   const [persHistory, setPersHistory] = useState([]);
+  const [restHistory, setRestHistory] = useState([]);
   const [filteredRestaurants, setfilteredRestaurants] = useState([]);
   const [items, setItems] = useState([]);
   const [filteredItems, setfilteredItems] = useState([]);
@@ -104,18 +106,27 @@ function App() {
     .then(response => {
       setUserRoles(response.data);
     });
+    axios.get(RESTURL + '/users')
+    .then(response => {
+      setUsers(response.data);
+    });
 
   }, []);
 
   //* NavBar Navigation button clicked : Update stateVars.viewState *
   const ChangeView = (view, newStateVars = "", forceUpdate = false) => {
     if(view !== stateVars.viewState || forceUpdate) {
+      //copy statevars and set lastViewState
+      if(newStateVars === "") newStateVars = {...stateVars};
+      newStateVars.lastViewState = newStateVars.viewState;
+      //Update data on following views
       if(view === VIEWS.SHOPPINGCART && activeRestaurantID >= 0) {
         UpdateShoppingCart();
         setActiveRestaurantName(restaurants.filter(i => i.id === activeRestaurantID)[0].name)
       }
-      if(newStateVars === "") newStateVars = {...stateVars};
-      newStateVars.lastViewState = newStateVars.viewState;
+      if(view === VIEWS.RESTAURANTS) {setActiveItemID(-1); setActiveRestaurantID(-1); setActiveRestaurantName("");}
+      if(view === VIEWS.PERSONALINFO && newStateVars.loggedinUserID >= 0) GetPersonHistory(newStateVars.loggedinUserID); 
+      if(view === VIEWS.RESTAURANTORDERS && activeRestaurantID >= 0) GetRestaurantHistory(activeRestaurantID);
       //Only owner can select some VIEWS. Otherwise set restaurants view
       if (newStateVars.loggedinUserRole !== "" && newStateVars.loggedinUserRole.toLowerCase() !== "owner" && 
        (view === VIEWS.NEWMENUITEM || view === VIEWS.NEWRESTAURANT || view === VIEWS.RESTAURANTINFO)) view = VIEWS.RESTAURANTS;  
@@ -461,6 +472,7 @@ function App() {
     GetPersonHistory(UID);
   }
 
+  //* Get Person history
   const GetPersonHistory = (UID, first = 0, limit = 10) => {
     const jsonParams = {
       "customerID" : UID,
@@ -469,6 +481,24 @@ function App() {
     }
     axios.get(RESTURL + '/ordersbyuser', { params: jsonParams })
     .then(response => { setPersHistory(response.data); 
+    })
+    .catch(error => {
+      //nok : Set messagebar errormessage, wait and set info message
+      if (error.response == null) ShowMessageBar(error.toString(), "alert alert-danger");
+      else ShowMessageBar(error.response.data.message, "alert alert-danger");
+      setTimeout(() => { ShowMessageBar(""); }, 3000);
+    });
+  }
+
+//* Get Owner history
+  const GetRestaurantHistory = (RID, first = 0, limit = 10) => {
+    const jsonParams = {
+      "restaurantID" : RID,
+      "first_order" : first,
+      "limit" : limit
+    }
+    axios.get(RESTURL + '/ordersbyrestaurant', { params: jsonParams })
+    .then(response => { setRestHistory(response.data); 
     })
     .catch(error => {
       //nok : Set messagebar errormessage, wait and set info message
@@ -514,8 +544,12 @@ function App() {
       "quantity" : parseInt(qty)
     }
 
-    //Find active order by restaurant id
-    axios.get(RESTURL + '/activeorderbyrestaurant', { params: {restaurantID: activeRestaurantID} })
+    //Find active order by restaurant id and person id
+    const jsonParams = {
+      "restaurantID" : activeRestaurantID,
+      "userID" : stateVars.loggedinUserID,
+    }
+    axios.get(RESTURL + '/activeorderbyrestaurantnuser', { params: jsonParams })
     .then(response => { 
       if(response.data === '') {
         //not found: add an order
@@ -573,12 +607,22 @@ function App() {
   //Get order items
   const UpdateShoppingCart = () => {
     if(activeRestaurantID < 0) {
-      ShowMessageBar("You must set active restaurant ID!", "alert alert-danger");
+      ShowMessageBar("You must select restaurant before making an order", "alert alert-danger");
+      setTimeout(() => ShowMessageBar(""), 3000);
+      return;
+    }
+    if(stateVars.loggedinUserID < 0) {
+      ShowMessageBar("You must sign in before making an order!", "alert alert-danger");
       setTimeout(() => ShowMessageBar(""), 3000);
       return;
     }
     //Find active order by restaurant
-    axios.get(RESTURL + '/activeorderbyrestaurant', { params: {restaurantID: activeRestaurantID} })
+    const jsonParams = {
+      "restaurantID" : activeRestaurantID,
+      "userID" : stateVars.loggedinUserID,
+    }
+    
+    axios.get(RESTURL + '/activeorderbyrestaurantnuser', { params: jsonParams })
     .then(response => {
       if (response.data.id >= 0) {
         //get items by that order
@@ -589,6 +633,7 @@ function App() {
           setTimeout(() => { ShowMessageBar(""); }, 3000);
         });
       }
+      else setShoppingCart([]);
     })
     .catch(error => {
       ShowMessageBar(error.toString(), "alert alert-danger");
@@ -598,10 +643,6 @@ function App() {
 
   //* Checkout button clicked
   const CheckOutClicked = (OID, price) => {
-    const jsonParams = {
-      "orderID" : OID,
-      "price" : price
-    }
     if(OID >= 0) {
       let fdata = new FormData();
       fdata.append('orderID', OID);
@@ -646,7 +687,7 @@ function App() {
       { stateVars.viewState === VIEWS.DELETEACCOUNT ? <DeleteAccount onSubmitBtnClicked={DeleteAccountClicked}/> : <></> }
       { stateVars.viewState === VIEWS.PERSONALINFO ? <PersonalInfo items={restaurants} history={persHistory} data={personInfo} roles={userRoles} showMessage={ShowMessageBar} onSubmitBtnClicked={EditUserBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.RESTAURANTINFO ? <RestaurantInfo data={restaurants.filter(i => i.id === activeRestaurantID)[0]} types={restaurantTypes} onSubmitBtnClicked={EditRestaurantBtnClicked}/> : <></> }
-      { stateVars.viewState === VIEWS.RESTAURANTORDERS ? <RestaurantOrders data={restaurants.filter(i => i.id === activeRestaurantID)[0]} types={restaurantTypes} onSubmitBtnClicked={EditRestaurantBtnClicked}/> : <></> }
+      { stateVars.viewState === VIEWS.RESTAURANTORDERS ? <RestaurantOrders history={restHistory} usrs={users} /> : <></> }
       { stateVars.viewState === VIEWS.ITEMINFO ? <ItemInfo showMessage={ShowMessageBar} types={restaurantItemTypes} data={items.filter(i => i.id === activeItemID)[0]} onSubmitBtnClicked={EditItemBtnClicked}/> : <></> }
       { stateVars.viewState === VIEWS.NEWRESTAURANT ? <NewRestaurant showMessage={ShowMessageBar} onSubmitBtnClicked={CreateRestaurantBtnClicked} types={restaurantTypes} /> : <></> }
       { stateVars.viewState === VIEWS.SHOPPINGCART? <ShoppingCart onCheckOutClicked={CheckOutClicked} rid={activeRestaurantID} items={items} data={shoppingCart} /> : <></> }

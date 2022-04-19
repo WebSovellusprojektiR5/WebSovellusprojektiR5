@@ -15,6 +15,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "SELECT * FROM orders WHERE idrestaurant = ?1 AND completed_time is null LIMIT 1", nativeQuery = true)
     Order findActiveByRestaurantId(Long idrestaurant);
 
+    @Query(value = "SELECT * FROM orders WHERE idrestaurant = ?1 AND idperson = ?2 AND completed_time is null LIMIT 1", nativeQuery = true)
+    Order findActiveByRestaurantIdUserId(Long idrestaurant, Long idperson);
+
     @Query(value = "SELECT * FROM orders WHERE idorder = ?1 AND completed_time is null LIMIT 1", nativeQuery = true)
     Order findOrderById(Long idorder);
 

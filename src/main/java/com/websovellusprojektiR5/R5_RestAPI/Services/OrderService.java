@@ -34,6 +34,10 @@ public class OrderService {
         return orderRepo.findActiveByRestaurantId(restaurantID);
     }
 
+    public Order getActiveOrderIdByRestaurantIdUserId(Long restaurantID, Long userID) {
+        return orderRepo.findActiveByRestaurantIdUserId(restaurantID, userID);
+    }
+
     public List<Order> getOrdersByCustomer(Long customerID){
         return orderRepo.findByCustomer(customerID);
     }

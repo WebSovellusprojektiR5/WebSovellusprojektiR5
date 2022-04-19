@@ -37,6 +37,12 @@ public class OrderRestAPI {
         return new ResponseEntity<Order> (res, HttpStatus.OK);
     }
 
+    @GetMapping("/activeorderbyrestaurantnuser")
+    public ResponseEntity<Order> getactiveorderidbyrestaurantuser(@RequestParam Long restaurantID, @RequestParam Long userID) {
+        Order res = orderService.getActiveOrderIdByRestaurantIdUserId(restaurantID, userID);
+        return new ResponseEntity<Order> (res, HttpStatus.OK);
+    }
+
     @CrossOrigin
     @GetMapping("/ordersbyuser")
     public List<Order> getordersbycustomer(@RequestParam Long customerID, @RequestParam int first_order,
