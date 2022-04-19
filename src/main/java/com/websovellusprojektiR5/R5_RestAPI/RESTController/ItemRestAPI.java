@@ -64,7 +64,7 @@ public class ItemRestAPI {
         return new ResponseEntity<Long> (ret, HttpStatus.OK);
     }
 
-    @PutMapping(path = "/itemdelete", consumes = {"application/json"})
+    @PutMapping(path = "/itemdelete")
     public ResponseEntity<Map<String, String>> deleteItem(@RequestParam Long id){
         String ret = itemService.deleteItem(id);
         if(ret.toLowerCase().contains("error")) return new ResponseEntity<>(Map.of("message", ret), HttpStatus.NOT_ACCEPTABLE);
