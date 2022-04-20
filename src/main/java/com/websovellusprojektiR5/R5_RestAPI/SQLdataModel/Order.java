@@ -29,6 +29,9 @@ public class Order {
     @Column(name = "completed_time")
     private Timestamp completed_time;
 
+    @Column(name = "completed_timestamp")
+    private Timestamp completed_timestamp;
+
     @Column(name = "comment")
     private String comment;
 
@@ -44,6 +47,7 @@ public class Order {
                  String address2,
                  Timestamp ordered_time,
                  Timestamp completed_time,
+                 Timestamp completed_timestamp,
                  String comment, Double price){
         this.idperson = idperson;
         this.idrestaurant = idrestaurant;
@@ -51,6 +55,7 @@ public class Order {
         this.address2 = address2;
         this.ordered_time = ordered_time;
         this.completed_time = completed_time;
+        this.completed_time = completed_timestamp;
         this.comment = comment;
         this.price = price;
     }
@@ -109,6 +114,14 @@ public class Order {
 
     public void setCompleted_time(Timestamp completed_time) {
         this.completed_time = completed_time;
+    }
+
+    public Timestamp getCompleted_timestamp() {
+        return completed_timestamp;
+    }
+
+    public void setCompleted_timestamp(Timestamp completed_timestamp) {
+        this.completed_timestamp = completed_timestamp;
     }
 
     public String getComment() {

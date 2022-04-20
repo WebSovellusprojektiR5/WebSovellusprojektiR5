@@ -41,10 +41,10 @@ export default function ShoppingCart(props) {
                                                     <tr key={d.id} className="cell-1">                                                  
                                                         <td className="text-center">{d.id}</td> 
                                                         <td>{props.items.filter(n => n.id === d.iditem)[0].name}</td> 
-                                                        <td><input type="number" min="1.00" max="10000.00" step="1.00" placeholder="1.00" className="form-control" id="inputQuantity" defaultValue={d.quantity} required/></td>
+                                                        <td><input type="number" min="1.00" max="10000.00" step="1.00" placeholder="1.00" className="form-control" id="inputQuantity" defaultValue={d.quantity} readOnly/></td>
                                                         <td className="total">{d.quantity * (props.items.filter(n => n.id === d.iditem)[0].price)}</td>
                                                         <script>{ctotal = ctotal + d.quantity * (props.items.filter(n => n.id === d.iditem)[0].price)}</script>
-                                                        <td><button type="submit" className="btn btn-danger btn-sm">Delete</button></td>
+                                                        <td><button type="submit" className="btn btn-danger btn-sm" onClick={()=>{ alert('Shopping cart editing is not yet enabled...'); }}>Delete</button></td>
                                                         <td><i className="fa fa-ellipsis-h text-black-50"></i></td>
                                                     </tr>) : <tr><td>Empty</td></tr>}
                                                 </tbody>

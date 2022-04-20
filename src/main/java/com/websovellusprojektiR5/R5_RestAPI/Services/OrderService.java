@@ -69,6 +69,7 @@ public class OrderService {
 
         Order order = orderRepo.findOrderById(orderID);
         order.setCompleted_time(new Timestamp(System.currentTimeMillis()));
+        order.setCompleted_timestamp(new Timestamp(System.currentTimeMillis()));
         order.setPrice(price);
         orderRepo.save(order);
         return "Order completed OK";

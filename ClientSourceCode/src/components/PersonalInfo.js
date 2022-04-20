@@ -29,7 +29,7 @@ export default function PersonalInfo(props) {
             <div className="col">
                 <div className="collapse multi-collapse" id="multiCollapseExample1">
                     <div className="card card-body">
-                    <form className="row g-3" onSubmit = {handleSubmit}>
+                        <form className="row g-3" onSubmit = {handleSubmit}>
                             <div className="col-md-6">
                                 <label htmlFor="inputFirstName" className="form-label">First Name</label>
                                 <input type="text" maxLength="30" className="form-control" id="inputFirstName" defaultValue={props.data.firstname}/>
@@ -67,11 +67,11 @@ export default function PersonalInfo(props) {
                                 <input type="text" maxLength="10" className="form-control" id="inputZip" defaultValue={props.data.city.split(' ')[0]}/>
                             </div>    
                             <div className="col-12">
-                            <br/>
-                            <label className="form-label">Username: {props.data.username}</label><br/>
-                            <label className="form-label">Role: {props.roles.find(r => r.id === props.data.idrole).role}</label>
-                            <input type="hidden" id="inputUserName" value={props.data.username}/>
-                            <input type="hidden" id="selectRole" value={props.data.idrole}/>
+                                <br/>
+                                <label className="form-label">Username: {props.data.username}</label><br/>
+                                <label className="form-label">Role: {props.roles.find(r => r.id === props.data.idrole).role}</label>
+                                <input type="hidden" id="inputUserName" value={props.data.username}/>
+                                <input type="hidden" id="selectRole" value={props.data.idrole}/>
                             </div>                        
                             <div className="col-12">
                                 <button type="submit" className="btn btn-primary">Edit</button>
@@ -83,40 +83,40 @@ export default function PersonalInfo(props) {
 
             <div className="col">
                 <div className="collapse multi-collapse" id="multiCollapseExample2">
-                    <div className="card card-body">
-                    <div className="container mt-5">
-            <div className="d-flex justify-content-center row">
+                <div className="card card-body">
+                <div className="container mt-5">
+                <div className="d-flex justify-content-center row">
                 <div className="col-md-10">
-                    <div className="rounded">
-                        <div className="table-responsive table-borderless">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th className="text-center">#</th>
-                                        <th>Company name</th>
-                                        <th>status</th>
-                                        <th>Total</th>
-                                        <th>Created</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="table-body">
-                                    {props.history.length > 0 ?
-                                     props.history.map((d) =>
-                                    <tr key={d.id} className="cell-1">
-                                        <td className="text-center">{d.id}</td>                                       
-                                        <td className="restaurantName">{props.items.filter(n => n.id === d.idrestaurant)[0].name}</td>
-                                        <td><span className="badge badge-success">Fullfilled</span></td>
-                                        <td className="price">{d.price}</td>
-                                        <td className="orderDate">{d.completed_time}</td>
-                                    </tr>) : <tr><td>Empty</td></tr>}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div className="rounded">
+                <div className="table-responsive table-borderless">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th className="text-center">#</th>
+                                <th>Company name</th>
+                                <th>status</th>
+                                <th>Total</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody className="table-body">
+                            {props.history.length > 0 ?
+                                props.history.map((d, idx) =>
+                            <tr key={d.id} className="cell-1">
+                                <td className="text-center">{idx + 1}</td>                                       
+                                <td className="restaurantName">{props.items.filter(n => n.id === d.idrestaurant)[0].name}</td>
+                                <td><span className="badge badge-success">Fullfilled</span></td>
+                                <td className="price">{d.price.toFixed(2)}€</td>
+                                <td className="orderDate">{(new Date(d.completed_timestamp)).toLocaleDateString()} at {(new Date(d.completed_timestamp)).toLocaleTimeString()}</td>
+                            </tr>) : <tr><td>Empty</td></tr>}
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        </div>
-                    </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
                 </div>
             </div>
         </div>    

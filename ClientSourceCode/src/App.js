@@ -133,7 +133,7 @@ function App() {
       newStateVars.viewState = view;
       setStateVars(newStateVars); 
       //Hide Active restaurant name bar
-      if (view !== VIEWS.NEWMENUITEM && view !== VIEWS.MENUITEM && view !== VIEWS.RESTAURANTINFO && view === VIEWS.SHOPPINGCART) setActiveRestaurantName("");
+      if (view !== VIEWS.NEWMENUITEM && view !== VIEWS.MENUITEM && view !== VIEWS.RESTAURANTINFO && view !== VIEWS.SHOPPINGCART) setActiveRestaurantName("");
       ShowMessageBar("");
     } 
   }
@@ -673,7 +673,10 @@ function App() {
     ChangeView(VIEWS.RESTAURANTINFO);
   }
 
-  const RestaurantNameClicked = () => {ChangeView(VIEWS.RESTAURANTS); }
+  const RestaurantNameClicked = () => {
+    if(stateVars.viewState === VIEWS.SHOPPINGCART) ChangeView(VIEWS.MENUITEM)
+    else ChangeView(VIEWS.RESTAURANTS); 
+  }
 
   //Return Single-Page application
   return (
