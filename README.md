@@ -20,6 +20,6 @@ Kokoontuessamme joko Teams-palvelussa tai koululla kaikki opiskelijat pyrkivät 
 
 
 <img width="1214" alt="Näyttökuva 2022-4-20 kello 10 11 13" src="https://user-images.githubusercontent.com/93472660/164181575-610dbd7e-dff5-4831-b321-fa30376684e9.png">
-Kuvassa näkyy valittavat ravintolat ”fine dining”-kategoriasta
+KUVA 1. _Kuvassa näkyy valittavat ravintolat ”fine dining”-kategoriasta_
 <img width="1166" alt="Näyttökuva 2022-4-18 kello 17 23 33" src="https://user-images.githubusercontent.com/93472660/164181604-42b3478f-6b73-42c4-a9a9-4f438ec4d680.png">
-Kuvassa näkyy miltä ryhmämme GitHub sisältö näyttää.  
+KUVA 2. _Kuvassa näkyy miltä ryhmämme GitHub sisältö näyttää._  
