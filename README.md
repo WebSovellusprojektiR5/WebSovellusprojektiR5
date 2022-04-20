@@ -7,6 +7,7 @@ mahdollista tilata ruokaa ja ravintoloitsijalla on mahdollista lisätä oma ravi
 
 
 **MEISTÄ**
+
 Ryhmä 5 koostuu henkilöistä Aliisa Kortesoja, Teemu Lahtinen, Mikko Turpeinen ja Casandra Andersson ja olemme projektin alussa jakaneet kaikille seuraavat vastuualueet: 
 
 Backend - Teemu 
