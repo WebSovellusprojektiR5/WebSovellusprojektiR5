@@ -37,12 +37,12 @@ export default function ShoppingCart(props) {
 
                                                 <tbody className="table-body">
                                                 { props.rid >= 0 && props.data.length > 0 && props.items.length > 0 ?
-                                                props.data.map((d) =>
+                                                props.data.map((d,idx) =>
                                                     <tr key={d.id} className="cell-1">                                                  
-                                                        <td className="text-center">{d.id}</td> 
+                                                        <td className="text-center">{idx + 1}</td> 
                                                         <td>{props.items.filter(n => n.id === d.iditem)[0].name}</td> 
-                                                        <td><input type="number" min="1.00" max="10000.00" step="1.00" placeholder="1.00" className="form-control" id="inputQuantity" defaultValue={d.quantity} readOnly/></td>
-                                                        <td className="total">{d.quantity * (props.items.filter(n => n.id === d.iditem)[0].price)}</td>
+                                                        <td><input type="number" min="1.00" max="10000.00" step="1.00" placeholder="1.00" className="form-control" id="inputQuantity" defaultValue={d.quantity} readOnly onClick={()=>{ alert('Shopping cart editing is not yet enabled...'); }}/></td>
+                                                        <td className="total">{(d.quantity * (props.items.filter(n => n.id === d.iditem)[0].price)).toFixed(2)}€</td>
                                                         <script>{ctotal = ctotal + d.quantity * (props.items.filter(n => n.id === d.iditem)[0].price)}</script>
                                                         <td><button type="submit" className="btn btn-danger btn-sm" onClick={()=>{ alert('Shopping cart editing is not yet enabled...'); }}>Delete</button></td>
                                                         <td><i className="fa fa-ellipsis-h text-black-50"></i></td>
